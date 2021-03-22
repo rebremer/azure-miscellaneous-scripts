@@ -12,8 +12,8 @@
 $tenant_id = "<<your tenant id>>"
 $subscription_id = "<<your subscription id>>"
 $akv_name = "<<your key vault name>>"
-$akv_secretname_sqluser = "<<your secret name in key vault containing sqldb user name>>"
-$akv_secretname_sqlpassword = "<<your secret name in key vault containing sqldb user password>>"
+$akv_secretname_sqlpbirs_user = "<<your secret name in key vault containing sqldb pbirs user name>>"
+$akv_secretname_sqlpbirs_password = "<<your secret name in key vault containing sqldb pbirs user password>>"
 $sql_server_name = "<<your sql server name>>.database.windows.net"
 $sql_db_name = "<<your sql db name>>"
 # 0.2 PBIRS report
@@ -57,7 +57,7 @@ Set-RsRestItemDataModelParameters -RsItem "/$($report_server_map)/$($report_name
 
 # set passwords
 $dataSources = Get-RsRestItemDataSource -WebSession $session -RsItem "/$($report_server_map)/$($report_name)"
-$dataSources[0].DataModelDataSource.Username = Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqluser -AsPlainText
-$dataSources[0].DataModelDataSource.Secret = Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqlpassword -AsPlainText
+$dataSources[0].DataModelDataSource.Username = Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqlpbirs_user -AsPlainText
+$dataSources[0].DataModelDataSource.Secret = Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqlpbirs_password -AsPlainText
 $dataSources[0].DataModelDataSource.AuthType = 'UsernamePassword'
 Set-RsRestItemDataSource -RsItem "/$($report_server_map)/$($report_name)" -RsItemType 'PowerBIReport' -DataSources $dataSources
