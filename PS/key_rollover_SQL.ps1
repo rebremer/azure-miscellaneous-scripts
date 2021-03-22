@@ -10,8 +10,6 @@
 $tenant_id = "<<your tenant id>>"
 $subscription_id = "<<your subscription id>>"
 $akv_name = "<<your key vault name>>"
-$akv_secretname_sqladmin_user = "<<your secret name in key vault containing sqldb admin user name>>"
-$akv_secretname_sqladmin_password = "<<your secret name in key vault containing sqldb admin user password>>"
 $akv_secretname_sqlpbirs_user = "<<your secret name in key vault containing sqldb pbirs user name>>"
 $akv_secretname_sqlpbirs_password = "<<your secret name in key vault containing sqldb pbirs user password>>"
 $sql_server_name = "<<your sql server name>>.database.windows.net"
@@ -54,10 +52,12 @@ Connect-AzAccount -Tenant $tenant_id -SubscriptionId $subscription_id
 Set-AzContext -SubscriptionId $subscription_id
 Get-AzContext
 
-# 1a. Best option: Azure AD authentication. Domain join is required, see https://docs.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-configure?tabs=azure-powershell#active-directory-integrated-authentication-1 
-#$connectionString = "Server=tcp:test-sqldbpowerbionprem-sql2.database.windows.net,1433; Initial Catalog=master;MultipleActiveResultSets=False;Persist Security Info=False;Encrypt=True;TrustServerCertificate=False;Authentication='Active Directory Integrated'";
+# 1a. Azure AD authentication. Domain join is required, see https://docs.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-configure?tabs=azure-powershell#active-directory-integrated-authentication-1 
+$connectionString = "Server=tcp:test-sqldbpowerbionprem-sql2.database.windows.net,1433; Initial Catalog=master;MultipleActiveResultSets=False;Persist Security Info=False;Encrypt=True;TrustServerCertificate=False;Authentication='Active Directory Integrated'";
 # 1b. SQL authentication
-$connectionString = "Server=tcp:test-sqldbpowerbionprem-sql2.database.windows.net,1433; Initial Catalog=master;MultipleActiveResultSets=False;Persist Security Info=False;Encrypt=True;TrustServerCertificate=False;User ID=$(Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqladmin_user -AsPlainText);Password=$(Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqladmin_password -AsPlainText)";
+#$akv_secretname_sqladmin_user = "<<your secret name in key vault containing sqldb admin user name>>"
+#$akv_secretname_sqladmin_password = "<<your secret name in key vault containing sqldb admin user password>>"
+#connectionString = "Server=tcp:test-sqldbpowerbionprem-sql2.database.windows.net,1433; Initial Catalog=master;MultipleActiveResultSets=False;Persist Security Info=False;Encrypt=True;TrustServerCertificate=False;User ID=$(Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqladmin_user -AsPlainText);Password=$(Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqladmin_password -AsPlainText)";
 $connection = New-Object -TypeName System.Data.SqlClient.SqlConnection($connectionString)
 
 # 2. Build query
