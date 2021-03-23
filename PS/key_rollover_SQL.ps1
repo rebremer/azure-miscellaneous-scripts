@@ -20,6 +20,7 @@ $report_server_url = "<<your report server url>>" # precondition is that deploym
 $report_server_map = "<<your report server map to which report is deployed"
 $local_map_report = "<<your local map where report is stored>>"
 $report_name = "<<your report name>>"
+$sql_file_path = "<<your sql file name, e.g. .\resetsqlpassword.sql>>"
 
 Function GenerateStrongPassword ([Parameter(Mandatory=$true)][int]$PasswordLenght)
 {
@@ -53,16 +54,15 @@ Set-AzContext -SubscriptionId $subscription_id
 Get-AzContext
 
 # 1a. Azure AD authentication. Domain join is required, see https://docs.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-configure?tabs=azure-powershell#active-directory-integrated-authentication-1 
-$connectionString = "Server=tcp:test-sqldbpowerbionprem-sql2.database.windows.net,1433; Initial Catalog=master;MultipleActiveResultSets=False;Persist Security Info=False;Encrypt=True;TrustServerCertificate=False;Authentication='Active Directory Integrated'";
+$connectionString = "Server=tcp:$($sql_server_name),1433; Initial Catalog=master;MultipleActiveResultSets=False;Persist Security Info=False;Encrypt=True;TrustServerCertificate=False;Authentication='Active Directory Integrated'";
 # 1b. SQL authentication
 #$akv_secretname_sqladmin_user = "<<your secret name in key vault containing sqldb admin user name>>"
 #$akv_secretname_sqladmin_password = "<<your secret name in key vault containing sqldb admin user password>>"
-#connectionString = "Server=tcp:test-sqldbpowerbionprem-sql2.database.windows.net,1433; Initial Catalog=master;MultipleActiveResultSets=False;Persist Security Info=False;Encrypt=True;TrustServerCertificate=False;User ID=$(Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqladmin_user -AsPlainText);Password=$(Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqladmin_password -AsPlainText)";
+#connectionString = "Server=tcp:$($sql_server_name),1433; Initial Catalog=master;MultipleActiveResultSets=False;Persist Security Info=False;Encrypt=True;TrustServerCertificate=False;User ID=$(Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqladmin_user -AsPlainText);Password=$(Get-AzKeyVaultSecret -VaultName $akv_name -Name $akv_secretname_sqladmin_password -AsPlainText)";
 $connection = New-Object -TypeName System.Data.SqlClient.SqlConnection($connectionString)
 
 # 2. Build query
-$queryPath = "C:\Users\bremerov\Desktop\resetsqlpassword.sql"
-$query = [System.IO.File]::ReadAllText($queryPath)
+$query = [System.IO.File]::ReadAllText($sql_file_path)
 $command = New-Object -TypeName System.Data.SqlClient.SqlCommand($query, $connection)
 
 # 3. Generate password
