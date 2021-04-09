@@ -186,18 +186,18 @@
 				"type": "array",
 				"defaultValue": [
 					{
-						"source": "bsc_pymt_agrm_ds_original.csv",
-						"sink": "SA_BSC_PYMT_AGRM_DS_SOURCE"
+						"source": "1_persoon_dutch.csv",
+						"sink": "person"
 					},
 					{
-						"source": "persoon.csv",
-						"sink": "person"
+						"source": "2_banking1.csv",
+						"sink": "banking"
 					}
 				]
 			},
 			"FileSystemName": {
 				"type": "string",
-				"defaultValue": "overflowduplicatekey"
+				"defaultValue": "dynamicmapping"
 			}
 		},
 		"annotations": [],
