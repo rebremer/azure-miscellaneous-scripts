@@ -1,7 +1,7 @@
 # ADFv2 - Dynamic column mapping between csv and SQL tables 
 
-## Dynamic mapping
-Dynamic mapping is based on position, ,e.g.
+## Dynamic mapping in single ADFv2 pipeline
+Dynamic mapping is based on position, e.g.
 
 - CSV file 1 with ```voornaam, achternaam, leeftijd``` will be written to Table 1 as ```firstname, lastname, age```
 - CSV file 2 with ```IBAN1, price, price1, price2``` will be written to Table 2 as ```IBAN, price, SalesPrice, PurchasePrice```
