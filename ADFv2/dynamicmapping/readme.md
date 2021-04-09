@@ -1,4 +1,4 @@
-# ADFv2 - Dynamic column mapping between csv and SQLDB tables 
+# ADFv2 - Dynamic column mapping between csv and SQL tables 
 
 ## Dynamic mapping
 Dynamic mapping is based on position, ,e.g.
