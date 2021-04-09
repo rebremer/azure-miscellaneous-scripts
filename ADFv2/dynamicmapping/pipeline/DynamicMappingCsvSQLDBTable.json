@@ -44,6 +44,9 @@
 										"type": "DelimitedTextReadSettings"
 									}
 								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
 								"enableStaging": false,
 								"enableSkipIncompatibleRow": false,
 								"translator": {
@@ -62,6 +65,18 @@
 										},
 										"FileName": {
 											"value": "@item().source",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureSqlTable2NoSchema",
+									"type": "DatasetReference",
+									"parameters": {
+										"table": {
+											"value": "@item().sink",
 											"type": "Expression"
 										}
 									}
@@ -95,7 +110,9 @@
 										}
 									}
 								},
-								"fieldList": [],
+								"fieldList": [
+									"contentMD5"
+								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
