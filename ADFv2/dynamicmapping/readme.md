@@ -6,7 +6,7 @@ Dynamic mapping is based on position, ,e.g.
 - CSV file 1 with ```voornaam, achternaam, leeftijd``` will be written to Table 1 as ```firstname, lastname, age```
 - CSV file 2 with ```IBAN1, price, price1, price2``` will be written to Table 2 as ```IBAN, price, SalesPrice, PurchasePrice```
 
-Mapping is done dynamically using this [stored procedure](_StoredProcedure\sp_doSourceSinkColumnMapping.sql) to create a mapping between csv file and table name bases on position rather than name. Two additional remarks:
+Mapping is done dynamically using this [stored procedure](_StoredProcedure/sp_doSourceSinkColumnMapping.sql) to create a mapping between csv file and table name bases on position rather than name. Two additional remarks:
 - No custom config table needs to be maintained keeping track of mapping, ADFv2 activity getmetadata and SQLDB sys.columns are used by stored procedure to do mapping dynamically. 
 - This project elaborates on the following blog: https://sqlitybi.com/dynamically-set-copy-activity-mappings-in-azure-data-factory-v2/?doing_wp_cron=1617948385.9531490802764892578125
 
