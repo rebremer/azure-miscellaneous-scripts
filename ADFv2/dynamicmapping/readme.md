@@ -1,4 +1,4 @@
-# Dynamic column mapping between csv files and SQLDB tables in single pipeline
+# ADfv2 - Dynamic column mapping between ADLSgen2 csv and SQLDB tables 
 
 ## Dynamic mapping
 Dynamic mapping is based on position, ,e.g.
