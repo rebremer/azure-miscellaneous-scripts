@@ -54,7 +54,17 @@
 							"inputs": [
 								{
 									"referenceName": "DelimitedText2NoSchema",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"FileSystem": {
+											"value": "@pipeline().parameters.FileSystemName",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "@item().source",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -71,9 +81,21 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"fieldList": [
-									"structure"
-								],
+								"dataset": {
+									"referenceName": "DelimitedText2NoSchema",
+									"type": "DatasetReference",
+									"parameters": {
+										"FileSystem": {
+											"value": "@pipeline().parameters.FileSystemName",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "@item().source",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
@@ -125,6 +147,16 @@
 									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "AzureSqlTable2NoSchema",
+									"type": "DatasetReference",
+									"parameters": {
+										"table": {
+											"value": "@item().sink",
+											"type": "Expression"
+										}
+									}
 								}
 							}
 						}
