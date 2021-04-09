@@ -15,7 +15,7 @@ This project owns to following blog: https://sqlitybi.com/dynamically-set-copy-a
 
 See als picture below
 
-![pipeline](/_ExampleData/dynamicmappingpipeline.png)
+![pipeline](_ExampleData/dynamicmappingpipeline.png)
 
 ## Steps to execute:
 - clone this git repository, create a new Azure Data Factory instance and import the git
