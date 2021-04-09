@@ -11,7 +11,7 @@ Mapping is done dynamically using this [stored procedure](_StoredProcedure/sp_do
 - This project elaborates on the following blog: https://sqlitybi.com/dynamically-set-copy-activity-mappings-in-azure-data-factory-v2/?doing_wp_cron=1617948385.9531490802764892578125
 
 ## Pipeline is created as follows:
-- Use ForEach to loop to add file 1..N to table 1..N using array parameter where source files/sink tables are specified 
+- Use ForEach to loop to add file 1 to table 1, .., file N to table N. Array parameter where source files/sink tables are specified is used as iterator
 - Use Get Metadata activity to get the csv file structure
 - Pass CSV file structure and tablename to stored procedure. Stored procedure creates mapping between csv file structure and table columns based on position using sys.columns.
 - Use dynamic mapping in sink mapping to write csv file data to table
