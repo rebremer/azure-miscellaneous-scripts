@@ -1,4 +1,4 @@
-# Project that enables to do dynamic mapping from csv files in tables in single pipeline
+# Dynamic column mapping between csv files and SQLDB tables in single pipeline
 
 ## Dynamic mapping
 Dynamic mapping is based on position, ,e.g.
