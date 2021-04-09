@@ -44,16 +44,19 @@
 										"type": "DelimitedTextReadSettings"
 									}
 								},
-								"sink": {
-									"type": "AzureSqlSink"
-								},
 								"enableStaging": false,
 								"enableSkipIncompatibleRow": false,
 								"translator": {
 									"value": "@json(activity('CreateMappingCsvTableUsingPosition').output.firstRow.json_output)",
 									"type": "Expression"
 								}
-							}
+							},
+							"inputs": [
+								{
+									"referenceName": "DelimitedText2NoSchema",
+									"type": "DatasetReference"
+								}
+							]
 						},
 						{
 							"name": "GetCsvFileStructure",
@@ -142,6 +145,10 @@
 						"sink": "person"
 					}
 				]
+			},
+			"FileSystemName": {
+				"type": "string",
+				"defaultValue": "overflowduplicatekey"
 			}
 		},
 		"annotations": [],
