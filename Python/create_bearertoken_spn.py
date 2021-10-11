@@ -1,6 +1,5 @@
 import requests
 import json
-import requests
 #
 tenant ='<<your tenant_id>>'
 client_id = '<<your client_id>>'
