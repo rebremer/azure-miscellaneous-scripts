@@ -1,0 +1,169 @@
+{
+    "name": "17 Copy partitions loop",
+    "properties": {
+        "activities": [
+            {
+                "name": "Option 2 - copy in parallel custom query",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "Option 1- partitioning - SQLDB to STOR",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@pipeline().parameters.partitionsparam",
+                        "type": "Expression"
+                    },
+                    "batchCount": 3,
+                    "activities": [
+                        {
+                            "name": "SQLDB to STOR",
+                            "type": "Copy",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "source": {
+                                    "type": "AzureSqlSource",
+                                    "sqlReaderQuery": {
+                                        "value": "@concat('SELECT * FROM [dbo].[SalesLTCustomer] WHERE CustomerID > ', string(item().start), ' AND CustomerID <= ', string(item().end))",
+                                        "type": "Expression"
+                                    },
+                                    "queryTimeout": "02:00:00",
+                                    "partitionOption": "None"
+                                },
+                                "sink": {
+                                    "type": "DelimitedTextSink",
+                                    "storeSettings": {
+                                        "type": "AzureBlobFSWriteSettings"
+                                    },
+                                    "formatSettings": {
+                                        "type": "DelimitedTextWriteSettings",
+                                        "quoteAllText": true,
+                                        "fileExtension": ".txt"
+                                    }
+                                },
+                                "enableStaging": false,
+                                "translator": {
+                                    "type": "TabularTranslator",
+                                    "typeConversion": true,
+                                    "typeConversionSettings": {
+                                        "allowDataTruncation": true,
+                                        "treatBooleanAsNumber": false
+                                    }
+                                }
+                            },
+                            "inputs": [
+                                {
+                                    "referenceName": "AzureSqlTable1",
+                                    "type": "DatasetReference"
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "copypartitionsloop",
+                                    "type": "DatasetReference"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Option 1- partitioning - SQLDB to STOR",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "AzureSqlSource",
+                        "sqlReaderQuery": {
+                            "value": "SELECT * FROM [dbo].[SalesLTCustomer]  WHERE ?AdfDynamicRangePartitionCondition\n/*\n@concat('SELECT * FROM [dbo].[SalesLTCustomer] WHERE CustomerID > ', string(item().start), ' AND CustomerID <= ', string(item().end))\n*/",
+                            "type": "Expression"
+                        },
+                        "queryTimeout": "02:00:00",
+                        "partitionOption": "DynamicRange",
+                        "partitionSettings": {
+                            "partitionColumnName": "CustomerID",
+                            "partitionUpperBound": "10",
+                            "partitionLowerBound": "20"
+                        }
+                    },
+                    "sink": {
+                        "type": "DelimitedTextSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "DelimitedTextWriteSettings",
+                            "quoteAllText": true,
+                            "fileExtension": ".txt"
+                        }
+                    },
+                    "enableStaging": false,
+                    "parallelCopies": 4,
+                    "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                            "allowDataTruncation": true,
+                            "treatBooleanAsNumber": false
+                        }
+                    }
+                },
+                "inputs": [
+                    {
+                        "referenceName": "AzureSqlTable1",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "copypartitionsloop",
+                        "type": "DatasetReference"
+                    }
+                ]
+            }
+        ],
+        "parameters": {
+            "partitionsparam": {
+                "type": "array",
+                "defaultValue": [
+                    {
+                        "start": 0,
+                        "end": 10
+                    },
+                    {
+                        "start": 11,
+                        "end": 20
+                    },
+                    {
+                        "start": 21,
+                        "end": 30
+                    }
+                ]
+            }
+        },
+        "annotations": [],
+        "lastPublishTime": "2021-05-03T11:16:21Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
