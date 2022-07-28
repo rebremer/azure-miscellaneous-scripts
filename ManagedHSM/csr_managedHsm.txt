@@ -68,7 +68,7 @@ exit
 # Copy testcsrkey4.csr to you local machine again and store it as testcsrkey4.csr again
 
 #
-# 5. Create local CA (not using HSM to sign csrs)
+# 6. Create local CA (not using HSM) and sign .csr file
 #
 # See https://stackoverflow.com/questions/21297139/how-do-you-sign-a-certificate-signing-request-with-your-certification-authority
 mkdir ca
@@ -86,6 +86,7 @@ touch index.txt
 touch serial.txt
 echo '01' > serial.txt
 
+# Sign .csr and create certificate
 openssl ca -config openssl-ca.cnf -policy signing_policy -extensions signing_req -out testcertkey4.pem -infiles testcsrkey4.csr
 cat testcertkey4.pem
 
