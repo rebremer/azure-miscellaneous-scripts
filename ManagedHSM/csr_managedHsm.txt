@@ -1,0 +1,101 @@
+# Script based on https://github.com/microsoft/AzureKeyVaultManagedHSMEngine
+#
+# 0. Set variables
+#
+sub="<<your subscription>>"
+rg="<<your resource group>>"
+loc="<<your location>>"
+hsm_name="<<your managed hsm name>>"
+azure_ad_object_id="<<your azure ad user object id>>"
+vm_name="<<you key vault name>>" # only needed for last step
+
+#
+# 1. Setup managed HSM (see https://docs.microsoft.com/en-us/azure/key-vault/managed-hsm/quick-create-cli)
+#
+az account set --subscription $sub
+az group create --name $rg --subscription $sub --location $loc  
+
+# Create managed HSM
+az keyvault create --hsm-name $hsm_name --resource-group $rg --location $loc --administrators $azure_ad_object_id --retention-days 28
+
+# Create security world (openssl needs to be installed)
+openssl req -newkey rsa:2048 -nodes -keyout cert_1.key -x509 -days 365 -out cert_1.cer -config openssl.cnf
+openssl req -newkey rsa:2048 -nodes -keyout cert_2.key -x509 -days 365 -out cert_2.cer -config openssl.cnf
+openssl req -newkey rsa:2048 -nodes -keyout cert_3.key -x509 -days 365 -out cert_3.cer -config openssl.cnf
+az keyvault security-domain download --hsm-name $hsm_name --sd-wrapping-keys ./cert_1.cer ./cert_2.cer ./cert_3.cer --sd-quorum 2 --security-domain-file SD.json
+
+#
+# 2. Add RSA key to managed HSM
+#
+az keyvault role assignment create  --hsm-name $hsm_name --assignee-object-id $azure_ad_object_id --scope / --role "Managed HSM Crypto User"
+az keyvault key create --kty RSA-HSM --name testcsrkey --hsm-name $hsm_name
+
+#
+# 3. Create and configure VM. 
+#
+# VM is needed to run openssl engine in step 4 (only VM managed identity can authenticate to openssl, this won't work for normal Azure Users)
+az vm create -g $rg -n $vm_name -l $loc --public-ip-sku Standard --image UbuntuLTS --admin-username azureuser --generate-ssh-keys
+az vm open-port --port 22 -g $rg -n $vm_name
+az vm identity assign -g $rg -n $vm_name
+
+# get VM managed Identity and grant access to managed HSM
+vm_object_id=$(az vm identity show --name $vm_name --resource-group $rg --query principalId -o tsv)
+az keyvault role assignment create  --hsm-name $hsm_name --assignee-object-id $vm_object_id --scope / --role "Managed HSM Crypto User"
+
+#
+# 4. Setup openssl engine on VM.
+#
+ssh azureuser@<<IP address of VM>>
+sudo apt-get update
+sudo apt install -y build-essential   libssl-dev   libcurl4-openssl-dev   libjson-c-dev   cmake   nginx
+
+cd ~
+git clone https://github.com/microsoft/AzureKeyVaultManagedHSMEngine.git
+cd AzureKeyVaultManagedHSMEngine/src
+mkdir build
+cd build
+cmake ..
+make
+
+#
+# 5. Create certificate signing request (from vm)
+#
+# Login into VM if you wasn't already
+cd ~/AzureKeyVaultManagedHSMEngine/samples/nginx-managedHsm
+openssl req -config openssl.cnf -engine e_akv -keyform engine -key managedHsm:<<hsm_name>>:testcsrkey4 -new -out testcsrkey4.csr
+cat testcsrkey4.csr
+exit
+# Copy testcsrkey4.csr to you local machine again and store it as testcsrkey4.csr again
+
+#
+# 5. Create local CA (not using HSM to sign csrs)
+#
+# See https://stackoverflow.com/questions/21297139/how-do-you-sign-a-certificate-signing-request-with-your-certification-authority
+mkdir ca
+cd ca
+
+touch openssl-ca.cnf
+<< add content described in stack overflow link>>
+
+openssl req -x509 -config openssl-ca.cnf -newkey rsa:4096 -sha256 -nodes -out cacert.pem -outform PEM
+
+touch openssl-ca.cnf
+<< update content described in stack overflow link>>
+
+touch index.txt
+touch serial.txt
+echo '01' > serial.txt
+
+openssl ca -config openssl-ca.cnf -policy signing_policy -extensions signing_req -out testcertkey4.pem -infiles testcsrkey4.csr
+cat testcertkey4.pem
+
+#
+# 6. Create regular key vault and import certificate as secret in key vault
+#
+
+az account set --subscription $sub
+az group create --name $rg -l $loc
+az keyvault create -n $avk_name -g $rg -l $loc
+
+az keyvault secret set -n testcsrkey4 --vault-name $akv_name --file "testcertkey4.pem"
+az keyvault secret show -n testcsrkey4 --vault-name $akv_name
