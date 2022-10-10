@@ -2,7 +2,7 @@
 
 ## Create SQL data
 1. Create tables with dbo.movies.sql in an Azure SQL database
-2. Insert dbo.movies.txt into sql table (e.g. using SMSS or ADF)
+2. Insert dbo.movies.txt into sql table (e.g. using SSMS or ADF)
 3. Run dbo.movies_version.sql in Azure SQL database (make sure 50 DTUs or more are used in Azure SQL). Script can take more than 1 hour.
 
 ## Create ADF pipeline
