@@ -1,0 +1,42 @@
+{
+    "name": "38_1_small_files_delta_lake",
+    "properties": {
+        "activities": [
+            {
+                "name": "Delta Lake producer",
+                "type": "ExecuteDataFlow",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "dataflow": {
+                        "referenceName": "Delta_lake_producer_small_files",
+                        "type": "DataFlowReference",
+                        "parameters": {
+                            "query": {
+                                "value": "'@{string('SELECT * FROM [dbo].[movies_version]')}'",
+                                "type": "Expression"
+                            },
+                            "folder": {
+                                "value": "'@{string('smallfiles')}'",
+                                "type": "Expression"
+                            }
+                        }
+                    },
+                    "compute": {
+                        "coreCount": 32,
+                        "computeType": "MemoryOptimized"
+                    },
+                    "traceLevel": "Fine"
+                }
+            }
+        ],
+        "annotations": []
+    }
+}
