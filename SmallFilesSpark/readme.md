@@ -15,4 +15,4 @@
 
 ## Run queries via Databricks and Synapse
 10. Mount storage account to Databricks, import notebook "Databricks_query_data_delta_lake.ipynb" and run notebook
-11. Mount storage account to Synapse, import notebook "Synapse_query_data_delta_lake.ipynb" and run notebook
+11. Grant Synapse MI "Storage Blob Data Contributor" rights on storage account, import notebook "Synapse_query_data_delta_lake.ipynb" and run notebook
