@@ -1,0 +1,76 @@
+{
+    "name": "Delta_lake_producer_small_files",
+    "properties": {
+        "type": "MappingDataFlow",
+        "typeProperties": {
+            "sources": [
+                {
+                    "dataset": {
+                        "referenceName": "movies_version",
+                        "type": "DatasetReference"
+                    },
+                    "name": "source1"
+                }
+            ],
+            "sinks": [
+                {
+                    "linkedService": {
+                        "referenceName": "testedlprod1stor_deltalake",
+                        "type": "LinkedServiceReference"
+                    },
+                    "name": "sink1"
+                }
+            ],
+            "transformations": [
+                {
+                    "name": "alterRow1"
+                }
+            ],
+            "scriptLines": [
+                "parameters{",
+                "     query as string,",
+                "     folder as string",
+                "}",
+                "source(output(",
+                "          movie as integer,",
+                "          version as integer,",
+                "          update_time as date,",
+                "          title as string,",
+                "          genres as string,",
+                "          year as string,",
+                "          Rating as string,",
+                "          Rotten_tomato as string,",
+                "          description as string",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     isolationLevel: 'READ_UNCOMMITTED',",
+                "     query: ($query),",
+                "     format: 'query',",
+                "     partitionBy('roundRobin', 2)) ~> source1",
+                "source1 alterRow(upsertIf(true())) ~> alterRow1",
+                "alterRow1 sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     format: 'delta',",
+                "     fileSystem: 'deltalakeproducer',",
+                "     folderPath: (concat('moviedata/', $folder)),",
+                "     mergeSchema: false,",
+                "     autoCompact: true,",
+                "     optimizedWrite: true,",
+                "     vacuum: 0,",
+                "     deletable:false,",
+                "     insertable:false,",
+                "     updateable:false,",
+                "     upsertable:true,",
+                "     keys:['movie','version'],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     partitionBy('key',",
+                "          0,",
+                "          movie,",
+                "          version",
+                "     )) ~> sink1"
+            ]
+        }
+    }
+}
