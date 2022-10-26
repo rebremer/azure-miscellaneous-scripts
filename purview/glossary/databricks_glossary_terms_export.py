@@ -14,9 +14,12 @@
 # 1. Update PURVIEW_NAME with your Purview account name. DON'T USE QUOTATIONS!!!
 %env PURVIEW_NAME=<<your purview name without quotations>>
 # 2. Uncomment and set the variables below if you plan to use a Service Principal. DON'T USE QUOTATIONS!!!
+# Make sure that Service Principal is data curator in Purview minimally
 %env AZURE_CLIENT_ID=<<your client id without quotations>>
 %env AZURE_TENANT_ID=<<your tenant id without quotations>>
 %env AZURE_CLIENT_SECRET=<<your client secreat without quotations>>
+
+# Secrets shall never be stored in plain text. Instead, use Databricks secret scope, see https://learn.microsoft.com/en-us/azure/databricks/security/secrets/secret-scopes
 
 # 3. Update the path to your local entities_to_term.csv file path
 PATH_TO_CSV ="/dbfs/testpurview.csv" # quotations
@@ -31,6 +34,7 @@ TERM_FORMAL_NAME = "testrb4" # quoations
 
 # COMMAND ----------
 
+import json
 def getJSON(raw_output):
   output = ''.join(raw_output)
   json_obj = json.loads(output)
