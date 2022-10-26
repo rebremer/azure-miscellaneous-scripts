@@ -6,6 +6,7 @@
 # MAGIC - This notebook will create a CSV file using a top level guid (e.g. sql server, storage acount) which has a list of entities mapped to a glossary term.
 # MAGIC - The notebook will then loop through each term and bulk assign the entities.
 # MAGIC - Notebook runs on Databricks, no need to setup op Python or venv locally
+# MAGIC Notebook has not Spark dependencies, plain python is used (no pyspark)
 
 # COMMAND ----------
 
