@@ -1,0 +1,103 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Javascript_-_parse_email_body": {
+                "inputs": {
+                    "code": "var email = workflowContext.trigger.outputs.body.body;\r\n\r\nvar regexurl = /(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})/gi;\r\n\r\nreturn {\"content\": email.match(regexurl)};"
+                },
+                "runAfter": {},
+                "type": "JavaScriptCode"
+            },
+            "Key_vault_-_get_credentials_Netcraft_stub": {
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "referenceName": "keyvault"
+                        }
+                    },
+                    "method": "get",
+                    "path": "/secrets/@{encodeURIComponent('NetcraftSecret')}/value"
+                },
+                "runAfter": {
+                    "Javascript_-_parse_email_body": [
+                        "Succeeded"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "secureData": {
+                        "properties": [
+                            "outputs"
+                        ]
+                    }
+                },
+                "type": "ApiConnection"
+            },
+            "REST_-_send_URLs_to_NetCraft_stub": {
+                "inputs": {
+                    "body": "@outputs('Javascript_-_parse_email_body')",
+                    "method": "POST",
+                    "uri": "https://blogsnappitrfun.azurewebsites.net/api/HttpTriggerMimicInput?code=@{body('Key_vault_-_get_credentials_Netcraft_stub')?['value']}\n"
+                },
+                "runAfter": {
+                    "Key_vault_-_get_credentials_Netcraft_stub": [
+                        "Succeeded"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "secureData": {
+                        "properties": [
+                            "inputs"
+                        ]
+                    }
+                },
+                "type": "Http"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "When_a_new_email_arrives_(V3)": {
+                "inputs": {
+                    "fetch": {
+                        "method": "get",
+                        "pathTemplate": {
+                            "template": "/v3/Mail/OnNewEmail"
+                        },
+                        "queries": {
+                            "fetchOnlyWithAttachment": false,
+                            "folderPath": "Id::AAMkADFiZDI4NmViLTAzNjktNDcyMC05MzBmLWEzNzc0ZmRmZDdjMQAuAAAAAADP0wk8C2NpTIJx1yMBA2-gAQDs2rsPwC_nTKQCTfqV-EGCAAPn49rdAAA=",
+                            "importance": "Any",
+                            "includeAttachments": false
+                        }
+                    },
+                    "host": {
+                        "connection": {
+                            "referenceName": "office365"
+                        }
+                    },
+                    "subscribe": {
+                        "body": {
+                            "NotificationUrl": "@{listCallbackUrl()}"
+                        },
+                        "method": "post",
+                        "pathTemplate": {
+                            "template": "/GraphMailSubscriptionPoke/$subscriptions"
+                        },
+                        "queries": {
+                            "fetchOnlyWithAttachment": false,
+                            "folderPath": "Id::AAMkADFiZDI4NmViLTAzNjktNDcyMC05MzBmLWEzNzc0ZmRmZDdjMQAuAAAAAADP0wk8C2NpTIJx1yMBA2-gAQDs2rsPwC_nTKQCTfqV-EGCAAPn49rdAAA=",
+                            "importance": "Any"
+                        }
+                    }
+                },
+                "metadata": {
+                    "Id::AAMkADFiZDI4NmViLTAzNjktNDcyMC05MzBmLWEzNzc0ZmRmZDdjMQAuAAAAAADP0wk8C2NpTIJx1yMBA2-gAQDs2rsPwC_nTKQCTfqV-EGCAAPn49rdAAA=": "logicappdemo"
+                },
+                "splitOn": "@triggerBody()?['value']",
+                "type": "ApiConnectionNotification"
+            }
+        }
+    },
+    "kind": "Stateful"
+}
