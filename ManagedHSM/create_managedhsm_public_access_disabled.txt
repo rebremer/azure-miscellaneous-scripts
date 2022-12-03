@@ -16,7 +16,7 @@ az keyvault create --hsm-name $name --resource-group $rg --location $loc --admin
 # 2a. In case an HSM was already created, set default action to Deny first before disabling public access
 #az keyvault update-hsm --hsm-name $name --resource-group $rg --default-action Deny
 #
-# 3. Disable public acces
+# 3. Disable public access
 az keyvault update-hsm --hsm-name $name --resource-group $rg --set "properties.publicNetworkAccess=Disabled"
 az keyvault show --hsm-name $name -g $rg
 #
