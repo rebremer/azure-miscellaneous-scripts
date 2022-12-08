@@ -1,0 +1,2698 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_airflow_r4jwqxdynjop6_name": {
+            "defaultValue": "airflow-r4jwqxdynjop6",
+            "type": "String"
+        },
+        "profiles_csu_nl_jvw_airflow_frontdoor_name": {
+            "defaultValue": "csu-nl-jvw-airflow-frontdoor",
+            "type": "String"
+        },
+        "serverfarms_airflow_r4jwqxdynjop6serviceplan_name": {
+            "defaultValue": "airflow-r4jwqxdynjop6serviceplan",
+            "type": "String"
+        },
+        "servers_airflow_r4jwqxdynjop6pgserver_name": {
+            "defaultValue": "airflow-r4jwqxdynjop6pgserver",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Cdn/profiles",
+            "apiVersion": "2022-05-01-preview",
+            "name": "[parameters('profiles_csu_nl_jvw_airflow_frontdoor_name')]",
+            "location": "Global",
+            "sku": {
+                "name": "Premium_AzureFrontDoor"
+            },
+            "kind": "frontdoor",
+            "properties": {
+                "originResponseTimeoutSeconds": 60,
+                "extendedProperties": {}
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers",
+            "apiVersion": "2017-12-01",
+            "name": "[parameters('servers_airflow_r4jwqxdynjop6pgserver_name')]",
+            "location": "australiaeast",
+            "sku": {
+                "name": "GP_Gen5_2",
+                "tier": "GeneralPurpose",
+                "family": "Gen5",
+                "capacity": 2
+            },
+            "properties": {
+                "storageProfile": {
+                    "storageMB": 5120,
+                    "backupRetentionDays": 7,
+                    "geoRedundantBackup": "Disabled",
+                    "storageAutogrow": "Disabled"
+                },
+                "version": "9.6",
+                "sslEnforcement": "Enabled",
+                "minimalTlsVersion": "TLSEnforcementDisabled",
+                "infrastructureEncryption": "Disabled",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-03-01",
+            "name": "[parameters('serverfarms_airflow_r4jwqxdynjop6serviceplan_name')]",
+            "location": "Australia East",
+            "sku": {
+                "name": "P1v2",
+                "tier": "PremiumV2",
+                "size": "P1v2",
+                "family": "Pv2",
+                "capacity": 1
+            },
+            "kind": "linux",
+            "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+            }
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/afdendpoints",
+            "apiVersion": "2022-05-01-preview",
+            "name": "[concat(parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), '/airflow')]",
+            "location": "Global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'))]"
+            ],
+            "properties": {
+                "enabledState": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/origingroups",
+            "apiVersion": "2022-05-01-preview",
+            "name": "[concat(parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), '/airflow-appservice-origin')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'))]"
+            ],
+            "properties": {
+                "loadBalancingSettings": {
+                    "sampleSize": 4,
+                    "successfulSamplesRequired": 3,
+                    "additionalLatencyInMilliseconds": 50
+                },
+                "healthProbeSettings": {
+                    "probePath": "/",
+                    "probeRequestType": "HEAD",
+                    "probeProtocol": "Http",
+                    "probeIntervalInSeconds": 100
+                },
+                "sessionAffinityState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/origingroups",
+            "apiVersion": "2022-05-01-preview",
+            "name": "[concat(parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), '/Any')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'))]"
+            ],
+            "properties": {
+                "loadBalancingSettings": {
+                    "sampleSize": 4,
+                    "successfulSamplesRequired": 3,
+                    "additionalLatencyInMilliseconds": 50
+                },
+                "healthProbeSettings": {
+                    "probePath": "/",
+                    "probeRequestType": "HEAD",
+                    "probeProtocol": "Http",
+                    "probeIntervalInSeconds": 100
+                },
+                "sessionAffinityState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/array_nulls')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_analyze_scale_factor')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0.05",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_analyze_threshold')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "50",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_freeze_max_age')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "200000000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_max_workers')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "3",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_multixact_freeze_max_age')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "400000000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_naptime')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "15",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_vacuum_cost_delay')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "20",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_vacuum_cost_limit')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "-1",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_vacuum_scale_factor')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0.05",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_vacuum_threshold')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "50",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/autovacuum_work_mem')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "-1",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/azure.replication_support')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "REPLICA",
+                "source": "user-override"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/backend_flush_after')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/backslash_quote')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "safe_encoding",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/bgwriter_delay')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "20",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/bgwriter_flush_after')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "64",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/bgwriter_lru_maxpages')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "100",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/bgwriter_lru_multiplier')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "2",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/bytea_output')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "hex",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/check_function_bodies')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/checkpoint_completion_target')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0.9",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/checkpoint_warning')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "30",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/client_encoding')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "sql_ascii",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/client_min_messages')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "notice",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/commit_delay')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/commit_siblings')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "5",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/connection_throttling')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/constraint_exclusion')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "partition",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/cpu_index_tuple_cost')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0.005",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/cpu_operator_cost')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0.0025",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/cpu_tuple_cost')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0.01",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/cursor_tuple_fraction')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0.1",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/datestyle')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "iso, mdy",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/deadlock_timeout')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "1000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/debug_print_plan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/debug_print_rewritten')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/default_statistics_target')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "100",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/default_text_search_config')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "pg_catalog.english",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/default_transaction_deferrable')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/default_transaction_isolation')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "read committed",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/default_transaction_read_only')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/default_with_oids')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/effective_cache_size')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "655360",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_bitmapscan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_hashagg')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_hashjoin')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_indexonlyscan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_indexscan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_material')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_mergejoin')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_nestloop')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_seqscan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_sort')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/enable_tidscan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/escape_string_warning')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/exit_on_error')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/extra_float_digits')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/force_parallel_mode')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/from_collapse_limit')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "8",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/geqo')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/geqo_effort')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "5",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/geqo_generations')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/geqo_pool_size')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/geqo_seed')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0.0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/geqo_selection_bias')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "2.0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/geqo_threshold')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "12",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/gin_fuzzy_search_limit')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/gin_pending_list_limit')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "4096",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/hot_standby_feedback')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/idle_in_transaction_session_timeout')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/intervalstyle')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "postgres",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/join_collapse_limit')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "8",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/lc_monetary')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "English_United States.1252",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/lc_numeric')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "English_United States.1252",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/lo_compat_privileges')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/lock_timeout')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_autovacuum_min_duration')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "-1",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_checkpoints')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_connections')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_disconnections')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_duration')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_error_verbosity')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "default",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_line_prefix')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "%t-%c-",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_lock_waits')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_min_duration_statement')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "-1",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_min_error_statement')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "error",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_min_messages')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "warning",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_replication_commands')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_retention_days')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "3",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_statement')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "none",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_statement_stats')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/log_temp_files')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "-1",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/logging_collector')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/maintenance_work_mem')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "131072",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/max_locks_per_transaction')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "64",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/max_parallel_workers_per_gather')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/max_prepared_transactions')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/max_replication_slots')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "10",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/max_standby_archive_delay')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "30000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/max_standby_streaming_delay')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "30000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/max_wal_senders')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "10",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/max_wal_size')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "1024",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/min_parallel_relation_size')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "8388608",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/min_wal_size')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "256",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/old_snapshot_threshold')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "-1",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/operator_precedence_warning')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/parallel_setup_cost')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "1000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/parallel_tuple_cost')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0.1",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pg_qs.interval_length_minutes')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "15",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pg_qs.max_query_text_length')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "6000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pg_qs.query_capture_mode')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "none",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pg_qs.replace_parameter_placeholders')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pg_qs.retention_period_in_days')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "7",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pg_qs.track_utility')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pg_stat_statements.max')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "5000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pg_stat_statements.save')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pg_stat_statements.track')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "none",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pg_stat_statements.track_utility')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pgms_wait_sampling.history_period')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "100",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/pgms_wait_sampling.query_capture_mode')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "none",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/postgis.gdal_enabled_drivers')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "DISABLE_ALL",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/quote_all_identifiers')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/random_page_cost')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "4.0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/replacement_sort_tuples')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "150000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/row_security')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/search_path')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "\"$user\", public",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/seq_page_cost')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "1.0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/session_replication_role')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "origin",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/shared_preload_libraries')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/sql_inheritance')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/statement_timeout')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/synchronize_seqscans')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/synchronous_commit')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/tcp_keepalives_count')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/tcp_keepalives_idle')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/tcp_keepalives_interval')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/temp_buffers')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "1024",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/timezone')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "UTC",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/track_activities')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/track_activity_query_size')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "1024",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/track_commit_timestamp')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/track_counts')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/track_functions')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "none",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/track_io_timing')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "on",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/transform_null_equals')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "off",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/vacuum_cost_delay')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/vacuum_cost_limit')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "200",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/vacuum_cost_page_dirty')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "20",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/vacuum_cost_page_hit')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "1",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/vacuum_cost_page_miss')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "10",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/vacuum_defer_cleanup_age')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "0",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/vacuum_freeze_min_age')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "50000000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/vacuum_freeze_table_age')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "150000000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/vacuum_multixact_freeze_min_age')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "5000000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/vacuum_multixact_freeze_table_age')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "150000000",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/wal_buffers')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "8192",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/wal_receiver_status_interval')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "10",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/wal_writer_delay')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "200",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/wal_writer_flush_after')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "128",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/work_mem')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "4096",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/xmlbinary')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "base64",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/xmloption')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "value": "content",
+                "source": "system-default"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/databases",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/airflowdb')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "charset": "UTF8",
+                "collation": "English_United States.1252"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/databases",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/azure_maintenance')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "charset": "UTF8",
+                "collation": "English_United States.1252"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/databases",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/azure_sys')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "charset": "UTF8",
+                "collation": "English_United States.1252"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/databases",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/postgres')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "charset": "UTF8",
+                "collation": "English_United States.1252"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), 'firewall')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "255.255.255.255"
+            }
+        },
+        {
+            "type": "Microsoft.DBforPostgreSQL/servers/securityAlertPolicies",
+            "apiVersion": "2017-12-01",
+            "name": "[concat(parameters('servers_airflow_r4jwqxdynjop6pgserver_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('servers_airflow_r4jwqxdynjop6pgserver_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-03-01",
+            "name": "[parameters('sites_airflow_r4jwqxdynjop6_name')]",
+            "location": "Australia East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_airflow_r4jwqxdynjop6serviceplan_name'))]"
+            ],
+            "kind": "app,linux,container",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_airflow_r4jwqxdynjop6serviceplan_name'))]",
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "linuxFxVersion": "DOCKER|puckel/docker-airflow:latest",
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": false,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "4992E036DBF6542E7CC5694A559D79EABDDD17607BA4D49224CBA1B334D9C9A1",
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": false,
+                "redundancyMode": "None",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/ftp')]",
+            "location": "Australia East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ],
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/scm')]",
+            "location": "Australia East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ],
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/web')]",
+            "location": "Australia East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ],
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "linuxFxVersion": "DOCKER|puckel/docker-airflow:latest",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$airflow-r4jwqxdynjop6",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "cors": {
+                    "allowedOrigins": [
+                        "*"
+                    ],
+                    "supportCredentials": false
+                },
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "AllAllowed",
+                "preWarmedInstanceCount": 0,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/', parameters('sites_airflow_r4jwqxdynjop6_name'), '.azurewebsites.net')]",
+            "location": "Australia East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ],
+            "properties": {
+                "siteName": "airflow-r4jwqxdynjop6",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T13_22_01_8867946')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T14_22_01_8404284')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T15_22_01_8297537')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T16_22_01_7432658')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T17_22_01_7266065')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T18_22_01_6795661')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T19_22_01_6386051')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T20_22_01_5945729')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T21_22_01_5909884')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T22_22_01_5232276')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-06T23_22_01_4744649')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T00_22_01_4162249')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T01_22_01_3795375')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T02_22_01_3333792')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T03_22_01_2904003')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T04_22_01_2371068')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T05_22_01_2083498')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T06_22_01_1610290')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T07_22_01_1263935')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T08_22_01_0690410')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T09_22_01_0091020')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T10_22_00_9697445')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T11_22_00_9611566')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T12_22_00_8895880')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T13_22_00_8553652')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T14_22_00_7996900')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_airflow_r4jwqxdynjop6_name'), '/2022-12-07T15_22_00_7699516')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_airflow_r4jwqxdynjop6_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/origingroups/origins",
+            "apiVersion": "2022-05-01-preview",
+            "name": "[concat(parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), '/airflow-appservice-origin/airflow')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles/origingroups', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), 'airflow-appservice-origin')]",
+                "[resourceId('Microsoft.Cdn/profiles', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'))]"
+            ],
+            "properties": {
+                "hostName": "airflow-r4jwqxdynjop6.azurewebsites.net",
+                "httpPort": 80,
+                "httpsPort": 443,
+                "originHostHeader": "airflow-r4jwqxdynjop6.azurewebsites.net",
+                "priority": 1,
+                "weight": 1000,
+                "enabledState": "Enabled",
+                "enforceCertificateNameCheck": true
+            }
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/origingroups/origins",
+            "apiVersion": "2022-05-01-preview",
+            "name": "[concat(parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), '/Any/airflow-appsvc')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles/origingroups', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), 'Any')]",
+                "[resourceId('Microsoft.Cdn/profiles', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'))]"
+            ],
+            "properties": {
+                "hostName": "airflow-r4jwqxdynjop6.azurewebsites.net",
+                "httpPort": 80,
+                "httpsPort": 443,
+                "originHostHeader": "airflow-r4jwqxdynjop6.azurewebsites.net",
+                "priority": 1,
+                "weight": 1000,
+                "enabledState": "Enabled",
+                "enforceCertificateNameCheck": true
+            }
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/afdendpoints/routes",
+            "apiVersion": "2022-05-01-preview",
+            "name": "[concat(parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), '/airflow/route-to-airflow-app')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles/afdendpoints', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), 'airflow')]",
+                "[resourceId('Microsoft.Cdn/profiles', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'))]",
+                "[resourceId('Microsoft.Cdn/profiles/origingroups', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), 'airflow-appservice-origin')]"
+            ],
+            "properties": {
+                "cacheConfiguration": {
+                    "compressionSettings": {
+                        "isCompressionEnabled": true,
+                        "contentTypesToCompress": [
+                            "application/eot",
+                            "application/font",
+                            "application/font-sfnt",
+                            "application/javascript",
+                            "application/json",
+                            "application/opentype",
+                            "application/otf",
+                            "application/pkcs7-mime",
+                            "application/truetype",
+                            "application/ttf",
+                            "application/vnd.ms-fontobject",
+                            "application/xhtml+xml",
+                            "application/xml",
+                            "application/xml+rss",
+                            "application/x-font-opentype",
+                            "application/x-font-truetype",
+                            "application/x-font-ttf",
+                            "application/x-httpd-cgi",
+                            "application/x-javascript",
+                            "application/x-mpegurl",
+                            "application/x-opentype",
+                            "application/x-otf",
+                            "application/x-perl",
+                            "application/x-ttf",
+                            "font/eot",
+                            "font/ttf",
+                            "font/otf",
+                            "font/opentype",
+                            "image/svg+xml",
+                            "text/css",
+                            "text/csv",
+                            "text/html",
+                            "text/javascript",
+                            "text/js",
+                            "text/plain",
+                            "text/richtext",
+                            "text/tab-separated-values",
+                            "text/xml",
+                            "text/x-script",
+                            "text/x-component",
+                            "text/x-java-source"
+                        ]
+                    },
+                    "queryStringCachingBehavior": "IgnoreQueryString"
+                },
+                "customDomains": [],
+                "originGroup": {
+                    "id": "[resourceId('Microsoft.Cdn/profiles/origingroups', parameters('profiles_csu_nl_jvw_airflow_frontdoor_name'), 'airflow-appservice-origin')]"
+                },
+                "ruleSets": [],
+                "supportedProtocols": [
+                    "Http",
+                    "Https"
+                ],
+                "patternsToMatch": [
+                    "/*"
+                ],
+                "forwardingProtocol": "MatchRequest",
+                "linkToDefaultDomain": "Enabled",
+                "httpsRedirect": "Enabled",
+                "enabledState": "Enabled"
+            }
+        }
+    ]
+}
