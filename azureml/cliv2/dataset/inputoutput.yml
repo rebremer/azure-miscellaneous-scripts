@@ -1,0 +1,24 @@
+# hello-data-uri-file.yml
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+experiment_name: testrb_experiment
+
+inputs:
+  my_csv_file2:
+    type: uri_file
+    path: abfss://testsmallcsv@<<your storage account>>.dfs.core.windows.net/testcsv.txt
+
+outputs:
+  my_csv_file3:
+    type: uri_folder
+    path: abfss://testsmallcsv@<<your storage account>>.dfs.core.windows.net/folder2/
+
+environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest
+compute: azureml:cpu-cluster2
+
+command: |
+  dummyvar=$(ls -l ${{inputs.my_csv_file2}})
+  touch ${{outputs.my_csv_file3}}/output.txt
+  echo $dummyvar > ${{outputs.my_csv_file3}}/output.txt
+
+# https://learn.microsoft.com/en-us/azure/machine-learning/reference-yaml-job-command
+# https://learn.microsoft.com/en-us/azure/machine-learning/concept-data?tabs=uri-file-example%2Ccli-data-create-example#examples
