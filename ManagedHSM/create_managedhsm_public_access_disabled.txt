@@ -20,6 +20,8 @@ az keyvault create --hsm-name $name --resource-group $rg --location $loc --admin
 az keyvault update-hsm --hsm-name $name --resource-group $rg --set "properties.publicNetworkAccess=Disabled"
 az keyvault show --hsm-name $name -g $rg
 #
+nslookup <<your managed HSM name>>.managedhsm.azure.net
+#
 # 4. Clean up resources
 #az keyvault delete -n $name --resource-group $rg
 #az keyvault purge --hsm-name $name -l $loc
