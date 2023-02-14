@@ -17,8 +17,8 @@
                     "timeout": "0.12:00:00",
                     "retry": 0,
                     "retryIntervalInSeconds": 30,
-                    "secureOutput": false,
-                    "secureInput": false
+                    "secureOutput": true,
+                    "secureInput": true
                 },
                 "userProperties": [],
                 "typeProperties": {
@@ -77,8 +77,8 @@
                                 "timeout": "0.12:00:00",
                                 "retry": 0,
                                 "retryIntervalInSeconds": 30,
-                                "secureOutput": false,
-                                "secureInput": false
+                                "secureOutput": true,
+                                "secureInput": true
                             },
                             "userProperties": [],
                             "typeProperties": {
@@ -160,8 +160,8 @@
                     "timeout": "0.12:00:00",
                     "retry": 0,
                     "retryIntervalInSeconds": 30,
-                    "secureOutput": false,
-                    "secureInput": false
+                    "secureOutput": true,
+                    "secureInput": true
                 },
                 "userProperties": [],
                 "typeProperties": {
@@ -185,7 +185,7 @@
             },
             "aws_account_id": {
                 "type": "string",
-                "defaultValue": "1234567890"
+                "defaultValue": "123456789012"
             }
         },
         "variables": {
