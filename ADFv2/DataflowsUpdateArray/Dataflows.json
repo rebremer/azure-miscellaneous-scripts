@@ -1,0 +1,76 @@
+{
+    "name": "dynamicjson",
+    "properties": {
+        "type": "MappingDataFlow",
+        "typeProperties": {
+            "sources": [
+                {
+                    "dataset": {
+                        "referenceName": "dynamic_json_ls",
+                        "type": "DatasetReference"
+                    },
+                    "name": "source1"
+                }
+            ],
+            "sinks": [
+                {
+                    "dataset": {
+                        "referenceName": "JsonDestination",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sink1"
+                }
+            ],
+            "transformations": [
+                {
+                    "name": "UpdateMetaDataArray"
+                }
+            ],
+            "scriptLines": [
+                "source(output(",
+                "          batchId as string,",
+                "          batchName as string,",
+                "          connector as string,",
+                "          operator as string,",
+                "          noOfPages as string,",
+                "          status as string,",
+                "          metadata as (Metadata as (field as string, value as string))[],",
+                "          dateTime as string,",
+                "          id as string,",
+                "          queueId as string,",
+                "          {_rid} as string,",
+                "          {_self} as string,",
+                "          {_etag} as string,",
+                "          {_attachments} as string,",
+                "          {_ts} as integer",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     ignoreNoFilesFound: false,",
+                "     documentForm: 'singleDocument') ~> source1",
+                "source1 derive(metadata = array(metadata[1], metadata[2], metadata[3], metadata[4])) ~> UpdateMetaDataArray",
+                "UpdateMetaDataArray sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     input(",
+                "          batchId as string,",
+                "          batchName as string,",
+                "          connector as string,",
+                "          operator as string,",
+                "          noOfPages as string,",
+                "          status as string,",
+                "          metadata as (Metadata as (field as string, value as string))[],",
+                "          dateTime as string,",
+                "          id as string,",
+                "          queueId as string,",
+                "          {_rid} as string,",
+                "          {_self} as string,",
+                "          {_etag} as string,",
+                "          {_attachments} as string,",
+                "          {_ts} as integer",
+                "     ),",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> sink1"
+            ]
+        }
+    }
+}
