@@ -5,7 +5,7 @@
 ```Connect-PowerBIServiceAccount```
 ```$bearer1= Get-PowerBIAccessToken -AsString```
 
-### step 2: Create bearer2 to be able to communicatie with Azure SQL (Azure CLI)
+### step 2: Create bearer2 to be able to communicatie with Azure SQL (PowerShell)
 
 ```$bearer2 = (Get-AzAccessToken -ResourceUrl 'https://database.windows.net/').Token```
 
