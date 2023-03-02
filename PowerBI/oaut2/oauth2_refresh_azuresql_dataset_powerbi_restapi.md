@@ -2,8 +2,10 @@
 
 ### step 1: Create bearer1 to be able to communicatie with Power BI REST API (PowerShell):
 
-```Connect-PowerBIServiceAccount```
-```$bearer1= Get-PowerBIAccessToken -AsString```
+```
+Connect-PowerBIServiceAccount
+$bearer1= Get-PowerBIAccessToken -AsString
+```
 
 ### step 2: Create bearer2 to be able to communicatie with Azure SQL (PowerShell)
 
