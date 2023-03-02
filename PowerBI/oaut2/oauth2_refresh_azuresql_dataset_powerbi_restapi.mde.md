@@ -9,7 +9,9 @@
 
 ```$bearer2 = (Get-AzAccessToken -ResourceUrl 'https://database.windows.net/').Token```
 
-# (or via Azure CLI: az account get-access-token --resource https://database.windows.net/)
+(or via Azure CLI):
+
+```az account get-access-token --resource https://database.windows.net/)```
 
 ### step 3: Substitute bearer tokens and gateway id/dataset id and run following curl command
 
