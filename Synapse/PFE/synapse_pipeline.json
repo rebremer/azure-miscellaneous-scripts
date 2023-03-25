@@ -1,5 +1,5 @@
 {
-    "name": "Mask PII data",
+    "name": "Mask_PII_data_PFE",
     "properties": {
         "activities": [
             {
@@ -61,7 +61,7 @@
                 ]
             },
             {
-                "name": "Mask data",
+                "name": "Mask_data_PFE",
                 "type": "SynapseNotebook",
                 "dependsOn": [
                     {
@@ -96,7 +96,7 @@
                 "type": "Copy",
                 "dependsOn": [
                     {
-                        "activity": "Mask data",
+                        "activity": "Mask_data_PFE",
                         "dependencyConditions": [
                             "Succeeded"
                         ]
