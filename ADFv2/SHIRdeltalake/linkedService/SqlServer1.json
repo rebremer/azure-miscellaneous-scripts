@@ -1,0 +1,23 @@
+{
+	"name": "SqlServer1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Data Source=10.0.0.4;Initial Catalog=product-data;User ID=bremerov",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVaultOnpremCredentials",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sqlpassword"
+			}
+		},
+		"connectVia": {
+			"referenceName": "dmz-shir1",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

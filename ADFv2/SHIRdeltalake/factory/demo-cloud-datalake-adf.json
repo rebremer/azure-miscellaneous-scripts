@@ -1,0 +1,9 @@
+{
+	"name": "demo-cloud-datalake-adf",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6208eeb1-38f7-4825-b52c-18f37dd0a9cb",
+		"tenantId": "594ef155-b5f1-4381-9218-2ea93f0645f2"
+	}
+}
