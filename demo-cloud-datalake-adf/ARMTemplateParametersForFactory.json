@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "demo-cloud-datalake-adf"
+		},
+		"SqlServer1_connectionString": {
+			"value": "Integrated Security=False;Data Source=10.0.0.4;Initial Catalog=product-data;User ID=bremerov"
+		},
+		"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
+			"value": "https://democlouddatalakestore.blob.core.windows.net/"
+		},
+		"AzureKeyVaultOnpremCredentials_properties_typeProperties_baseUrl": {
+			"value": "https://demo-cloud-datalake-akv.vault.azure.net/"
+		}
+	}
+}
