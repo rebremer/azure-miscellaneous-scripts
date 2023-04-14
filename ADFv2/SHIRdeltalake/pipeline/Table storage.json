@@ -23,7 +23,9 @@
 					"method": "GET",
 					"headers": {
 						"x-ms-version": "2020-08-04",
-						"x-ms-date": "Fri, 14 Apr 2023 14:25:09 GMT"
+						"x-ms-date": "Fri, 14 Apr 2023 14:25:09 GMT",
+						"Accept": "application/atom+xml",
+						"Content-Type": "application/atom+xml"
 					},
 					"authentication": {
 						"type": "MSI",
