@@ -22,9 +22,8 @@
 					},
 					"method": "GET",
 					"headers": {
-						"x-ms-date": "Fri, 14 Apr 2023 14:15:09 GMT",
 						"x-ms-version": "2020-08-04",
-						"Content-Type": "application/json;odata=fullmetadata"
+						"x-ms-date": "Fri, 14 Apr 2023 14:25:09 GMT"
 					},
 					"authentication": {
 						"type": "MSI",
