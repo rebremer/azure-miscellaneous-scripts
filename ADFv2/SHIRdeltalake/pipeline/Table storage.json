@@ -4,6 +4,7 @@
 		"activities": [
 			{
 				"name": "Web1",
+				"description": "https://techcommunity.microsoft.com/t5/azure-paas/use-azure-storage-table-rest-api-with-aad-token-via-postman/m-p/2647336",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
@@ -26,6 +27,10 @@
 						"x-ms-date": "Fri, 14 Apr 2023 14:25:09 GMT",
 						"Accept": "application/json;odata=nometadata",
 						"Content-Type": "application/json"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://storage.azure.com/"
 					}
 				}
 			}
