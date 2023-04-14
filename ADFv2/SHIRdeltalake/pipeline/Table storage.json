@@ -23,8 +23,7 @@
 					"method": "GET",
 					"headers": {
 						"x-ms-date": "Fri, 14 Apr 2023 14:01:09 GMT",
-						"x-ms-version": "2017-11-09",
-						"Accept": "application/json;odata=fullmetadata"
+						"x-ms-version": "2017-11-09"
 					},
 					"authentication": {
 						"type": "MSI",
