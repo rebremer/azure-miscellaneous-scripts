@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "https://democlouddatalakestore.table.core.windows.net/testrb(PartitionKey='1',RowKey='Feyenoord')",
+					"url": "https://democlouddatalakestore.table.core.windows.net/testrb()",
 					"connectVia": {
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
