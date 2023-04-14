@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "\t https://democlouddatalakestore.table.core.windows.net/testrb()",
+					"url": "https://democlouddatalakestore.table.core.windows.net/testrb()",
 					"connectVia": {
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
