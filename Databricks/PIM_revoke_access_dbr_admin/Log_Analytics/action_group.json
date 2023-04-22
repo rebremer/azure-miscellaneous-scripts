@@ -1,0 +1,32 @@
+{
+    "id": "/subscriptions/<<your subscription id>>/resourceGroups/test-dbrpim-rg/providers/microsoft.insights/actionGroups/remove-pim",
+    "type": "Microsoft.Insights/ActionGroups",
+    "name": "remove-pim",
+    "location": "Global",
+    "tags": null,
+    "properties": {
+        "groupShortName": "remove-pim",
+        "enabled": true,
+        "emailReceivers": [],
+        "smsReceivers": [],
+        "webhookReceivers": [
+            {
+                "name": "remove_pim",
+                "serviceUri": "https://test-dbrpim-fun.azurewebsites.net/api/HttpTriggerDatabricksSCIM?code=<<your code>>",
+                "useCommonAlertSchema": true,
+                "useAadAuth": true,
+                "objectId": "82377c29-2e3a-4e7b-a920-2d41d417401c",
+                "identifierUri": "api://28e3a958-56e8-4ecd-b556-ccbe539a350d",
+                "tenantId": "<<your tenant id>>"
+            }
+        ],
+        "eventHubReceivers": [],
+        "itsmReceivers": [],
+        "azureAppPushReceivers": [],
+        "automationRunbookReceivers": [],
+        "voiceReceivers": [],
+        "logicAppReceivers": [],
+        "azureFunctionReceivers": [],
+        "armRoleReceivers": []
+    }
+}

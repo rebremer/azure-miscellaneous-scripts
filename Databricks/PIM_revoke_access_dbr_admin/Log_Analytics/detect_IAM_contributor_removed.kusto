@@ -1,0 +1,15 @@
+let delete_role = (
+AzureActivity
+| where CategoryValue == "Administrative" and OperationNameValue == "MICROSOFT.AUTHORIZATION/ROLEASSIGNMENTS/DELETE"
+| where Properties_d contains "PrincipalId" and Properties_d contains "MICROSOFT.DATABRICKS"
+| project TimeGenerated, Properties_d
+);
+
+delete_role
+| project TimeGenerated, cleansed_props=replace_string(tostring(Properties_d), 'null', '"null"')
+| project TimeGenerated, cleansed_props=replace_string(tostring(cleansed_props), '\\"', '"')
+| project TimeGenerated, cleansed_props=replace_string(tostring(cleansed_props), '"{', '{')
+| project TimeGenerated, cleansed_props=replace_string(tostring(cleansed_props), '}"', '}')
+| project TimeGenerated, json_cleansed_props = parse_json(cleansed_props)
+| project TimeGenerated, json_cleansed_props.responseBody.properties.principalId
+| order by TimeGenerated

@@ -1,0 +1,60 @@
+{
+    "id": "/subscriptions/<<your subscription id>>/resourceGroups/test-dbrpim-rg/providers/microsoft.insights/scheduledqueryrules/remove-pim-alert",
+    "name": "remove-pim-alert",
+    "type": "microsoft.insights/scheduledqueryrules",
+    "location": "eastus",
+    "tags": {},
+    "systemData": {
+        "createdBy": "<<your user email>>",
+        "createdByType": "User",
+        "createdAt": "2023-04-22T12:26:04.3037155Z",
+        "lastModifiedBy": "<<your user email>>",
+        "lastModifiedByType": "User",
+        "lastModifiedAt": "2023-04-22T12:52:26.5203831Z"
+    },
+    "properties": {
+        "createdWithApiVersion": "2021-08-01",
+        "displayName": "remove-pim-alert",
+        "description": "",
+        "severity": 3,
+        "enabled": true,
+        "evaluationFrequency": "PT5M",
+        "scopes": [
+            "/subscriptions/<<your subscription id>>/resourcegroups/test-dbrpim-rg/providers/microsoft.operationalinsights/workspaces/test-dbrpim-la"
+        ],
+        "targetResourceTypes": [
+            "microsoft.operationalinsights/workspaces"
+        ],
+        "windowSize": "PT1H",
+        "criteria": {
+            "allOf": [
+                {
+                    "query": "let delete_role = (\nAzureActivity\n| where CategoryValue == \"Administrative\" and OperationNameValue == \"MICROSOFT.AUTHORIZATION/ROLEASSIGNMENTS/DELETE\"\n| where Properties_d contains \"PrincipalId\" and Properties_d contains \"MICROSOFT.DATABRICKS\"\n| project TimeGenerated, Properties_d\n);\n\ndelete_role\n| project TimeGenerated, cleansed_props=replace_string(tostring(Properties_d), 'null', '\"null\"')\n| project TimeGenerated, cleansed_props=replace_string(tostring(cleansed_props), '\\\\\"', '\"')\n| project TimeGenerated, cleansed_props=replace_string(tostring(cleansed_props), '\"{', '{')\n| project TimeGenerated, cleansed_props=replace_string(tostring(cleansed_props), '}\"', '}')\n| project TimeGenerated, json_cleansed_props = parse_json(cleansed_props)\n| project TimeGenerated, tostring(json_cleansed_props.responseBody.properties.principalId)\n| order by TimeGenerated",
+                    "timeAggregation": "Count",
+                    "dimensions": [
+                        {
+                            "name": "json_cleansed_props_responseBody_properties_principalId",
+                            "operator": "Include",
+                            "values": [
+                                "*"
+                            ]
+                        }
+                    ],
+                    "operator": "GreaterThan",
+                    "threshold": 0,
+                    "failingPeriods": {
+                        "numberOfEvaluationPeriods": 1,
+                        "minFailingPeriodsToAlert": 1
+                    }
+                }
+            ]
+        },
+        "autoMitigate": false,
+        "actions": {
+            "actionGroups": [
+                "/subscriptions/<<your subscription id>>/resourceGroups/test-dbrpim-rg/providers/microsoft.insights/actionGroups/remove-pim"
+            ],
+            "customProperties": {}
+        }
+    }
+}
