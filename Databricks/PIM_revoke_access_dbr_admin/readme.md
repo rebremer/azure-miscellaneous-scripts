@@ -1,7 +1,7 @@
 # Revoke access of Databricks Admin after PIM expired
 Privileged Access Management (PIM) is used to temporarily grant access to resources. In Azure Databricks, PIM can be used make a user Contributor. After a user is made Contributor, user can log into Databricks and becomes a Databricks Admin. However, when PIM is expired and Contributor role is revoked, the user remains Admin in Databricks. This project makes sure that user is also revoked as Admin after PIM expired. This is done as follows:
 
-- Every IAM action is logged in Activity Log. Databricks Activity Log is propagated to Log Analytics. Make sure that all Activity Log of Databricsk is exported to Log Analytics.
+- Every IAM action is logged in Activity Log. Databricks Activity Log is propagated to Log Analytics.
 - ```Log_analytics\detect_IAM_contributor_removed.kusto``` is used to detect the Object ID of the user from which Contributor Role was revoked
 - ```Log_analytics\alert_rule.json``` runs the kusto query every 5 minutes to check whether there is a revoked user
 - In case there is a revoked user, ```Log_analytics\action_group.json``` is triggered that calls a secure webhook passing the object ID of the user
@@ -10,7 +10,7 @@ Privileged Access Management (PIM) is used to temporarily grant access to resour
   - Managed Identity of Azure Function needs to be Contributor on Databricks in order to be able to authenticate to Databricsk and to be authorized to use SCIM interface
 
 Steps to take:
-1. Deploy Azure Databricks workspace, Log Analytics Workspace and Azure Functions in Python
+1. Deploy Azure Databricks workspace, Log Analytics Workspace and Azure Functions in Python. Make sure that all Activity Log of Databricks is exported to Log Analytics.
 2. Enable Managed Identity in Azure Function and grant Azure Function Contributor Role in Databricks workspace
 3. Deploy code in ```Azure_Function\``` to Azure Function. Configure in databricks_api and databricks_id in environment variables of Azure Function. Copy Azure Function URL.
 4. Create alert_rule and alert_group in Log analytics using code in ```Log_Analytics```. In the Action group, use the URL of the Azure Function step 3 as secure webhook.
