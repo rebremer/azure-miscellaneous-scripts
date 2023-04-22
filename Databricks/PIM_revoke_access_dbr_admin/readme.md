@@ -1,5 +1,5 @@
 # Revoke access of Databricks Admin after PIM expired
-Priviledged Access Management (PIM) is used to temporarily grant access to resources. In Azure Databricks, PIM can be used make a user Contributor. After a user is made Contributor, user can log into Databricks and becomes a Databricks Admin. However, when PIM is expired and Contributor role is revoked, the user remains Admin in Databricks. This project makes sure that user is also revoked as Admin after PIM expired. This is done as follows:
+Privileged Access Management (PIM) is used to temporarily grant access to resources. In Azure Databricks, PIM can be used make a user Contributor. After a user is made Contributor, user can log into Databricks and becomes a Databricks Admin. However, when PIM is expired and Contributor role is revoked, the user remains Admin in Databricks. This project makes sure that user is also revoked as Admin after PIM expired. This is done as follows:
 
 - Every IAM action is logged in Activity Log. Databricks Activity Log is progated to Log Analytics
 - ```Log_analytics\detect_IAM_contributor_removed.kusto``` is used to detect the Object ID of the user from which Contributor Role was revoked
