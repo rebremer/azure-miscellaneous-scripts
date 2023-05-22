@@ -20,14 +20,6 @@
 			"type": "string",
 			"defaultValue": "https://demo-cloud-datalake-akv.vault.azure.net/"
 		},
-		"AzureDataLakeStorage1_properties_privateLinkResourceId": {
-			"type": "string",
-			"defaultValue": "/subscriptions/37706cf5-5fe6-4528-9c30-4560d04e81ab/resourceGroups/demo-cloud-datalake-rg/providers/Microsoft.Storage/storageAccounts/democlouddatalakestore"
-		},
-		"AzureDataLakeStorage1_properties_groupId": {
-			"type": "string",
-			"defaultValue": "dfs"
-		},
 		"AzureKeyVaultOnpremCreds_properties_privateLinkResourceId": {
 			"type": "string",
 			"defaultValue": "/subscriptions/37706cf5-5fe6-4528-9c30-4560d04e81ab/resourceGroups/demo-cloud-datalake-rg/providers/Microsoft.KeyVault/vaults/demo-cloud-datalake-akv"
@@ -68,12 +60,6 @@
 					},
 					"AzureKeyVaultOnpremCredentials_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVaultOnpremCredentials_properties_typeProperties_baseUrl')]"
-					},
-					"AzureDataLakeStorage1_properties_privateLinkResourceId": {
-						"value": "[parameters('AzureDataLakeStorage1_properties_privateLinkResourceId')]"
-					},
-					"AzureDataLakeStorage1_properties_groupId": {
-						"value": "[parameters('AzureDataLakeStorage1_properties_groupId')]"
 					},
 					"AzureKeyVaultOnpremCreds_properties_privateLinkResourceId": {
 						"value": "[parameters('AzureKeyVaultOnpremCreds_properties_privateLinkResourceId')]"
