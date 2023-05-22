@@ -19,7 +19,9 @@
 					"connectVia": {
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
-					}
+					},
+					"method": "POST",
+					"body": "Feyenoord"
 				}
 			}
 		],
