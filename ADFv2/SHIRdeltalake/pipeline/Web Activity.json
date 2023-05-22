@@ -21,7 +21,7 @@
 						"type": "IntegrationRuntimeReference"
 					},
 					"method": "POST",
-					"body": "Feyenoord"
+					"body": "Feyenoord\nFeyenoord\nFeyenoord\nFeyenoord\nFeyenoord"
 				}
 			}
 		],
