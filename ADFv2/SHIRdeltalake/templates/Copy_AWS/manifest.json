@@ -1,0 +1,11 @@
+{
+	"name": "Copy_AWS",
+	"author": "bremerov@testaadrbr.onmicrosoft.com",
+	"annotations": [],
+	"services": [
+		"Amazon S3"
+	],
+	"categories": [
+		"Copy"
+	]
+}
