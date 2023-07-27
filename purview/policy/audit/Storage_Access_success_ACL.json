@@ -1,0 +1,69 @@
+{
+    "time": "2023-07-26T10:52:43.9643724Z",
+    "resourceId": "/subscriptions/37706cf5-5fe6-4528-9c30-4560d04e81ab/resourceGroups/test-storpolpur-rg/providers/Microsoft.Storage/storageAccounts/teststorpolpurstor/blobServices/default",
+    "category": "StorageRead",
+    "operationName": "GetBlob",
+    "operationVersion": "2021-06-08",
+    "schemaVersion": "1.0",
+    "statusCode": 206,
+    "statusText": "Success",
+    "durationMs": 37,
+    "callerIpAddress": "217.104.21.239:64133",
+    "correlationId": "f9fbb3c3-701e-0082-20af-bfe949000000",
+    "identity": {
+        "type": "OAuth",
+        "tokenHash": "E3FB656EAD2C6FBFBEF3360AA245CB39A000318A72AB8CBAF8B8C1BC1FA589F6",
+        "authorization": [
+            {
+                "action": "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read",
+                "roleAssignmentId": "",
+                "roleDefinitionId": "",
+                "principals": [],
+                "denyAssignmentId": "",
+                "type": "RBAC",
+                "result": "Denied",
+                "reason": "NoApplicablePolicy"
+            },
+            {
+                "purview": [
+                    {
+                        "request.azure.dataaction": "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read",
+                        "resource.azure.path": "/subscriptions/37706cf5-5fe6-4528-9c30-4560d04e81ab/resourceGroups/test-storpolpur-rg/providers/Microsoft.Storage/storageAccounts/teststorpolpurstor/blobServices/default/containers/test1/blobs/testcsv_v2.txt",
+                        "principal.microsoft.id": "f7708e53-6955-4e5b-902a-416f690ae3e6",
+                        "permissions": [
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "requester": {
+            "appId": "04b07795-8ddb-461a-bbee-02f9e1bf7b46",
+            "audience": "https://storage.azure.com",
+            "objectId": "f7708e53-6955-4e5b-902a-416f690ae3e6",
+            "tenantId": "594ef155-b5f1-4381-9218-2ea93f0645f2",
+            "tokenIssuer": "https://sts.windows.net/594ef155-b5f1-4381-9218-2ea93f0645f2/",
+            "upn": "testabac1@testaadrbr.onmicrosoft.com"
+        }
+    },
+    "location": "eastus",
+    "properties": {
+        "accountName": "teststorpolpurstor",
+        "userAgentHeader": "AZURECLI/2.43.0 (MSI) azsdk-python-storage-blob/12.12.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)",
+        "clientRequestId": "8c622284-2ba2-11ee-a3f7-c8348e362686",
+        "etag": "\"0x8DB8DA892BEFBBF\"",
+        "serviceType": "blob",
+        "objectKey": "/teststorpolpurstor/test1/testcsv_v2.txt",
+        "lastModifiedTime": "7/26/2023 7:18:55 AM",
+        "metricResponseType": "Success",
+        "serverLatencyMs": 37,
+        "requestHeaderSize": 2260,
+        "responseHeaderSize": 584,
+        "responseBodySize": 61,
+        "tlsVersion": "TLS 1.2",
+        "downloadRange": "bytes=0-33554431"
+    },
+    "uri": "https://teststorpolpurstor.blob.core.windows.net:443/test1/testcsv_v2.txt",
+    "protocol": "HTTPS",
+    "resourceType": "Microsoft.Storage/storageAccounts/blobServices"
+}
