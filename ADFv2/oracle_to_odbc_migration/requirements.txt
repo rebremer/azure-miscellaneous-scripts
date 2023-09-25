@@ -1,0 +1,4 @@
+azure-mgmt-resource
+azure-mgmt-datafactory
+azure-identity
+azure-keyvault-secrets
