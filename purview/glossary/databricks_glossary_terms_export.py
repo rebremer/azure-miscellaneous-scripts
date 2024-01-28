@@ -22,13 +22,7 @@
 
 # Secrets shall never be stored in plain text. Instead, use Databricks secret scope, see https://learn.microsoft.com/en-us/azure/databricks/security/secrets/secret-scopes
 
-# 3. Update the path to your local entities_to_term.csv file path
-PATH_TO_CSV ="/dbfs/testpurview.csv" # quotations
-
-# 4. Term to which glossary items need to be linked
-TERM_FORMAL_NAME = "testrb4" # quoations
-
-# COMMAND ----------
+ COMMAND ----------
 
 # MAGIC %sh
 # MAGIC pip install purviewcli
@@ -43,86 +37,75 @@ def getJSON(raw_output):
 
 # COMMAND ----------
 
-import purviewcli as pv
-
-#assets = !pv entity read --guid <<GUID of SQL Server with contains child db, tables, fields) or Storage account>>
-assets = !pv entity read --guid "5932d77a-535e-4c71-b574-da17e772606e"
-#print(assets)
+assets = !pv search query --keywords "*" --limit 1000
 assets_json = getJSON(assets)
+#print(assets_json)
+files_list = []
+for value in assets_json["value"]:
+    if "entityType" in value:
+        if value["entityType"] == "azure_datalake_gen2_path" and value["objectType"] == "Files":
+            qualifiedName_no_spaces = value["qualifiedName"].replace(" ", "%20")
+            files_list.append(qualifiedName_no_spaces)
+
+print(files_list)
 
 # COMMAND ----------
 
-rows = "guid,qualifiedName,termFormalName\n"
+guid_file_list = []
+nummer = 0
+for file in files_list:
+    assets = !pv entity readBulkUniqueAttribute --typeName="azure_datalake_gen2_path" --qualifiedName={file}
+    if assets[0] != "[INFO] No data returned in the response.":
+        assets_json = getJSON(assets)
+        for asset in assets_json["entities"]:
+            if len(asset["relationshipAttributes"]["attachedSchema"]) > 0:
+                guid = asset["relationshipAttributes"]["attachedSchema"][0]["guid"]
+                guid_file_list.append(guid)
 
-for asset in assets_json['referredEntities']:
-  guid = asset
-  #print(guid)
-  qualifiedName = assets_json['referredEntities'][guid]["attributes"]["qualifiedName"]
-  rows += guid + "," + qualifiedName + "," + TERM_FORMAL_NAME + "\n"
-  
-PATH_TO_CSV ="/dbfs/testpurview.csv"
-with open(PATH_TO_CSV, "w") as text_file:
-    text_file.write(rows)
-
-# COMMAND ----------
-
-# MAGIC %sh
-# MAGIC cat /dbfs/testpurview.csv
-
-# COMMAND ----------
-
-# 1. Convert mapping from CSV to Dictionary
-import csv
-terms = {}
-with open(PATH_TO_CSV) as fp:
-    reader = csv.reader(fp, delimiter=",", quotechar='"')
-    next(reader, None) # skip headers
-    for row in reader:
-        guid, qualifiedName, termFormalName = row[0],row[1],row[2]
-        if termFormalName in terms:
-            terms[termFormalName].append(guid)
-        else:
-            terms[termFormalName] = []
-            terms[termFormalName].append(guid)
+print(guid_file_list)
 
 # COMMAND ----------
 
 # 2. Get Glossary
 # make sure SPN is data curator in Purview data plane
-import purviewcli as pv
+guid_glossary_list = []
 
 glossary = !pv glossary read
-#print (glossary)
-glossary = getJSON(glossary)
+glossary_json = getJSON(glossary)
+for glossary in glossary_json:
+    for term in glossary["terms"]:
+        term_item = {"displayText": term["displayText"], "termGuid": term["termGuid"]}
+        guid_glossary_list.append(term_item)
 
-print(glossary[0]['terms'])
-
-# COMMAND ----------
-
-# 3. Get Term GUID function
-def getTermGuid(termFormalName, glossary):
-    termGuid = None
-    for term in glossary[0]['terms']:
-        if term['displayText'] == termFormalName:
-            termGuid = term['termGuid']
-    print(str(termGuid))
-    return termGuid
+print(guid_glossary_list)
 
 # COMMAND ----------
 
-# 4. Assign terms to entities
-for term in terms:
-    print(term)
-    termGuid = getTermGuid(term, glossary)
-    numberOfEntities = len(terms[term])
-    if numberOfEntities > 0:
-        payload = []
-        for entity in terms[term]:
-            item = {"guid": entity}
-            print(str(item))
-            payload.append(item)
+import purviewcli as pv
+
+for guid_glossary in guid_glossary_list:
+    payload = []
+    for guid_file in guid_file_list:
+
+        assets = !pv entity read --guid {guid_file}
+        assets_json = getJSON(assets)
+        for column in assets_json["entity"]["relationshipAttributes"]["columns"]:
+            if guid_glossary["displayText"].replace(" ", "").lower() == column["displayText"].lower():
+                itemGuid = {"guid": column["guid"]}
+                payload.append(itemGuid)
+                print(itemGuid)
+                print(assets_json["entity"]["attributes"]["qualifiedName"])
+                print(guid_glossary["displayText"])
+
+    if len(payload) > 0:
         with open("payload.json", "w") as outfile:
             json.dump(payload, outfile, indent=4, sort_keys=False)
-        !pv glossary createTermsAssignedEntities --termGuid {termGuid} --payloadFile "payload.json"
+
+        !pv glossary createTermsAssignedEntities --termGuid {guid_glossary["termGuid"]} --payloadFile "payload.json"
+
+# COMMAND ----------
+
+# MAGIC %sh
+# MAGIC cat payload.json
 
 # COMMAND ----------
