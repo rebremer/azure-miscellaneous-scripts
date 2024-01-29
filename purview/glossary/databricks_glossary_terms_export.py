@@ -11,7 +11,7 @@
 # COMMAND ----------
 
 # ENVIRONMENT VARIABLES
-
+# 0.1 load env variables
 # 1. Update PURVIEW_NAME with your Purview account name. DON'T USE QUOTATIONS!!!
 %env PURVIEW_NAME=<<your purview name without quotations>>
 # 2. Uncomment and set the variables below if you plan to use a Service Principal. DON'T USE QUOTATIONS!!!
@@ -22,13 +22,15 @@
 
 # Secrets shall never be stored in plain text. Instead, use Databricks secret scope, see https://learn.microsoft.com/en-us/azure/databricks/security/secrets/secret-scopes
 
- COMMAND ----------
+# COMMAND ----------
 
 # MAGIC %sh
+# MAGIC # 0.2 install purview ci
 # MAGIC pip install purviewcli
 
 # COMMAND ----------
 
+# 0.3 load helper function
 import json
 def getJSON(raw_output):
   output = ''.join(raw_output)
@@ -37,75 +39,69 @@ def getJSON(raw_output):
 
 # COMMAND ----------
 
+# 1. Get all files in ADLSgen2 from the collections
+import purviewcli as pv
 assets = !pv search query --keywords "*" --limit 1000
 assets_json = getJSON(assets)
-#print(assets_json)
-files_list = []
+file_list = []
 for value in assets_json["value"]:
     if "entityType" in value:
         if value["entityType"] == "azure_datalake_gen2_path" and value["objectType"] == "Files":
             qualifiedName_no_spaces = value["qualifiedName"].replace(" ", "%20")
-            files_list.append(qualifiedName_no_spaces)
+            file_list.append(qualifiedName_no_spaces)
 
-print(files_list)
+print(file_list)
 
 # COMMAND ----------
 
-guid_file_list = []
+# 2. Get all schema from files
+schema_list = []
 nummer = 0
-for file in files_list:
+for file in file_list:
     assets = !pv entity readBulkUniqueAttribute --typeName="azure_datalake_gen2_path" --qualifiedName={file}
     if assets[0] != "[INFO] No data returned in the response.":
         assets_json = getJSON(assets)
         for asset in assets_json["entities"]:
             if len(asset["relationshipAttributes"]["attachedSchema"]) > 0:
-                guid = asset["relationshipAttributes"]["attachedSchema"][0]["guid"]
-                guid_file_list.append(guid)
+                for schema in asset["relationshipAttributes"]["attachedSchema"]:
+                    term_item = {"qualifiedName": asset["attributes"]["qualifiedName"], "guid": schema["guid"]}
+                    schema_list.append(term_item)
 
-print(guid_file_list)
+print(schema_list)
 
 # COMMAND ----------
 
-# 2. Get Glossary
+# 3. Get all glossary terms
 # make sure SPN is data curator in Purview data plane
-guid_glossary_list = []
+glossary_term_list = []
 
 glossary = !pv glossary read
 glossary_json = getJSON(glossary)
-for glossary in glossary_json:
-    for term in glossary["terms"]:
-        term_item = {"displayText": term["displayText"], "termGuid": term["termGuid"]}
-        guid_glossary_list.append(term_item)
+for glossary_term in glossary_json:
+    for term in glossary_term["terms"]:
+        term_item = {"qualifiedName": glossary_term["qualifiedName"], "displayText": term["displayText"], "termGuid": term["termGuid"]}
+        glossary_term_list.append(term_item)
 
-print(guid_glossary_list)
+print(glossary_term_list)
 
 # COMMAND ----------
 
-import purviewcli as pv
-
-for guid_glossary in guid_glossary_list:
+# 4. Assign glossary_terms to columns in schema
+for glossary_term in glossary_term_list:
     payload = []
-    for guid_file in guid_file_list:
+    for schema in schema_list:
 
-        assets = !pv entity read --guid {guid_file}
-        assets_json = getJSON(assets)
-        for column in assets_json["entity"]["relationshipAttributes"]["columns"]:
-            if guid_glossary["displayText"].replace(" ", "").lower() == column["displayText"].lower():
+        schema_columns = !pv entity read --guid {schema["guid"]}
+        schema_columns_json = getJSON(schema_columns)
+        for column in schema_columns_json["entity"]["relationshipAttributes"]["columns"]:
+            if glossary_term["displayText"].replace(" ", "").lower() == column["displayText"].lower():
                 itemGuid = {"guid": column["guid"]}
                 payload.append(itemGuid)
-                print(itemGuid)
-                print(assets_json["entity"]["attributes"]["qualifiedName"])
-                print(guid_glossary["displayText"])
-
+                print(glossary_term["displayText"] + " matched to " + column["displayText"] + " in " + schema_columns_json["entity"]["attributes"]["qualifiedName"])
     if len(payload) > 0:
         with open("payload.json", "w") as outfile:
             json.dump(payload, outfile, indent=4, sort_keys=False)
 
-        !pv glossary createTermsAssignedEntities --termGuid {guid_glossary["termGuid"]} --payloadFile "payload.json"
-
-# COMMAND ----------
-
-# MAGIC %sh
-# MAGIC cat payload.json
+        !pv glossary createTermsAssignedEntities --termGuid {glossary_term["termGuid"]} --payloadFile "payload.json"
 
 # COMMAND ----------
