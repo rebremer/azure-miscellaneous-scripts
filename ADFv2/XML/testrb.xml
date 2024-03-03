@@ -1,0 +1,31 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <BatchCKIToetsen xmlns="URI">
+            <Header>
+                <H1>1</H1>
+                <H2>2</H2>
+                <H3>3</H3>
+                <H4>4</H4>
+                <Referentie>myFirstBatchCKIToetsen</Referentie>
+                <H6>5</H6>
+                <H7>6</H7>
+            </Header>
+            <Application>
+                <XXXX>1</XXXX>
+                <BatchToetsHeader>
+                    <XXXX1>1</XXXX1>
+                    <XXXX2>true</XXXX2>
+                    <XXXX3>true</XXXX3>
+                    <YYYY>
+                        <Nummer>2</Nummer>
+                    </YYYY>
+                </BatchToetsHeader>
+                <BatchToetsingen>PSV</BatchToetsingen>
+                <BatchToetsingen>Kampioen</BatchToetsingen>
+                <BatchToetsingen>Feyenood</BatchToetsingen>
+                <BatchToetsingen>Ajax</BatchToetsingen>
+            </Application>
+        </BatchCKIToetsen>
+    </soapenv:Body>
+</soapenv:Envelope>
