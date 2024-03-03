@@ -1,0 +1,67 @@
+{
+    "name": "xmltest",
+    "properties": {
+        "type": "MappingDataFlow",
+        "typeProperties": {
+            "sources": [
+                {
+                    "linkedService": {
+                        "referenceName": "GDPstorageaccount",
+                        "type": "LinkedServiceReference"
+                    },
+                    "name": "source1"
+                }
+            ],
+            "sinks": [
+                {
+                    "dataset": {
+                        "referenceName": "DelimitedText3",
+                        "type": "DatasetReference"
+                    },
+                    "name": "sink1"
+                }
+            ],
+            "transformations": [
+                {
+                    "name": "select1"
+                },
+                {
+                    "name": "flatten1"
+                }
+            ],
+            "scriptLines": [
+                "source(output(",
+                "          {http://schemas.xmlsoap.org/soap/envelope/,Envelope} as ({http://schemas.xmlsoap.org/soap/envelope/,Body} as ({URI,BatchCKIToetsen} as ({URI,Application} as ({URI,BatchToetsHeader} as ({URI,XXXX1} as boolean, {URI,XXXX2} as boolean, {URI,XXXX3} as boolean, {URI,YYYY} as ({URI,Nummer} as short)), {URI,BatchToetsingen} as string[], {URI,XXXX} as boolean), {URI,Header} as ({URI,H1} as boolean, {URI,H2} as short, {URI,H3} as short, {URI,H4} as short, {URI,H6} as short, {URI,H7} as short, {URI,Referentie} as string))), {http://schemas.xmlsoap.org/soap/envelope/,Header} as string)",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     ignoreNoFilesFound: false,",
+                "     format: 'xml',",
+                "     fileSystem: 'xmltest',",
+                "     fileName: 'testrb.xml',",
+                "     validationMode: 'none',",
+                "     namespaces: true) ~> source1",
+                "source1 select(mapColumn(",
+                "          Toetsingen = {http://schemas.xmlsoap.org/soap/envelope/,Envelope}.{http://schemas.xmlsoap.org/soap/envelope/,Body}.{URI,BatchCKIToetsen}.{URI,Application}.{URI,BatchToetsingen}",
+                "     ),",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true) ~> select1",
+                "select1 foldDown(unroll(Toetsingen, Toetsingen),",
+                "     mapColumn(",
+                "          Toetsingen",
+                "     ),",
+                "     skipDuplicateMapInputs: false,",
+                "     skipDuplicateMapOutputs: false) ~> flatten1",
+                "flatten1 sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     partitionFileNames:['testrb.csv'],",
+                "     umask: 0022,",
+                "     preCommands: [],",
+                "     postCommands: [],",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     partitionBy('hash', 1)) ~> sink1"
+            ]
+        }
+    }
+}
