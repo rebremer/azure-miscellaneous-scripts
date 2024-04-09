@@ -7,15 +7,243 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "test-adf-adf"
 		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"AzureSqlDatabase2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
+		},
+		"testgdpstor2blob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
+		},
+		"Odbc1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Odbc1'"
+		},
+		"Odbc1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Odbc1'"
+		},
+		"AKVADF_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://test-adf-akv.vault.azure.net/"
+		},
+		"GDPstorageaccount_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"Odbc1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "testrbadmin"
+		},
+		"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "oraclebuiltin"
+		},
+		"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "oraclebuiltinODBC2"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AKVADF')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AKVADF_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase2_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GDPstorageaccount')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/testgdpstor2blob')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('testgdpstor2blob_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NewRatingFlowlet')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "NewRating"
+						},
+						{
+							"name": "MovieData"
+						},
+						{
+							"name": "output1"
+						}
+					],
+					"scriptLines": [
+						"input(output(",
+						"          movie as integer,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as short,",
+						"          Rating as short,",
+						"          RottenTomato as short",
+						"     ),",
+						"     order: 0,",
+						"     allowSchemaDrift: true) ~> MovieData",
+						"MovieData derive(NewRating = 1 + power(Rating/(Rating-0.1), 12),",
+						"          PrimaryGenre = split(genres, '|')[1]) ~> NewRating",
+						"NewRating output() ~> output1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/moviesdbFlowletsOptimized')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "split1"
+						},
+						{
+							"name": "split2"
+						},
+						{
+							"name": "split3"
+						},
+						{
+							"name": "NewRating"
+						},
+						{
+							"name": "union1"
+						},
+						{
+							"name": "MovieDataInput"
+						},
+						{
+							"name": "MovieDataOutput"
+						}
+					],
+					"scriptLines": [
+						"input(output(",
+						"          movie as integer,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as short,",
+						"          Rating as short,",
+						"          RottenTomato as short",
+						"     ),",
+						"     order: 0,",
+						"     allowSchemaDrift: true) ~> MovieDataInput",
+						"MovieDataInput split(toInteger(year) > 1970,",
+						"     disjoint: false) ~> split1@(MoviesNewerThan1980, MoviesOlderThan1980)",
+						"split1@MoviesOlderThan1980 split(toInteger(Rating)>10,",
+						"     disjoint: false) ~> split2@(RatingEqualBetterThan10, RatingWorseThan10)",
+						"split2@RatingWorseThan10 split(toInteger({RottenTomato})>10,",
+						"     disjoint: false) ~> split3@(RottenTomatoEqualBetterThan10, RottenTomatoWorsethan10)",
+						"split1@MoviesNewerThan1980 derive(Rating = toShort(1 + power(Rating/(Rating-0.1), 12))) ~> NewRating",
+						"NewRating, split2@RatingEqualBetterThan10, split3@RottenTomatoEqualBetterThan10, split3@RottenTomatoWorsethan10 union(byName: true)~> union1",
+						"union1 output() ~> MovieDataOutput"
+					]
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/credential1')]",
 			"type": "Microsoft.DataFactory/factories/credentials",
@@ -27,6 +255,184 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/default')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+			"apiVersion": "2018-06-01",
+			"properties": {},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "url",
+						"type": "varchar"
+					},
+					{
+						"name": "title",
+						"type": "varchar"
+					},
+					{
+						"name": "text",
+						"type": "varchar"
+					},
+					{
+						"name": "title_vector",
+						"type": "varchar"
+					},
+					{
+						"name": "content_vector",
+						"type": "varchar"
+					},
+					{
+						"name": "vector_id",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "wikipedia_articles_embeddings"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Binary1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folder": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": {
+							"value": "@dataset().folder",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GDPstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "xmltest"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_q83')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "firstname",
+						"type": "varchar",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "lastname",
+						"type": "varchar",
+						"precision": 0,
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "person"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MoviesDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GDPstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "csv",
+						"fileSystem": "moviesdb"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
@@ -48,107 +454,106 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/Odbc1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
 				"annotations": [],
-				"type": "DelimitedText",
+				"type": "Odbc",
 				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "person"
+					"connectionString": {
+						"type": "SecureString",
+						"value": "[parameters('Odbc1_connectionString')]"
 					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
+					"authenticationType": "Basic",
+					"userName": "[parameters('Odbc1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('Odbc1_password')]"
+					}
 				},
-				"schema": []
+				"connectVia": {
+					"referenceName": "integrationRuntime1",
+					"type": "IntegrationRuntimeReference"
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/copyusmi')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/OracleBuiltIn')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFileName": "*",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt2"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DelimitedText1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DelimitedText1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
+				"description": "omschrijving",
+				"parameters": {
+					"asdf": {
+						"type": "string",
+						"defaultValue": "adsf"
 					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
 				},
-				"annotations": []
+				"annotations": [
+					"dsadafs",
+					"asdf"
+				],
+				"type": "Oracle",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AKVADF",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('OracleBuiltIn_properties_typeProperties_connectionString_secretName')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime1",
+					"type": "IntegrationRuntimeReference"
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]",
+				"[concat(variables('factoryId'), '/linkedServices/AKVADF')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OracleBuiltInODBC')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "omschrijving",
+				"parameters": {
+					"asdf": {
+						"type": "string",
+						"defaultValue": "adsf"
+					}
+				},
+				"annotations": [
+					"dsadafs",
+					"asdf"
+				],
+				"type": "Odbc",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AKVADF",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
+					},
+					"authenticationType": "anonymous"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime1",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]",
+				"[concat(variables('factoryId'), '/linkedServices/AKVADF')]"
 			]
 		}
 	]

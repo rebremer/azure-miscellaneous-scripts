@@ -5,8 +5,75 @@
 		"factoryName": {
 			"value": "test-adf-adf"
 		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase2_connectionString": {
+			"value": ""
+		},
+		"Odbc1_connectionString": {
+			"value": ""
+		},
+		"Odbc1_password": {
+			"value": ""
+		},
+		"testgdpstor2blob_connectionString": {
+			"value": ""
+		},
+		"AKVADF_properties_typeProperties_baseUrl": {
+			"value": "https://test-adf-akv.vault.azure.net/"
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage2_properties_typeProperties_url": {
+			"value": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"GDPstorageaccount_properties_typeProperties_url": {
+			"value": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"Odbc1_properties_typeProperties_userName": {
+			"value": "testrbadmin"
+		},
+		"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
+			"value": "oraclebuiltin"
+		},
+		"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
+			"value": "oraclebuiltinODBC2"
+		},
+		"gdpstorsecundary_properties_typeProperties_url": {
+			"value": "@{linkedService().storname}"
+		},
+		"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
+			"value": "https://testgdpinformationf.blob.core.windows.net/"
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"value": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Storage/storageAccounts/testadfstorrbr"
+		},
+		"AzureBlobStorage988_properties_privateLinkResourceId": {
+			"value": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-onelab-rg/providers/Microsoft.Storage/storageAccounts/testgdpinformationf"
+		},
+		"AzureBlobStorage988_properties_groupId": {
+			"value": "blob"
+		},
+		"AzureBlobStorage988_properties_fqdns": {
+			"value": [
+				"testgdpinformationf.blob.core.windows.net"
+			]
+		},
+		"AzureSqlDatabase535_properties_privateLinkResourceId": {
+			"value": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Sql/servers/test-priv-rbr"
+		},
+		"AzureSqlDatabase535_properties_groupId": {
+			"value": "sqlServer"
+		},
+		"AzureSqlDatabase535_properties_fqdns": {
+			"value": [
+				"test-priv-rbr.database.windows.net"
+			]
 		},
 		"containerUri": {
 			"value": ""

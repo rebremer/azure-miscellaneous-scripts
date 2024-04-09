@@ -7,9 +7,97 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "test-adf-adf"
 		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"AzureSqlDatabase2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
+		},
+		"Odbc1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Odbc1'"
+		},
+		"Odbc1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Odbc1'"
+		},
+		"testgdpstor2blob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
+		},
+		"AKVADF_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://test-adf-akv.vault.azure.net/"
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"GDPstorageaccount_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"Odbc1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "testrbadmin"
+		},
+		"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "oraclebuiltin"
+		},
+		"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "oraclebuiltinODBC2"
+		},
+		"gdpstorsecundary_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{linkedService().storname}"
+		},
+		"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://testgdpinformationf.blob.core.windows.net/"
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Storage/storageAccounts/testadfstorrbr"
+		},
+		"AzureBlobStorage988_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-onelab-rg/providers/Microsoft.Storage/storageAccounts/testgdpinformationf"
+		},
+		"AzureBlobStorage988_properties_groupId": {
+			"type": "string",
+			"defaultValue": "blob"
+		},
+		"AzureBlobStorage988_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"testgdpinformationf.blob.core.windows.net"
+			]
+		},
+		"AzureSqlDatabase535_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Sql/servers/test-priv-rbr"
+		},
+		"AzureSqlDatabase535_properties_groupId": {
+			"type": "string",
+			"defaultValue": "sqlServer"
+		},
+		"AzureSqlDatabase535_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"test-priv-rbr.database.windows.net"
+			]
 		},
 		"containerUri": {
 			"type": "string",
@@ -38,12 +126,115 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AzureBlobStorage1_connectionString": {
+						"value": "[parameters('AzureBlobStorage1_connectionString')]"
+					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
+					"testgdpstor2blob_connectionString": {
+						"value": "[parameters('testgdpstor2blob_connectionString')]"
+					},
+					"Odbc1_connectionString": {
+						"value": "[parameters('Odbc1_connectionString')]"
+					},
+					"Odbc1_password": {
+						"value": "[parameters('Odbc1_password')]"
+					},
+					"AKVADF_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AKVADF_properties_typeProperties_baseUrl')]"
+					},
+					"GDPstorageaccount_properties_typeProperties_url": {
+						"value": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
+					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"Odbc1_properties_typeProperties_userName": {
+						"value": "[parameters('Odbc1_properties_typeProperties_userName')]"
+					},
+					"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('OracleBuiltIn_properties_typeProperties_connectionString_secretName')]"
+					},
+					"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "test-adf-adf_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorage988_properties_privateLinkResourceId": {
+						"value": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]"
+					},
+					"AzureBlobStorage988_properties_groupId": {
+						"value": "[parameters('AzureBlobStorage988_properties_groupId')]"
+					},
+					"AzureBlobStorage988_properties_fqdns": {
+						"value": "[parameters('AzureBlobStorage988_properties_fqdns')]"
+					},
+					"AzureSqlDatabase535_properties_privateLinkResourceId": {
+						"value": "[parameters('AzureSqlDatabase535_properties_privateLinkResourceId')]"
+					},
+					"AzureSqlDatabase535_properties_groupId": {
+						"value": "[parameters('AzureSqlDatabase535_properties_groupId')]"
+					},
+					"AzureSqlDatabase535_properties_fqdns": {
+						"value": "[parameters('AzureSqlDatabase535_properties_fqdns')]"
+					},
+					"AzureDataLakeStorage2_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
+					},
+					"gdpstorsecundary_properties_typeProperties_url": {
+						"value": "[parameters('gdpstorsecundary_properties_typeProperties_url')]"
+					},
+					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'test-adf-adf_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "test-adf-adf_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"trigger1_properties_typeProperties_scope": {
+						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'test-adf-adf_ArmTemplate_1')]"
+			]
 		}
 	]
 }
