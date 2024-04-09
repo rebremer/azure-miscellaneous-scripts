@@ -1,0 +1,54 @@
+{
+	"name": "moviesdbFlowletsOptimized",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "split1"
+				},
+				{
+					"name": "split2"
+				},
+				{
+					"name": "split3"
+				},
+				{
+					"name": "NewRating"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "MovieDataInput"
+				},
+				{
+					"name": "MovieDataOutput"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          movie as integer,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as short,",
+				"          Rating as short,",
+				"          RottenTomato as short",
+				"     ),",
+				"     order: 0,",
+				"     allowSchemaDrift: true) ~> MovieDataInput",
+				"MovieDataInput split(toInteger(year) > 1970,",
+				"     disjoint: false) ~> split1@(MoviesNewerThan1980, MoviesOlderThan1980)",
+				"split1@MoviesOlderThan1980 split(toInteger(Rating)>10,",
+				"     disjoint: false) ~> split2@(RatingEqualBetterThan10, RatingWorseThan10)",
+				"split2@RatingWorseThan10 split(toInteger({RottenTomato})>10,",
+				"     disjoint: false) ~> split3@(RottenTomatoEqualBetterThan10, RottenTomatoWorsethan10)",
+				"split1@MoviesNewerThan1980 derive(Rating = toShort(1 + power(Rating/(Rating-0.1), 12))) ~> NewRating",
+				"NewRating, split2@RatingEqualBetterThan10, split3@RottenTomatoEqualBetterThan10, split3@RottenTomatoWorsethan10 union(byName: true)~> union1",
+				"union1 output() ~> MovieDataOutput"
+			]
+		}
+	}
+}

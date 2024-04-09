@@ -1,0 +1,27 @@
+{
+	"name": "testgdpinformationfblobdataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "testgdpinformationfblob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@utcnow()",
+					"type": "Expression"
+				},
+				"container": "privtest"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

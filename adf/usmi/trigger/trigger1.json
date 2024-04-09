@@ -1,0 +1,25 @@
+{
+	"name": "trigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Oracle_built_in",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/oracle/blobs/434",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Storage/storageAccounts/testadfstorrbr",
+			"events": [
+				"Microsoft.Storage.BlobCreated",
+				"Microsoft.Storage.BlobDeleted"
+			]
+		}
+	}
+}

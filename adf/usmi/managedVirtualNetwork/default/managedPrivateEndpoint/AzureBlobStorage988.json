@@ -1,0 +1,10 @@
+{
+	"name": "AzureBlobStorage988",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-onelab-rg/providers/Microsoft.Storage/storageAccounts/testgdpinformationf",
+		"groupId": "blob",
+		"fqdns": [
+			"testgdpinformationf.blob.core.windows.net"
+		]
+	}
+}

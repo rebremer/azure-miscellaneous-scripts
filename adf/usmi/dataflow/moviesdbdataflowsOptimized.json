@@ -1,0 +1,148 @@
+{
+	"name": "moviesdbdataflowsOptimized",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "MoviesDB",
+						"type": "DatasetReference"
+					},
+					"name": "CSVMovieDataInput"
+				},
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "DeltaMoviesDataInput"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink5"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FlowletRatingLogic1",
+					"flowlet": {
+						"referenceName": "NewRatingFlowlet",
+						"type": "DataFlowReference"
+					}
+				},
+				{
+					"name": "FlowletRatingLogic2",
+					"flowlet": {
+						"referenceName": "NewRatingFlowlet",
+						"type": "DataFlowReference"
+					}
+				},
+				{
+					"name": "CorrectSpelling"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          movie as integer,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as short,",
+				"          Rating as short,",
+				"          {Rotton Tomato} as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CSVMovieDataInput",
+				"source(output(",
+				"          movie as integer,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as short,",
+				"          Rating as short,",
+				"          RottenTomato as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdb',",
+				"     folderPath: 'delta') ~> DeltaMoviesDataInput",
+				"CorrectSpelling compose(mapColumn(",
+				"          movie,",
+				"          title,",
+				"          genres,",
+				"          year,",
+				"          Rating,",
+				"          RottenTomato",
+				"     ),",
+				"     composition: 'NewRatingFlowlet') ~> FlowletRatingLogic1@(output1)",
+				"DeltaMoviesDataInput compose(mapColumn(",
+				"          movie,",
+				"          title,",
+				"          genres,",
+				"          year,",
+				"          Rating,",
+				"          RottenTomato",
+				"     ),",
+				"     composition: 'NewRatingFlowlet') ~> FlowletRatingLogic2@(output1)",
+				"CSVMovieDataInput select(mapColumn(",
+				"          movie,",
+				"          title,",
+				"          genres,",
+				"          year,",
+				"          Rating,",
+				"          RottenTomato = {Rotton Tomato}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> CorrectSpelling",
+				"FlowletRatingLogic1@output1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdbaggregated',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"FlowletRatingLogic2@output1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdbaggregated',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink5"
+			]
+		}
+	}
+}

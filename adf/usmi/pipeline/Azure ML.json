@@ -1,0 +1,60 @@
+{
+	"name": "Azure ML",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Binary1",
+						"type": "DatasetReference",
+						"parameters": {
+							"folder": "azureml-blobstore-f566be46-39a8-407b-8a68-76fe665e86bd"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Binary1",
+						"type": "DatasetReference",
+						"parameters": {
+							"folder": "azureml-blobstore-c9527502-8fc9-44c2-867f-39bbedfec6ae"
+						}
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-01-17T19:22:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

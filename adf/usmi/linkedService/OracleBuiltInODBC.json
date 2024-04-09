@@ -1,0 +1,33 @@
+{
+	"name": "OracleBuiltInODBC",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"type": "Odbc",
+		"connectVia": {
+			"referenceName": "integrationRuntime1",
+			"type": "IntegrationRuntimeReference"
+		},
+		"description": "omschrijving",
+		"parameters": {
+			"asdf": {
+				"type": "string",
+				"defaultValue": "adsf"
+			}
+		},
+		"annotations": [
+			"dsadafs",
+			"asdf"
+		],
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AKVADF",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "oraclebuiltinODBC2"
+			},
+			"authenticationType": "anonymous"
+		}
+	}
+}

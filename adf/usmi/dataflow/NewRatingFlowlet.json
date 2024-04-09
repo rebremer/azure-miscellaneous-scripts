@@ -1,0 +1,36 @@
+{
+	"name": "NewRatingFlowlet",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "NewRating"
+				},
+				{
+					"name": "MovieData"
+				},
+				{
+					"name": "output1"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          movie as integer,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as short,",
+				"          Rating as short,",
+				"          RottenTomato as short",
+				"     ),",
+				"     order: 0,",
+				"     allowSchemaDrift: true) ~> MovieData",
+				"MovieData derive(NewRating = 1 + power(Rating/(Rating-0.1), 12),",
+				"          PrimaryGenre = split(genres, '|')[1]) ~> NewRating",
+				"NewRating output() ~> output1"
+			]
+		}
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "OracleTable1ODBC",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OracleBuiltInODBC",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"asdf": "adsf"
+			}
+		},
+		"annotations": [],
+		"type": "OdbcTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "hjg"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,11 @@
+{
+	"name": "GDPstorageaccount",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://testgdpstor2.dfs.core.windows.net/"
+		}
+	}
+}

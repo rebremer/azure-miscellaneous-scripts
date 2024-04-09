@@ -1,0 +1,11 @@
+{
+	"name": "AKVADF",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://test-adf-akv.vault.azure.net/"
+		}
+	}
+}

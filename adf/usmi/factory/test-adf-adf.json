@@ -1,0 +1,15 @@
+{
+	"name": "test-adf-adf",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned,UserAssigned",
+		"principalId": "8afcf75b-1643-48c9-9482-627898b0874a",
+		"tenantId": "16b3c013-d300-468d-ac64-7eda0820b6d3",
+		"userAssignedIdentities": {
+			"/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourcegroups/test-adf-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-adf-usmi": {
+				"clientId": "ad3bd3dc-f932-417b-9c6d-82abdf00fe2d",
+				"principalId": "5a132d28-b77c-4a78-969d-de6a516f4b45"
+			}
+		}
+	}
+}

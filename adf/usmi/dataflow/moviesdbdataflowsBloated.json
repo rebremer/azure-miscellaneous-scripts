@@ -1,0 +1,299 @@
+{
+	"name": "moviesdbdataflowsBloated",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "MoviesDB",
+						"type": "DatasetReference"
+					},
+					"name": "CSVMovieDataInput"
+				},
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "DeltaMoviesDataInput"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink3"
+				},
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink4"
+				},
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink5"
+				},
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink6"
+				},
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink7"
+				},
+				{
+					"linkedService": {
+						"referenceName": "GDPstorageaccount",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink8"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split1"
+				},
+				{
+					"name": "split2"
+				},
+				{
+					"name": "split3"
+				},
+				{
+					"name": "NewRating"
+				},
+				{
+					"name": "CorrectSpelling"
+				},
+				{
+					"name": "split4"
+				},
+				{
+					"name": "NewRatingDelta"
+				},
+				{
+					"name": "split5"
+				},
+				{
+					"name": "split6"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          movie as integer,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as short,",
+				"          Rating as short,",
+				"          {Rotton Tomato} as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CSVMovieDataInput",
+				"source(output(",
+				"          movie as integer,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as short,",
+				"          Rating as short,",
+				"          RottenTomato as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdb',",
+				"     folderPath: 'delta') ~> DeltaMoviesDataInput",
+				"CorrectSpelling split(toInteger(year) > 1970,",
+				"     disjoint: false) ~> split1@(MoviesNewerThan1980, MoviesOlderThan1980)",
+				"split1@MoviesOlderThan1980 split(toInteger(Rating)>10,",
+				"     disjoint: false) ~> split2@(RatingEqualBetterThan10, RatingWorseThan10)",
+				"split2@RatingWorseThan10 split(toInteger({RottenTomato})>10,",
+				"     disjoint: false) ~> split3@(RottenTomatoEqualBetterThan10, RottenTomatoWorsethan10)",
+				"split1@MoviesNewerThan1980 derive(Rating = toShort(1 + power(Rating/(Rating-0.1), 12))) ~> NewRating",
+				"CSVMovieDataInput select(mapColumn(",
+				"          movie,",
+				"          title,",
+				"          genres,",
+				"          year,",
+				"          Rating,",
+				"          RottenTomato = {Rotton Tomato}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> CorrectSpelling",
+				"DeltaMoviesDataInput split(toInteger(year) > 1970,",
+				"     disjoint: false) ~> split4@(MoviesDeltaNewerThan1980, MoviesDeltaNewerOlderThan1980)",
+				"split4@MoviesDeltaNewerThan1980 derive(Rating = toShort(1 + power(Rating/(Rating-0.1), 12))) ~> NewRatingDelta",
+				"split4@MoviesDeltaNewerOlderThan1980 split(toInteger(Rating)>10,",
+				"     disjoint: false) ~> split5@(RatingEqualBetterThan10Delta, RatingWorseThan10Delta)",
+				"split5@RatingWorseThan10Delta split(toInteger(RottenTomato)>10,",
+				"     disjoint: false) ~> split6@(RottenTomatoEqualBetterThan10Delta, RottenTomatoWorseThan10Delta)",
+				"NewRating sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdbaggregated',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"split2@RatingEqualBetterThan10 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdbaggregated',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2",
+				"split3@RottenTomatoEqualBetterThan10 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdbaggregated',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink3",
+				"split3@RottenTomatoWorsethan10 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdb',",
+				"     folderPath: 'delta',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink4",
+				"NewRatingDelta sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdbaggregated',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink5",
+				"split5@RatingEqualBetterThan10Delta sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdbaggregated',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink6",
+				"split6@RottenTomatoEqualBetterThan10Delta sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdbaggregated',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink7",
+				"split6@RottenTomatoWorseThan10Delta sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'moviesdbaggregated',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink8"
+			]
+		}
+	}
+}

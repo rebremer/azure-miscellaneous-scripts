@@ -1,0 +1,36 @@
+{
+	"name": "GDPsecondary",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "gdpstorsecundary",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"storname": "https://gpdstorznsdns.z6.dfs.storage.azure.net/"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "person.txt",
+				"fileSystem": "person"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "firstname",
+				"type": "String"
+			},
+			{
+				"name": "lastname",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
