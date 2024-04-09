@@ -2938,6 +2938,7 @@
 			"type": "Microsoft.DataFactory/factories/credentials",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "testrb",
 				"type": "ManagedIdentity",
 				"typeProperties": {
 					"resourceId": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourcegroups/test-adf-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-adf-usmi"
