@@ -1,6 +1,5 @@
 {
 	"name": "OracleBuiltIn",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"description": "omschrijving",
 		"parameters": {
@@ -25,8 +24,9 @@
 			}
 		},
 		"connectVia": {
-			"referenceName": "integrationRuntime1",
+			"referenceName": "integrationRuntime2",
 			"type": "IntegrationRuntimeReference"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }
