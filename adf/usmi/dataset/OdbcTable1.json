@@ -2,15 +2,15 @@
 	"name": "OdbcTable1",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Odbc1",
-			"type": "LinkedServiceReference"
+			"referenceName": "OracleBuiltInODBC",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"asdf": "adsf"
+			}
 		},
 		"annotations": [],
 		"type": "OdbcTable",
-		"schema": [],
-		"typeProperties": {
-			"tableName": "testrb"
-		}
+		"schema": []
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
 }
