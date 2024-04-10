@@ -156,9 +156,6 @@
 					"Odbc1_properties_typeProperties_userName": {
 						"value": "[parameters('Odbc1_properties_typeProperties_userName')]"
 					},
-					"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('OracleBuiltIn_properties_typeProperties_connectionString_secretName')]"
-					},
 					"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
 						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
 					}
@@ -200,6 +197,9 @@
 					},
 					"AzureDataLakeStorage2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
+					},
+					"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('OracleBuiltIn_properties_typeProperties_connectionString_secretName')]"
 					},
 					"gdpstorsecundary_properties_typeProperties_url": {
 						"value": "[parameters('gdpstorsecundary_properties_typeProperties_url')]"
