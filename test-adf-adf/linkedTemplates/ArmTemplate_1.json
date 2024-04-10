@@ -7,20 +7,6 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "test-adf-adf"
 		},
-		"AzureBlobStorage988_properties_privateLinkResourceId": {
-			"type": "string",
-			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-onelab-rg/providers/Microsoft.Storage/storageAccounts/testgdpinformationf"
-		},
-		"AzureBlobStorage988_properties_groupId": {
-			"type": "string",
-			"defaultValue": "blob"
-		},
-		"AzureBlobStorage988_properties_fqdns": {
-			"type": "array",
-			"defaultValue": [
-				"testgdpinformationf.blob.core.windows.net"
-			]
-		},
 		"AzureSqlDatabase535_properties_privateLinkResourceId": {
 			"type": "string",
 			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Sql/servers/test-priv-rbr"
@@ -56,17 +42,6 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/default/AzureBlobStorage988')]",
-			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"privateLinkResourceId": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]",
-				"groupId": "[parameters('AzureBlobStorage988_properties_groupId')]",
-				"fqdns": "[parameters('AzureBlobStorage988_properties_fqdns')]"
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/default/AzureSqlDatabase535')]",
 			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
@@ -1365,6 +1340,84 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/xmltest')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/copyusmi')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt2"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-09T14:15:48Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]"
 			]
 		}
 	]

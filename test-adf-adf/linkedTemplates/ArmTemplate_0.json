@@ -23,14 +23,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
 		},
-		"Odbc1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Odbc1'"
-		},
-		"Odbc1_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'Odbc1'"
-		},
 		"AKVADF_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://test-adf-akv.vault.azure.net/"
@@ -43,13 +35,23 @@
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
 		},
-		"Odbc1_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "testrbadmin"
-		},
 		"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
 			"defaultValue": "oraclebuiltinODBC2"
+		},
+		"AzureBlobStorage988_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-onelab-rg/providers/Microsoft.Storage/storageAccounts/testgdpinformationf"
+		},
+		"AzureBlobStorage988_properties_groupId": {
+			"type": "string",
+			"defaultValue": "blob"
+		},
+		"AzureBlobStorage988_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"testgdpinformationf.blob.core.windows.net"
+			]
 		}
 	},
 	"variables": {
@@ -451,34 +453,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Odbc1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Odbc",
-				"typeProperties": {
-					"connectionString": {
-						"type": "SecureString",
-						"value": "[parameters('Odbc1_connectionString')]"
-					},
-					"authenticationType": "Basic",
-					"userName": "[parameters('Odbc1_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('Odbc1_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime1",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/OracleBuiltInODBC')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -543,6 +517,19 @@
 					"type": "ManagedVirtualNetworkReference",
 					"referenceName": "default"
 				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/default/AzureBlobStorage988')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"privateLinkResourceId": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]",
+				"groupId": "[parameters('AzureBlobStorage988_properties_groupId')]",
+				"fqdns": "[parameters('AzureBlobStorage988_properties_fqdns')]"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"

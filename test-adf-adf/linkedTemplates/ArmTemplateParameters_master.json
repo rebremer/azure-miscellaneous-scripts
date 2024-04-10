@@ -14,12 +14,6 @@
 		"AzureSqlDatabase2_connectionString": {
 			"value": ""
 		},
-		"Odbc1_connectionString": {
-			"value": ""
-		},
-		"Odbc1_password": {
-			"value": ""
-		},
 		"testgdpstor2blob_connectionString": {
 			"value": ""
 		},
@@ -34,9 +28,6 @@
 		},
 		"GDPstorageaccount_properties_typeProperties_url": {
 			"value": "https://testgdpstor2.dfs.core.windows.net/"
-		},
-		"Odbc1_properties_typeProperties_userName": {
-			"value": "testrbadmin"
 		},
 		"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
 			"value": "oraclebuiltin"

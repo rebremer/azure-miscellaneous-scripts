@@ -19,14 +19,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
 		},
-		"Odbc1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Odbc1'"
-		},
-		"Odbc1_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'Odbc1'"
-		},
 		"testgdpstor2blob_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
@@ -46,10 +38,6 @@
 		"GDPstorageaccount_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
-		},
-		"Odbc1_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "testrbadmin"
 		},
 		"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
@@ -2014,34 +2002,6 @@
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Odbc1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Odbc",
-				"typeProperties": {
-					"connectionString": {
-						"type": "SecureString",
-						"value": "[parameters('Odbc1_connectionString')]"
-					},
-					"authenticationType": "Basic",
-					"userName": "[parameters('Odbc1_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('Odbc1_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime1",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/OracleBuiltIn')]",
