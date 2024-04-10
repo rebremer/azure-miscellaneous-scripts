@@ -50,7 +50,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DelimitedText1",
+						"referenceName": "csvuami",
 						"type": "DatasetReference"
 					}
 				],
