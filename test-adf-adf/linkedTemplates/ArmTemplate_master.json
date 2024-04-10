@@ -87,6 +87,10 @@
 				"test-priv-rbr.database.windows.net"
 			]
 		},
+		"ADLSgen2uami_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -129,23 +133,11 @@
 					"AKVADF_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AKVADF_properties_typeProperties_baseUrl')]"
 					},
-					"GDPstorageaccount_properties_typeProperties_url": {
-						"value": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
-					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
-					"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
-					},
-					"AzureBlobStorage988_properties_privateLinkResourceId": {
-						"value": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]"
-					},
-					"AzureBlobStorage988_properties_groupId": {
-						"value": "[parameters('AzureBlobStorage988_properties_groupId')]"
-					},
-					"AzureBlobStorage988_properties_fqdns": {
-						"value": "[parameters('AzureBlobStorage988_properties_fqdns')]"
+					"GDPstorageaccount_properties_typeProperties_url": {
+						"value": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -165,6 +157,18 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
+					},
+					"AzureBlobStorage988_properties_privateLinkResourceId": {
+						"value": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]"
+					},
+					"AzureBlobStorage988_properties_groupId": {
+						"value": "[parameters('AzureBlobStorage988_properties_groupId')]"
+					},
+					"AzureBlobStorage988_properties_fqdns": {
+						"value": "[parameters('AzureBlobStorage988_properties_fqdns')]"
+					},
 					"AzureSqlDatabase535_properties_privateLinkResourceId": {
 						"value": "[parameters('AzureSqlDatabase535_properties_privateLinkResourceId')]"
 					},
@@ -173,6 +177,9 @@
 					},
 					"AzureSqlDatabase535_properties_fqdns": {
 						"value": "[parameters('AzureSqlDatabase535_properties_fqdns')]"
+					},
+					"ADLSgen2uami_properties_typeProperties_url": {
+						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
 					},
 					"AzureDataLakeStorage2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"

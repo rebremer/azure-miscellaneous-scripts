@@ -65,6 +65,9 @@
 			"value": [
 				"test-priv-rbr.database.windows.net"
 			]
+		},
+		"ADLSgen2uami_properties_typeProperties_url": {
+			"value": "https://testgdpstor2.dfs.core.windows.net/"
 		}
 	}
 }
