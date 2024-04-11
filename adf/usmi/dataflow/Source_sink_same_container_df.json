@@ -23,11 +23,6 @@
 			],
 			"transformations": [],
 			"scriptLines": [
-				"parameters{",
-				"     par_container as string (\"testsourcesink\"),",
-				"     par_source as string (\"source\"),",
-				"     par_sink as string (\"sink\")",
-				"}",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
