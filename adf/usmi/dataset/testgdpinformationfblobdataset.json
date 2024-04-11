@@ -10,10 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": {
-					"value": "@utcnow()",
-					"type": "Expression"
-				},
 				"container": "privtest"
 			},
 			"columnDelimiter": ",",
