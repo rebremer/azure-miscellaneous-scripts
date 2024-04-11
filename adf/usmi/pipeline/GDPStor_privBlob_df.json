@@ -17,12 +17,7 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "Source_sink_same_container_df",
-						"type": "DataFlowReference",
-						"parameters": {
-							"par_container": "\"person\"",
-							"par_source": "\"source\"",
-							"par_sink": "\"sink\""
-						}
+						"type": "DataFlowReference"
 					},
 					"integrationRuntime": {
 						"referenceName": "integrationRuntime2",
