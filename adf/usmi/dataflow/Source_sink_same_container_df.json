@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"linkedService": {
-						"referenceName": "AzureDataLakeStorage2",
+						"referenceName": "GDPstorageaccount",
 						"type": "LinkedServiceReference"
 					},
 					"name": "source1"
@@ -23,16 +23,22 @@
 			],
 			"transformations": [],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
+				"source(useSchema: false,",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     format: 'parquet',",
-				"     fileSystem: (\"person\"),",
-				"     fileName: '\"person.txt\"') ~> source1",
+				"     format: 'delimited',",
+				"     fileSystem: 'person',",
+				"     fileName: 'person.txt',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: false) ~> source1",
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
-				"     fileSystem: (privtest),",
+				"     fileSystem: 'privtest',",
+				"     compressionCodec: 'snappy',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     preCommands: [],",
