@@ -38,11 +38,8 @@
 				"     validateSchema: false,",
 				"     format: 'parquet',",
 				"     fileSystem: 'privtest',",
-				"     compressionCodec: 'snappy',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     preCommands: [],",
-				"     postCommands: []) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
