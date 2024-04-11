@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
 		},
+		"ADLSgen2uami_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
 		"AKVADF_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://test-adf-akv.vault.azure.net/"
@@ -86,10 +90,6 @@
 			"defaultValue": [
 				"test-priv-rbr.database.windows.net"
 			]
-		},
-		"ADLSgen2uami_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -1839,6 +1839,33 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/csvuami')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADLSgen2uami",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "person"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ADLSgen2uami')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/testadfstorrbrinf')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1888,10 +1915,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": {
-							"value": "@utcnow()",
-							"type": "Expression"
-						},
 						"container": "privtest"
 					},
 					"columnDelimiter": ",",
@@ -1903,6 +1926,25 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/testgdpinformationfblob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADLSgen2uami')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ADLSgen2uami_properties_typeProperties_url')]",
+					"credential": {
+						"referenceName": "credential1",
+						"type": "CredentialReference"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/credentials/credential1')]"
 			]
 		},
 		{
@@ -2106,6 +2148,7 @@
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "@utcnow()",
 				"annotations": [],
 				"type": "AzureBlobStorage",
 				"typeProperties": {
@@ -2265,7 +2308,7 @@
 					"sinks": [
 						{
 							"linkedService": {
-								"referenceName": "AzureDataLakeStorage2",
+								"referenceName": "testgdpinformationfblob",
 								"type": "LinkedServiceReference"
 							},
 							"name": "sink1"
@@ -2282,23 +2325,22 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet',",
-						"     fileSystem: ($par_container),",
-						"     folderPath: ($par_source)) ~> source1",
+						"     fileSystem: (person),",
+						"     fileName: 'person.txt') ~> source1",
 						"source1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
-						"     fileSystem: ($par_container),",
-						"     folderPath: ($par_sink),",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
+						"     fileSystem: (privtest),",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink1"
+						"     skipDuplicateMapOutputs: true,",
+						"     preCommands: [],",
+						"     postCommands: []) ~> sink1"
 					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]",
+				"[concat(variables('factoryId'), '/linkedServices/testgdpinformationfblob')]"
 			]
 		},
 		{
@@ -2940,49 +2982,111 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ADLSgen2uami')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/Source_hns_sink_blob')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
+				"type": "MappingDataFlow",
 				"typeProperties": {
-					"url": "[parameters('ADLSgen2uami_properties_typeProperties_url')]",
-					"credential": {
-						"referenceName": "credential1",
-						"type": "CredentialReference"
-					}
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "testgdpinformationfblob",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"parameters{",
+						"     par_container as string (\"testsourcesink\"),",
+						"     par_source as string (\"source\"),",
+						"     par_sink as string (\"sink\")",
+						"}",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet',",
+						"     fileSystem: ($par_container),",
+						"     folderPath: ($par_source)) ~> source1",
+						"source1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     fileSystem: ($par_container),",
+						"     folderPath: ($par_sink),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     preCommands: [],",
+						"     postCommands: []) ~> sink1"
+					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/credentials/credential1')]"
+				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]",
+				"[concat(variables('factoryId'), '/linkedServices/testgdpinformationfblob')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/csvuami')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/GDPStor_privBlob_df')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ADLSgen2uami",
-					"type": "LinkedServiceReference"
+				"activities": [
+					{
+						"name": "source dfs sink blob",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Source_sink_same_container_df",
+								"type": "DataFlowReference",
+								"parameters": {
+									"par_container": "\"person\"",
+									"par_source": "\"source\"",
+									"par_sink": "\"sink\""
+								},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime2",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
 				},
 				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "person"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
+				"lastPublishTime": "2024-04-07T18:28:00Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ADLSgen2uami')]"
+				"[concat(variables('factoryId'), '/dataflows/Source_sink_same_container_df')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime2')]"
 			]
 		}
 	]

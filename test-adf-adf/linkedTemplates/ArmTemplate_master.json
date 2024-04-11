@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
 		},
+		"ADLSgen2uami_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
 		"AKVADF_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://test-adf-akv.vault.azure.net/"
@@ -86,10 +90,6 @@
 			"defaultValue": [
 				"test-priv-rbr.database.windows.net"
 			]
-		},
-		"ADLSgen2uami_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -157,6 +157,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"ADLSgen2uami_properties_typeProperties_url": {
+						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
+					},
 					"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
 						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
 					},
@@ -177,9 +180,6 @@
 					},
 					"AzureSqlDatabase535_properties_fqdns": {
 						"value": "[parameters('AzureSqlDatabase535_properties_fqdns')]"
-					},
-					"ADLSgen2uami_properties_typeProperties_url": {
-						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
 					},
 					"AzureDataLakeStorage2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
