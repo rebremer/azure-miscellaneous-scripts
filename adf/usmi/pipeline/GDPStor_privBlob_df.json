@@ -1,0 +1,39 @@
+{
+	"name": "GDPStor_privBlob_df",
+	"properties": {
+		"activities": [
+			{
+				"name": "source dfs sink blob",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Source_sink_same_container_df",
+						"type": "DataFlowReference",
+						"parameters": {
+							"par_container": "\"person\"",
+							"par_source": "\"source\"",
+							"par_sink": "\"sink\""
+						}
+					},
+					"integrationRuntime": {
+						"referenceName": "integrationRuntime2",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-04-07T18:28:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
