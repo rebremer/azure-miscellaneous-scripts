@@ -37,6 +37,7 @@
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'delta',",
+				"     fileSystem: 'privtest',",
 				"     mergeSchema: false,",
 				"     autoCompact: false,",
 				"     optimizedWrite: false,",
