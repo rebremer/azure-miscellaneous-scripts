@@ -2,16 +2,16 @@
 	"name": "testadfstorrbrinf",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "testgdpinfomrationfdfs",
+			"referenceName": "testgdpinformationfblob",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation",
+				"type": "AzureBlobStorageLocation",
 				"folderPath": "87",
-				"fileSystem": "privtest"
+				"container": "privtest"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
