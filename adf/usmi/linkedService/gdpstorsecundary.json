@@ -1,6 +1,12 @@
 {
 	"name": "gdpstorsecundary",
 	"properties": {
+		"parameters": {
+			"storname": {
+				"type": "string",
+				"defaultValue": "sd"
+			}
+		},
 		"annotations": [],
 		"type": "AzureBlobFS",
 		"typeProperties": {
