@@ -46,26 +46,273 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "firstname",
+									"name": "SaleKey",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "firstname",
+									"name": "SaleKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "CityKey",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CityKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerKey",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CustomerKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "BillToCustomerKey",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "BillToCustomerKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "StockItemKey",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "StockItemKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "InvoiceDateKey",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "InvoiceDateKey",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								}
+							},
+							{
+								"source": {
+									"name": "DeliveryDateKey",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DeliveryDateKey",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								}
+							},
+							{
+								"source": {
+									"name": "SalespersonKey",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "SalespersonKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "WWIInvoiceID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "WWIInvoiceID",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "Description",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Description",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "lastname",
+									"name": "Package",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "lastname",
+									"name": "Package",
 									"type": "String",
 									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Quantity",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Quantity",
+									"type": "Int16",
+									"physicalType": "smallint"
+								}
+							},
+							{
+								"source": {
+									"name": "UnitPrice",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "UnitPrice",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "TaxRate",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TaxRate",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "TotalExcludingTax",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TotalExcludingTax",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "TaxAmount",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TaxAmount",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "Profit",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Profit",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "TotalIncludingTax",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TotalIncludingTax",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "TotalDryItems",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TotalDryItems",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "TotalChillerItems",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TotalChillerItems",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "LineageKey",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "LineageKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"sink": {
+									"name": "Quarter",
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							}
 						],
