@@ -19,9 +19,9 @@
 						"referenceName": "Source_sink_same_container_df",
 						"type": "DataFlowReference"
 					},
-					"integrationRuntime": {
-						"referenceName": "integrationRuntime2",
-						"type": "IntegrationRuntimeReference"
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					},
 					"traceLevel": "Fine",
 					"runConcurrently": false
