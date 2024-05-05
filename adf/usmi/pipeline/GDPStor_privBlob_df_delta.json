@@ -23,7 +23,8 @@
 						"referenceName": "integrationRuntime2",
 						"type": "IntegrationRuntimeReference"
 					},
-					"traceLevel": "Fine"
+					"traceLevel": "Fine",
+					"runConcurrently": false
 				}
 			}
 		],
