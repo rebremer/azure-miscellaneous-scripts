@@ -5,10 +5,6 @@
 		"type": "AzureBlobFS",
 		"typeProperties": {
 			"url": "@{linkedService().storname}"
-		},
-		"connectVia": {
-			"referenceName": "integrationRuntime2",
-			"type": "IntegrationRuntimeReference"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/linkedservices"
