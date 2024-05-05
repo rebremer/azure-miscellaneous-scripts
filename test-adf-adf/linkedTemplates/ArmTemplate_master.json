@@ -55,6 +55,10 @@
 			"type": "string",
 			"defaultValue": "@{linkedService().storname}"
 		},
+		"testgdpinfomrationfdfs_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testgdpinformationf.dfs.core.windows.net/"
+		},
 		"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
 			"type": "string",
 			"defaultValue": "https://testgdpinformationf.blob.core.windows.net/"
@@ -138,6 +142,12 @@
 					},
 					"GDPstorageaccount_properties_typeProperties_url": {
 						"value": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
+					},
+					"gdpstorsecundary_properties_typeProperties_url": {
+						"value": "[parameters('gdpstorsecundary_properties_typeProperties_url')]"
+					},
+					"testgdpinfomrationfdfs_properties_typeProperties_url": {
+						"value": "[parameters('testgdpinfomrationfdfs_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -180,18 +190,6 @@
 					},
 					"AzureSqlDatabase535_properties_fqdns": {
 						"value": "[parameters('AzureSqlDatabase535_properties_fqdns')]"
-					},
-					"AzureDataLakeStorage2_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
-					},
-					"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('OracleBuiltIn_properties_typeProperties_connectionString_secretName')]"
-					},
-					"gdpstorsecundary_properties_typeProperties_url": {
-						"value": "[parameters('gdpstorsecundary_properties_typeProperties_url')]"
-					},
-					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
-						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
 					}
 				}
 			},
@@ -213,13 +211,42 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AzureDataLakeStorage2_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
+					},
+					"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('OracleBuiltIn_properties_typeProperties_connectionString_secretName')]"
+					},
+					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'test-adf-adf_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "test-adf-adf_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
 					"trigger1_properties_typeProperties_scope": {
 						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
 					}
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'test-adf-adf_ArmTemplate_1')]"
+				"[resourceId('Microsoft.Resources/deployments', 'test-adf-adf_ArmTemplate_2')]"
 			]
 		}
 	]

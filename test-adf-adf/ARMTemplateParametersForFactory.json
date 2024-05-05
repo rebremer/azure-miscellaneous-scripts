@@ -41,6 +41,9 @@
 		"gdpstorsecundary_properties_typeProperties_url": {
 			"value": "@{linkedService().storname}"
 		},
+		"testgdpinfomrationfdfs_properties_typeProperties_url": {
+			"value": "https://testgdpinformationf.dfs.core.windows.net/"
+		},
 		"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
 			"value": "https://testgdpinformationf.blob.core.windows.net/"
 		},

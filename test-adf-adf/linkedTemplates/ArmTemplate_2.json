@@ -7,15 +7,1482 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "test-adf-adf"
 		},
-		"trigger1_properties_typeProperties_scope": {
+		"AzureDataLakeStorage2_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Storage/storageAccounts/testadfstorrbr"
+			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "oraclebuiltin"
+		},
+		"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://testgdpinformationf.blob.core.windows.net/"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime2",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OracleBuiltIn')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "omschrijving",
+				"parameters": {
+					"asdf": {
+						"type": "string",
+						"defaultValue": "adsf"
+					}
+				},
+				"annotations": [
+					"dsadafs",
+					"asdf"
+				],
+				"type": "Oracle",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AKVADF",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('OracleBuiltIn_properties_typeProperties_connectionString_secretName')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime2",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/testgdpinformationfblob')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "@utcnow()",
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"serviceEndpoint": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]",
+					"accountKind": "StorageV2"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime2",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Source_sink_same_container_df')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "testgdpstor2blob",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "sql_silver_fact_sale",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     container: 'fabricdemo',",
+						"     folderPath: 'silver/silver_fact_sale') ~> source1",
+						"source1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          SaleKey as integer,",
+						"          CityKey as integer,",
+						"          CustomerKey as integer,",
+						"          BillToCustomerKey as integer,",
+						"          StockItemKey as integer,",
+						"          InvoiceDateKey as timestamp,",
+						"          DeliveryDateKey as timestamp,",
+						"          SalespersonKey as integer,",
+						"          WWIInvoiceID as integer,",
+						"          Description as string,",
+						"          Package as string,",
+						"          Quantity as integer,",
+						"          UnitPrice as decimal(38,6),",
+						"          TaxRate as decimal(38,6),",
+						"          TotalExcludingTax as decimal(38,6),",
+						"          TaxAmount as decimal(38,6),",
+						"          Profit as decimal(38,6),",
+						"          TotalIncludingTax as decimal(38,6),",
+						"          TotalDryItems as integer,",
+						"          TotalChillerItems as integer,",
+						"          LineageKey as integer,",
+						"          Quarter as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/moviesdbdataflowsBloated')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "MoviesDB",
+								"type": "DatasetReference"
+							},
+							"name": "CSVMovieDataInput"
+						},
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "DeltaMoviesDataInput"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink2"
+						},
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink3"
+						},
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink4"
+						},
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink5"
+						},
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink6"
+						},
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink7"
+						},
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink8"
+						}
+					],
+					"transformations": [
+						{
+							"name": "split1"
+						},
+						{
+							"name": "split2"
+						},
+						{
+							"name": "split3"
+						},
+						{
+							"name": "NewRating"
+						},
+						{
+							"name": "CorrectSpelling"
+						},
+						{
+							"name": "split4"
+						},
+						{
+							"name": "NewRatingDelta"
+						},
+						{
+							"name": "split5"
+						},
+						{
+							"name": "split6"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          movie as integer,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as short,",
+						"          Rating as short,",
+						"          {Rotton Tomato} as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> CSVMovieDataInput",
+						"source(output(",
+						"          movie as integer,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as short,",
+						"          Rating as short,",
+						"          RottenTomato as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdb',",
+						"     folderPath: 'delta') ~> DeltaMoviesDataInput",
+						"CorrectSpelling split(toInteger(year) > 1970,",
+						"     disjoint: false) ~> split1@(MoviesNewerThan1980, MoviesOlderThan1980)",
+						"split1@MoviesOlderThan1980 split(toInteger(Rating)>10,",
+						"     disjoint: false) ~> split2@(RatingEqualBetterThan10, RatingWorseThan10)",
+						"split2@RatingWorseThan10 split(toInteger({RottenTomato})>10,",
+						"     disjoint: false) ~> split3@(RottenTomatoEqualBetterThan10, RottenTomatoWorsethan10)",
+						"split1@MoviesNewerThan1980 derive(Rating = toShort(1 + power(Rating/(Rating-0.1), 12))) ~> NewRating",
+						"CSVMovieDataInput select(mapColumn(",
+						"          movie,",
+						"          title,",
+						"          genres,",
+						"          year,",
+						"          Rating,",
+						"          RottenTomato = {Rotton Tomato}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> CorrectSpelling",
+						"DeltaMoviesDataInput split(toInteger(year) > 1970,",
+						"     disjoint: false) ~> split4@(MoviesDeltaNewerThan1980, MoviesDeltaNewerOlderThan1980)",
+						"split4@MoviesDeltaNewerThan1980 derive(Rating = toShort(1 + power(Rating/(Rating-0.1), 12))) ~> NewRatingDelta",
+						"split4@MoviesDeltaNewerOlderThan1980 split(toInteger(Rating)>10,",
+						"     disjoint: false) ~> split5@(RatingEqualBetterThan10Delta, RatingWorseThan10Delta)",
+						"split5@RatingWorseThan10Delta split(toInteger(RottenTomato)>10,",
+						"     disjoint: false) ~> split6@(RottenTomatoEqualBetterThan10Delta, RottenTomatoWorseThan10Delta)",
+						"NewRating sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdbaggregated',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1",
+						"split2@RatingEqualBetterThan10 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdbaggregated',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink2",
+						"split3@RottenTomatoEqualBetterThan10 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdbaggregated',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink3",
+						"split3@RottenTomatoWorsethan10 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdb',",
+						"     folderPath: 'delta',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink4",
+						"NewRatingDelta sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdbaggregated',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink5",
+						"split5@RatingEqualBetterThan10Delta sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdbaggregated',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink6",
+						"split6@RottenTomatoEqualBetterThan10Delta sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdbaggregated',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink7",
+						"split6@RottenTomatoWorseThan10Delta sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdbaggregated',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink8"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/moviesdbdataflowsOptimized')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "MoviesDB",
+								"type": "DatasetReference"
+							},
+							"name": "CSVMovieDataInput"
+						},
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "DeltaMoviesDataInput"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink5"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FlowletRatingLogic1",
+							"flowlet": {
+								"referenceName": "NewRatingFlowlet",
+								"type": "DataFlowReference",
+								"parameters": {}
+							}
+						},
+						{
+							"name": "FlowletRatingLogic2",
+							"flowlet": {
+								"referenceName": "NewRatingFlowlet",
+								"type": "DataFlowReference",
+								"parameters": {}
+							}
+						},
+						{
+							"name": "CorrectSpelling"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          movie as integer,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as short,",
+						"          Rating as short,",
+						"          {Rotton Tomato} as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> CSVMovieDataInput",
+						"source(output(",
+						"          movie as integer,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as short,",
+						"          Rating as short,",
+						"          RottenTomato as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdb',",
+						"     folderPath: 'delta') ~> DeltaMoviesDataInput",
+						"CorrectSpelling compose(mapColumn(",
+						"          movie,",
+						"          title,",
+						"          genres,",
+						"          year,",
+						"          Rating,",
+						"          RottenTomato",
+						"     ),",
+						"     composition: 'NewRatingFlowlet') ~> FlowletRatingLogic1@(output1)",
+						"DeltaMoviesDataInput compose(mapColumn(",
+						"          movie,",
+						"          title,",
+						"          genres,",
+						"          year,",
+						"          Rating,",
+						"          RottenTomato",
+						"     ),",
+						"     composition: 'NewRatingFlowlet') ~> FlowletRatingLogic2@(output1)",
+						"CSVMovieDataInput select(mapColumn(",
+						"          movie,",
+						"          title,",
+						"          genres,",
+						"          year,",
+						"          Rating,",
+						"          RottenTomato = {Rotton Tomato}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> CorrectSpelling",
+						"FlowletRatingLogic1@output1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdbaggregated',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1",
+						"FlowletRatingLogic2@output1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'moviesdbaggregated',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink5"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/xmltest')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "GDPstorageaccount",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText3",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "flatten1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {http://schemas.xmlsoap.org/soap/envelope/,Envelope} as ({http://schemas.xmlsoap.org/soap/envelope/,Body} as ({URI,BatchCKIToetsen} as ({URI,Application} as ({URI,BatchToetsHeader} as ({URI,XXXX1} as boolean, {URI,XXXX2} as boolean, {URI,XXXX3} as boolean, {URI,YYYY} as ({URI,Nummer} as short)), {URI,BatchToetsingen} as string[], {URI,XXXX} as boolean), {URI,Header} as ({URI,H1} as boolean, {URI,H2} as short, {URI,H3} as short, {URI,H4} as short, {URI,H6} as short, {URI,H7} as short, {URI,Referentie} as string))), {http://schemas.xmlsoap.org/soap/envelope/,Header} as string)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'xml',",
+						"     fileSystem: 'xmltest',",
+						"     fileName: 'testrb.xml',",
+						"     validationMode: 'none',",
+						"     namespaces: true) ~> source1",
+						"source1 select(mapColumn(",
+						"          Toetsingen = {http://schemas.xmlsoap.org/soap/envelope/,Envelope}.{http://schemas.xmlsoap.org/soap/envelope/,Body}.{URI,BatchCKIToetsen}.{URI,Application}.{URI,BatchToetsingen}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 foldDown(unroll(Toetsingen, Toetsingen),",
+						"     mapColumn(",
+						"          Toetsingen",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flatten1",
+						"flatten1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['testrb.csv'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/csv_to_sql_fulldataset')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "fulldatasetcopy",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "raw/csv/full/fact_sale_1y_full",
+									"wildcardFileName": "*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": true,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "SaleKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "SaleKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "CityKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CityKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "CustomerKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CustomerKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "BillToCustomerKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BillToCustomerKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "StockItemKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "StockItemKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "InvoiceDateKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "InvoiceDateKey",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "DeliveryDateKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "DeliveryDateKey",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "SalespersonKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "SalespersonKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "WWIInvoiceID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "WWIInvoiceID",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Description",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Description",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Package",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Package",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Quantity",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Quantity",
+											"type": "Int16",
+											"physicalType": "smallint"
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPrice",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "UnitPrice",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "TaxRate",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TaxRate",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "TotalExcludingTax",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TotalExcludingTax",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "TaxAmount",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TaxAmount",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "Profit",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Profit",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "TotalIncludingTax",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TotalIncludingTax",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "TotalDryItems",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TotalDryItems",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalChillerItems",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TotalChillerItems",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "LineageKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "LineageKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Fullcsvdataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sql_silver_fact_sale",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GDPStor_privBlob_df')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "source dfs sink blob",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Source_sink_same_container_df",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime2",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-07T18:28:00Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Source_sink_same_container_df')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Hein PoC Dataflows')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "movies conversion",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "moviesdbdataflowsOptimized",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CSVMovieDataInput": {},
+									"DeltaMoviesDataInput": {},
+									"sink1": {},
+									"sink5": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-23T14:18:40Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/moviesdbdataflowsOptimized')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Oracle_ODBC')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ODBC to GDP",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OdbcSource",
+								"query": "select 1 from dual",
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "firstname"
+										},
+										"sink": {
+											"name": "firstname"
+										}
+									},
+									{
+										"source": {
+											"name": "lastname"
+										},
+										"sink": {
+											"name": "lastname"
+										}
+									},
+									{
+										"source": {
+											"name": "id"
+										},
+										"sink": {
+											"name": "id"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OdbcTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-09-25T14:05:15Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Oracle_built_inODBC')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Oracle to ADLSgen2",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OdbcSource",
+								"query": "select 1 from dual",
+								"queryTimeout": "02:00:00",
+								"convertDecimalToInteger": false
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "firstname"
+										},
+										"sink": {
+											"name": "firstname"
+										}
+									},
+									{
+										"source": {
+											"name": "lastname"
+										},
+										"sink": {
+											"name": "lastname"
+										}
+									},
+									{
+										"source": {
+											"name": "id"
+										},
+										"sink": {
+											"name": "id"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OracleTable1ODBC",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Oracle to ADLSgen2 v2",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Oracle to ADLSgen2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OdbcSource",
+								"query": "select 1 from dual",
+								"queryTimeout": "02:00:00",
+								"convertDecimalToInteger": false
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "firstname"
+										},
+										"sink": {
+											"name": "firstname"
+										}
+									},
+									{
+										"source": {
+											"name": "lastname"
+										},
+										"sink": {
+											"name": "lastname"
+										}
+									},
+									{
+										"source": {
+											"name": "id"
+										},
+										"sink": {
+											"name": "id"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OracleTable1ODBC",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OdbcSource",
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "OracleTable1ODBC",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-03T12:49:55Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Source_sink_same_container_df')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Source_sink_same_container_df",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Source_sink_same_container_df",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-02-10T18:42:27Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Source_sink_same_container_df')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/XMLtest')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -59,7 +1526,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-03-03T19:06:01Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/xmltest')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/copyusmi')]",
@@ -138,73 +1607,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/GDPsecondary')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "gdpstorsecundary",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"storname": "https://gpdstorznsdns.z6.dfs.storage.azure.net/"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "person.txt",
-						"fileSystem": "person"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "firstname",
-						"type": "String"
-					},
-					{
-						"name": "lastname",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GDPstorDFS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "gdpstorsecundary",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"storname": "https://testgdpstor2.dfs.core.windows.net/"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "person.txt",
-						"fileSystem": "person"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/OracleTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -224,7 +1626,9 @@
 					"table": "testrb_table"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OracleBuiltIn')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Xml_output')]",
@@ -244,7 +1648,9 @@
 					}
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/testgdpinformationfblobdataset')]",
@@ -269,58 +1675,9 @@
 				},
 				"schema": []
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Source_sink_same_container_df')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"linkedService": {
-								"referenceName": "AzureDataLakeStorage2",
-								"type": "LinkedServiceReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"linkedService": {
-								"referenceName": "testgdpinformationfblob",
-								"type": "LinkedServiceReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [],
-					"scriptLines": [
-						"parameters{",
-						"     par_container as string (\"testsourcesink\"),",
-						"     par_source as string (\"source\"),",
-						"     par_sink as string (\"sink\")",
-						"}",
-						"source(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet',",
-						"     fileSystem: (person),",
-						"     fileName: 'person.txt') ~> source1",
-						"source1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'parquet',",
-						"     fileSystem: (privtest),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     preCommands: [],",
-						"     postCommands: []) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/testgdpinformationfblob')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Source_hns_sink_blob')]",
@@ -372,120 +1729,8 @@
 					]
 				}
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GDPSecondaryStor_privStor')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "stor to stor",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "person//person.txt"
-							},
-							{
-								"name": "Destination",
-								"value": "dbo.person"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings",
-									"skipLineCount": 0
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"validateDataConsistency": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "firstname",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "firstname",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "lastname",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "lastname",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "GDPsecondary",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "testadfstorrbrinf",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-04-05T18:00:10Z"
-			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/GDPsecondary')]"
+				"[concat(variables('factoryId'), '/linkedServices/testgdpinformationfblob')]"
 			]
 		},
 		{
@@ -599,583 +1844,7 @@
 				"lastPublishTime": "2024-04-07T18:28:00Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/GDPstorDFS')]",
 				"[concat(variables('factoryId'), '/datasets/testgdpinformationfblobdataset')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GDPStor_privSQL')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "stor to SQL",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "person//person.txt"
-							},
-							{
-								"name": "Destination",
-								"value": "dbo.person"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings",
-									"skipLineCount": 0
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink"
-							},
-							"enableStaging": false,
-							"validateDataConsistency": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "firstname",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "firstname",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "lastname",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "lastname",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "GDPsecondary",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DestinationDataset_q83",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-04-06T15:09:25Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/GDPsecondary')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GDPStor_privStor')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "stor to stor",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "person//person.txt"
-							},
-							{
-								"name": "Destination",
-								"value": "dbo.person"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings",
-									"skipLineCount": 0
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"validateDataConsistency": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "firstname",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "firstname",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "lastname",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "lastname",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "GDPstorDFS",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "testadfstorrbrinf",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-04-05T13:57:16Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/GDPstorDFS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Oracle_built_in')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Oracle to ADLSgen2",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Lookup1",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "OracleSource",
-								"oracleReaderQuery": "select 1 from dual ?AdfTabularPartitionName",
-								"partitionOption": "PhysicalPartitionsOfTable",
-								"partitionSettings": {
-									"partitionNames": [
-										"Feyenoord"
-									]
-								},
-								"convertDecimalToInteger": false,
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "firstname"
-										},
-										"sink": {
-											"name": "firstname"
-										}
-									},
-									{
-										"source": {
-											"name": "lastname"
-										},
-										"sink": {
-											"name": "lastname"
-										}
-									},
-									{
-										"source": {
-											"name": "id"
-										},
-										"sink": {
-											"name": "id"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "OracleTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DelimitedText1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Oracle to ADLSgen2 v2",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Oracle to ADLSgen2",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "OracleSource",
-								"oracleReaderQuery": "select 1 from dual",
-								"partitionOption": "None",
-								"convertDecimalToInteger": false,
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "firstname"
-										},
-										"sink": {
-											"name": "firstname"
-										}
-									},
-									{
-										"source": {
-											"name": "lastname"
-										},
-										"sink": {
-											"name": "lastname"
-										}
-									},
-									{
-										"source": {
-											"name": "id"
-										},
-										"sink": {
-											"name": "id"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "OracleTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DelimitedText1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Lookup1",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "OracleSource",
-								"partitionOption": "None",
-								"queryTimeout": "02:00:00"
-							},
-							"dataset": {
-								"referenceName": "OracleTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2023-10-03T14:59:01Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/OracleTable1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Source_sink_same_container_df')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Source_sink_same_container_df",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "Source_sink_same_container_df",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-02-10T18:42:27Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/Source_sink_same_container_df')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GDPStor_privBlob_df')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "source dfs sink blob",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "Source_sink_same_container_df",
-								"type": "DataFlowReference",
-								"parameters": {
-									"par_container": "\"person\"",
-									"par_source": "\"source\"",
-									"par_sink": "\"sink\""
-								},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								},
-								"linkedServiceParameters": {}
-							},
-							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime2",
-								"type": "IntegrationRuntimeReference"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-04-07T18:28:00Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/Source_sink_same_container_df')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/trigger1')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Oracle_built_in",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "BlobEventsTrigger",
-				"typeProperties": {
-					"blobPathBeginsWith": "/oracle/blobs/434",
-					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
-					"events": [
-						"Microsoft.Storage.BlobCreated",
-						"Microsoft.Storage.BlobDeleted"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Oracle_built_in')]"
 			]
 		}
 	]
