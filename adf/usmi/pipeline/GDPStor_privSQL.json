@@ -78,13 +78,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "GDPsecondary",
+						"referenceName": "Fullcsvdataset",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "DestinationDataset_q83",
+						"referenceName": "sql_silver_fact_sale",
 						"type": "DatasetReference"
 					}
 				]
