@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"linkedService": {
-						"referenceName": "GDPstorageaccount",
+						"referenceName": "testgdpstor2blob",
 						"type": "LinkedServiceReference"
 					},
 					"name": "source1"
@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "testgdpinformationfblobdataset",
+						"referenceName": "sql_silver_fact_sale",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -23,22 +23,47 @@
 			],
 			"transformations": [],
 			"scriptLines": [
-				"source(useSchema: false,",
-				"     allowSchemaDrift: true,",
+				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     format: 'delimited',",
-				"     fileSystem: 'person',",
-				"     fileName: 'person.txt',",
-				"     columnDelimiter: ',',",
-				"     escapeChar: '\\\\',",
-				"     quoteChar: '\\\"',",
-				"     columnNamesAsHeader: false) ~> source1",
+				"     format: 'delta',",
+				"     container: 'fabricdemo',",
+				"     folderPath: 'silver/silver_fact_sale') ~> source1",
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          SaleKey as integer,",
+				"          CityKey as integer,",
+				"          CustomerKey as integer,",
+				"          BillToCustomerKey as integer,",
+				"          StockItemKey as integer,",
+				"          InvoiceDateKey as timestamp,",
+				"          DeliveryDateKey as timestamp,",
+				"          SalespersonKey as integer,",
+				"          WWIInvoiceID as integer,",
+				"          Description as string,",
+				"          Package as string,",
+				"          Quantity as integer,",
+				"          UnitPrice as decimal(38,6),",
+				"          TaxRate as decimal(38,6),",
+				"          TotalExcludingTax as decimal(38,6),",
+				"          TaxAmount as decimal(38,6),",
+				"          Profit as decimal(38,6),",
+				"          TotalIncludingTax as decimal(38,6),",
+				"          TotalDryItems as integer,",
+				"          TotalChillerItems as integer,",
+				"          LineageKey as integer,",
+				"          Quarter as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     saveOrder: 1) ~> sink1"
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
