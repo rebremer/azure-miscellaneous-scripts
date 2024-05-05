@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "csv_to_sql_fulldataset",
 	"properties": {
 		"activities": [
 			{
