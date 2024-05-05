@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "part-00000-ce0a22f6-4dab-4111-a60e-5ab131a3989c-c000.csv",
+				"fileName": "*.csv",
 				"folderPath": "raw/csv/full/fact_sale_1y_full",
 				"fileSystem": "fabricdemo"
 			},
