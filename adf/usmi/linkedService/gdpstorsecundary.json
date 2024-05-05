@@ -1,12 +1,6 @@
 {
 	"name": "gdpstorsecundary",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
-		"parameters": {
-			"storname": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "AzureBlobFS",
 		"typeProperties": {
@@ -16,5 +10,6 @@
 			"referenceName": "integrationRuntime2",
 			"type": "IntegrationRuntimeReference"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }
