@@ -307,13 +307,6 @@
 									"type": "Int32",
 									"physicalType": "int"
 								}
-							},
-							{
-								"sink": {
-									"name": "Quarter",
-									"type": "Int32",
-									"physicalType": "int"
-								}
 							}
 						],
 						"typeConversion": true,
