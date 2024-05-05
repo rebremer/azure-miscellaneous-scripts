@@ -29,6 +29,8 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
+							"wildcardFolderPath": "sdf",
+							"wildcardFileName": "fds",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
