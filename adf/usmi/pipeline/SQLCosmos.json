@@ -30,13 +30,10 @@
 					},
 					"sink": {
 						"type": "CosmosDbSqlApiSink",
-						"writeBatchSize": 2000000,
 						"writeBehavior": "insert",
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
-					"parallelCopies": 32,
-					"dataIntegrationUnits": 100,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
