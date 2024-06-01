@@ -9,7 +9,7 @@
 		"type": "CosmosDbSqlApiCollection",
 		"schema": {},
 		"typeProperties": {
-			"collectionName": "wwimporters"
+			"collectionName": "silver_fact_sale"
 		}
 	}
 }
