@@ -23,7 +23,7 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "person"
+			"table": "MovieAnalytics"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
