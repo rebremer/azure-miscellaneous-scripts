@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SQLCosmos",
+				"name": "StorageCosmos",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -16,9 +16,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureSqlSource",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
 						"type": "CosmosDbSqlApiSink",
@@ -28,7 +34,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DestinationDataset_q83",
+						"referenceName": "DelimitedText1",
 						"type": "DatasetReference"
 					}
 				],
