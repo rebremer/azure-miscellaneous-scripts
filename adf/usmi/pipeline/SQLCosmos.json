@@ -34,8 +34,8 @@
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
-					"parallelCopies": 64,
-					"dataIntegrationUnits": 120,
+					"parallelCopies": 32,
+					"dataIntegrationUnits": 100,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
