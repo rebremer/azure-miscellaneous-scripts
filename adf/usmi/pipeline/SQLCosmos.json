@@ -34,6 +34,7 @@
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
+					"parallelCopies": 64,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
