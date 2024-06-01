@@ -19,13 +19,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
 		},
-		"testgdpstor2blob_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
-		},
 		"CosmosDbNoSql1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDbNoSql1'"
+		},
+		"testgdpstor2blob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
 		},
 		"ADLSgen2uami_properties_typeProperties_url": {
 			"type": "string",
@@ -135,11 +135,11 @@
 					"AzureSqlDatabase2_connectionString": {
 						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
 					},
-					"testgdpstor2blob_connectionString": {
-						"value": "[parameters('testgdpstor2blob_connectionString')]"
-					},
 					"CosmosDbNoSql1_connectionString": {
 						"value": "[parameters('CosmosDbNoSql1_connectionString')]"
+					},
+					"testgdpstor2blob_connectionString": {
+						"value": "[parameters('testgdpstor2blob_connectionString')]"
 					},
 					"AKVADF_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AKVADF_properties_typeProperties_baseUrl')]"

@@ -19,13 +19,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
 		},
-		"testgdpstor2blob_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
-		},
 		"CosmosDbNoSql1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDbNoSql1'"
+		},
+		"testgdpstor2blob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
 		},
 		"ADLSgen2uami_properties_typeProperties_url": {
 			"type": "string",
@@ -1578,6 +1578,259 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SQLCosmos')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "StorageCosmos",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "raw/csv/full/fact_sale_1y_full",
+									"wildcardFileName": "*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "CosmosDbSqlApiSink",
+								"writeBehavior": "insert",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"parallelCopies": 32,
+							"dataIntegrationUnits": 100,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "SaleKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['SaleKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "CityKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['CityKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "CustomerKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['CustomerKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "BillToCustomerKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['BillToCustomerKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "StockItemKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['StockItemKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "InvoiceDateKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['InvoiceDateKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "DeliveryDateKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['DeliveryDateKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "SalespersonKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['SalespersonKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "WWIInvoiceID",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['WWIInvoiceID']"
+										}
+									},
+									{
+										"source": {
+											"name": "Package",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Package']"
+										}
+									},
+									{
+										"source": {
+											"name": "Quantity",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Quantity']"
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPrice",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['UnitPrice']"
+										}
+									},
+									{
+										"source": {
+											"name": "TaxRate",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TaxRate']"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalExcludingTax",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TotalExcludingTax']"
+										}
+									},
+									{
+										"source": {
+											"name": "TaxAmount",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TaxAmount']"
+										}
+									},
+									{
+										"source": {
+											"name": "Profit",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Profit']"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalIncludingTax",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TotalIncludingTax']"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalDryItems",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TotalDryItems']"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalChillerItems",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TotalChillerItems']"
+										}
+									},
+									{
+										"source": {
+											"name": "LineageKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['LineageKey']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CosmosDbNoSqlContainer1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"concurrency": 16,
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
+				"[concat(variables('factoryId'), '/datasets/CosmosDbNoSqlContainer1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Source_sink_same_container_df')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2170,6 +2423,26 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSqlContainer1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CosmosDbNoSql1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "CosmosDbSqlApiCollection",
+				"schema": {},
+				"typeProperties": {
+					"collectionName": "silver_fact_sale"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CosmosDbNoSql1')]"
 			]
 		},
 		{
@@ -3101,6 +3374,19 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureSqlDatabase2_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSql1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CosmosDb",
+				"typeProperties": {
+					"connectionString": "[parameters('CosmosDbNoSql1_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -4138,290 +4424,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQLCosmos')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "StorageCosmos",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFolderPath": "raw/csv/full/fact_sale_1y_full",
-									"wildcardFileName": "*.csv",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "CosmosDbSqlApiSink",
-								"writeBehavior": "insert",
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "SaleKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['SaleKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "CityKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['CityKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "CustomerKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['CustomerKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "BillToCustomerKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['BillToCustomerKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "StockItemKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['StockItemKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "InvoiceDateKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['InvoiceDateKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "DeliveryDateKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['DeliveryDateKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "SalespersonKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['SalespersonKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "WWIInvoiceID",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['WWIInvoiceID']"
-										}
-									},
-									{
-										"source": {
-											"name": "Package",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['Package']"
-										}
-									},
-									{
-										"source": {
-											"name": "Quantity",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['Quantity']"
-										}
-									},
-									{
-										"source": {
-											"name": "UnitPrice",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['UnitPrice']"
-										}
-									},
-									{
-										"source": {
-											"name": "TaxRate",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TaxRate']"
-										}
-									},
-									{
-										"source": {
-											"name": "TotalExcludingTax",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TotalExcludingTax']"
-										}
-									},
-									{
-										"source": {
-											"name": "TaxAmount",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TaxAmount']"
-										}
-									},
-									{
-										"source": {
-											"name": "Profit",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['Profit']"
-										}
-									},
-									{
-										"source": {
-											"name": "TotalIncludingTax",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TotalIncludingTax']"
-										}
-									},
-									{
-										"source": {
-											"name": "TotalDryItems",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TotalDryItems']"
-										}
-									},
-									{
-										"source": {
-											"name": "TotalChillerItems",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TotalChillerItems']"
-										}
-									},
-									{
-										"source": {
-											"name": "LineageKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['LineageKey']"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DelimitedText1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CosmosDbNoSqlContainer1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"concurrency": 16,
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
-				"[concat(variables('factoryId'), '/datasets/CosmosDbNoSqlContainer1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSql1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "CosmosDb",
-				"typeProperties": {
-					"connectionString": "[parameters('CosmosDbNoSql1_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSqlContainer1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "CosmosDbNoSql1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "CosmosDbSqlApiCollection",
-				"schema": {},
-				"typeProperties": {
-					"collectionName": "silver_fact_sale"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CosmosDbNoSql1')]"
 			]
 		}
 	]

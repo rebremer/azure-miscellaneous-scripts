@@ -14,10 +14,10 @@
 		"AzureSqlDatabase2_connectionString": {
 			"value": ""
 		},
-		"testgdpstor2blob_connectionString": {
+		"CosmosDbNoSql1_connectionString": {
 			"value": ""
 		},
-		"CosmosDbNoSql1_connectionString": {
+		"testgdpstor2blob_connectionString": {
 			"value": ""
 		},
 		"ADLSgen2uami_properties_typeProperties_url": {
