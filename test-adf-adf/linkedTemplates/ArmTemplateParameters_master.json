@@ -17,6 +17,9 @@
 		"testgdpstor2blob_connectionString": {
 			"value": ""
 		},
+		"CosmosDbNoSql1_connectionString": {
+			"value": ""
+		},
 		"ADLSgen2uami_properties_typeProperties_url": {
 			"value": "https://testgdpstor2.dfs.core.windows.net/"
 		},
