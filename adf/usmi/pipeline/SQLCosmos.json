@@ -215,36 +215,6 @@
 								"sink": {
 									"path": "$['LineageKey']"
 								}
-							},
-							{
-								"sink": {
-									"path": "$['id']"
-								}
-							},
-							{
-								"sink": {
-									"path": "$['_rid']"
-								}
-							},
-							{
-								"sink": {
-									"path": "$['_self']"
-								}
-							},
-							{
-								"sink": {
-									"path": "$['_etag']"
-								}
-							},
-							{
-								"sink": {
-									"path": "$['_attachments']"
-								}
-							},
-							{
-								"sink": {
-									"path": "$['_ts']"
-								}
 							}
 						]
 					}
