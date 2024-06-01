@@ -35,6 +35,7 @@
 					},
 					"enableStaging": false,
 					"parallelCopies": 64,
+					"dataIntegrationUnits": 120,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
