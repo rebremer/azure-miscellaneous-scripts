@@ -10,7 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileSystem": "person"
+				"folderPath": "raw/csv/full/fact_sale_1y_full",
+				"fileSystem": "fabricdemo"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
