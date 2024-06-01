@@ -23,7 +23,7 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "MovieAnalytics"
+			"table": "silver_fact_sale"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
