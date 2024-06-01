@@ -4177,8 +4177,8 @@
 								"writeBehavior": "insert"
 							},
 							"enableStaging": false,
-							"parallelCopies": 16,
-							"dataIntegrationUnits": 32,
+							"parallelCopies": 32,
+							"dataIntegrationUnits": 100,
 							"translator": {
 								"type": "TabularTranslator",
 								"mappings": [
