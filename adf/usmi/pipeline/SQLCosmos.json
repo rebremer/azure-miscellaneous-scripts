@@ -32,7 +32,222 @@
 						"type": "CosmosDbSqlApiSink",
 						"writeBehavior": "insert"
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "SaleKey",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['SaleKey']"
+								}
+							},
+							{
+								"source": {
+									"name": "CityKey",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['CityKey']"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerKey",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['CustomerKey']"
+								}
+							},
+							{
+								"source": {
+									"name": "BillToCustomerKey",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['BillToCustomerKey']"
+								}
+							},
+							{
+								"source": {
+									"name": "StockItemKey",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['StockItemKey']"
+								}
+							},
+							{
+								"source": {
+									"name": "InvoiceDateKey",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['InvoiceDateKey']"
+								}
+							},
+							{
+								"source": {
+									"name": "DeliveryDateKey",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['DeliveryDateKey']"
+								}
+							},
+							{
+								"source": {
+									"name": "SalespersonKey",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['SalespersonKey']"
+								}
+							},
+							{
+								"source": {
+									"name": "WWIInvoiceID",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['WWIInvoiceID']"
+								}
+							},
+							{
+								"source": {
+									"name": "Package",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Package']"
+								}
+							},
+							{
+								"source": {
+									"name": "Quantity",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Quantity']"
+								}
+							},
+							{
+								"source": {
+									"name": "UnitPrice",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['UnitPrice']"
+								}
+							},
+							{
+								"source": {
+									"name": "TaxRate",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['TaxRate']"
+								}
+							},
+							{
+								"source": {
+									"name": "TotalExcludingTax",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['TotalExcludingTax']"
+								}
+							},
+							{
+								"source": {
+									"name": "TaxAmount",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['TaxAmount']"
+								}
+							},
+							{
+								"source": {
+									"name": "Profit",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Profit']"
+								}
+							},
+							{
+								"source": {
+									"name": "TotalIncludingTax",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['TotalIncludingTax']"
+								}
+							},
+							{
+								"source": {
+									"name": "TotalDryItems",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['TotalDryItems']"
+								}
+							},
+							{
+								"source": {
+									"name": "TotalChillerItems",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['TotalChillerItems']"
+								}
+							},
+							{
+								"source": {
+									"name": "LineageKey",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['LineageKey']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['id']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['_rid']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['_self']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['_etag']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['_attachments']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['_ts']"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
