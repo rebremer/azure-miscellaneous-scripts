@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SQL to storage",
+				"name": "SQL to SQL",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
