@@ -359,7 +359,7 @@
 				],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "wikipedia_articles_embeddings"
+					"table": "silver_fact_sale_v2"
 				}
 			},
 			"dependsOn": [

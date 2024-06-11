@@ -202,7 +202,7 @@
 				],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "silver_fact_sale"
+					"table": "silver_fact_sale_v2"
 				}
 			},
 			"dependsOn": []
