@@ -17,7 +17,6 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT TOP (10) [id]\n      ,[url]\n      ,[title]\n      ,[text]\n      ,[title_vector]\n      ,[content_vector]\n      ,[vector_id]\n  FROM [dbo].[wikipedia_articles_embeddings]",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -29,6 +28,284 @@
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "SaleKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "SaleKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "CityKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "CityKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "CustomerKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "BillToCustomerKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "BillToCustomerKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "StockItemKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "StockItemKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "InvoiceDateKey",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								},
+								"sink": {
+									"name": "InvoiceDateKey",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								}
+							},
+							{
+								"source": {
+									"name": "DeliveryDateKey",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								},
+								"sink": {
+									"name": "DeliveryDateKey",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								}
+							},
+							{
+								"source": {
+									"name": "SalespersonKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "SalespersonKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "WWIInvoiceID",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "WWIInvoiceID",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "Package",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Package",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Quantity",
+									"type": "Int16",
+									"physicalType": "smallint"
+								},
+								"sink": {
+									"name": "Quantity",
+									"type": "Int16",
+									"physicalType": "smallint"
+								}
+							},
+							{
+								"source": {
+									"name": "UnitPrice",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								},
+								"sink": {
+									"name": "UnitPrice",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "TaxRate",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								},
+								"sink": {
+									"name": "TaxRate",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "TotalExcludingTax",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								},
+								"sink": {
+									"name": "TotalExcludingTax",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "TaxAmount",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								},
+								"sink": {
+									"name": "TaxAmount",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "Profit",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								},
+								"sink": {
+									"name": "Profit",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "TotalIncludingTax",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								},
+								"sink": {
+									"name": "TotalIncludingTax",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 38
+								}
+							},
+							{
+								"source": {
+									"name": "TotalDryItems",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "TotalDryItems",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "TotalChillerItems",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "TotalChillerItems",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "LineageKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "LineageKey",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "Quarter",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "Quarter",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
