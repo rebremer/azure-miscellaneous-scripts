@@ -4,7 +4,7 @@ import json
 
 # az account get-access-token --resource https://analysis.windows.net/powerbi/api
 
-url ="https://api.powerbi.com/v2.0/rebremertest/gatewayClusterCloudDatasource"
+url ="https://api.powerbi.com/v2.0/myorg/me/gatewayClusterCloudDatasource"
 headers = {
     "Content-Type": "application/json",
     "Authorization": "Bearer xyz"
