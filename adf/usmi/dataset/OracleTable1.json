@@ -9,8 +9,8 @@
 		"type": "OracleTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "testrb_schema",
-			"table": "testrb_table"
+			"schema": "TESTRBADMIN",
+			"table": "BOOKS"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
