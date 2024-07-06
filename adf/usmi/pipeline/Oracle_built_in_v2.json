@@ -48,26 +48,79 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "firstname"
+									"name": "BOOK_ID",
+									"type": "String"
 								},
 								"sink": {
-									"name": "firstname"
+									"name": "BOOK_ID",
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "lastname"
+									"name": "TITLE",
+									"type": "String"
 								},
 								"sink": {
-									"name": "lastname"
+									"name": "TITLE",
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "id"
+									"name": "AUTHOR_LAST_NAME",
+									"type": "String"
 								},
 								"sink": {
-									"name": "id"
+									"name": "AUTHOR_LAST_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AUTHOR_FIRST_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AUTHOR_FIRST_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RATING",
+									"type": "Double"
+								},
+								"sink": {
+									"name": "RATING",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CREATE_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "CREATE_DATE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "UPDATE_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "UPDATE_DATE",
+									"type": "String",
+									"physicalType": "String"
 								}
 							}
 						],
