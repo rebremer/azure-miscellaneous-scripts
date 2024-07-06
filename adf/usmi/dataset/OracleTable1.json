@@ -3,10 +3,7 @@
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "OracleBuiltIn",
-			"type": "LinkedServiceReference",
-			"parameters": {
-				"asdf": "adsf"
-			}
+			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "OracleTable",
