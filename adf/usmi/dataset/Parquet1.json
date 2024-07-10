@@ -1,0 +1,130 @@
+{
+	"name": "Parquet1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"filename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": "silver/silver_fact_sale",
+				"fileSystem": "fabricdemo"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "SaleKey",
+				"type": "INT64"
+			},
+			{
+				"name": "CityKey",
+				"type": "INT32"
+			},
+			{
+				"name": "CustomerKey",
+				"type": "INT32"
+			},
+			{
+				"name": "BillToCustomerKey",
+				"type": "INT32"
+			},
+			{
+				"name": "StockItemKey",
+				"type": "INT32"
+			},
+			{
+				"name": "InvoiceDateKey",
+				"type": "INT96"
+			},
+			{
+				"name": "DeliveryDateKey",
+				"type": "INT96"
+			},
+			{
+				"name": "SalespersonKey",
+				"type": "INT32"
+			},
+			{
+				"name": "WWIInvoiceID",
+				"type": "INT32"
+			},
+			{
+				"name": "Description",
+				"type": "UTF8"
+			},
+			{
+				"name": "Package",
+				"type": "UTF8"
+			},
+			{
+				"name": "Quantity",
+				"type": "INT32"
+			},
+			{
+				"name": "UnitPrice",
+				"type": "DECIMAL",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "TaxRate",
+				"type": "DECIMAL",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "TotalExcludingTax",
+				"type": "DECIMAL",
+				"precision": 29,
+				"scale": 2
+			},
+			{
+				"name": "TaxAmount",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 6
+			},
+			{
+				"name": "Profit",
+				"type": "DECIMAL",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "TotalIncludingTax",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 6
+			},
+			{
+				"name": "TotalDryItems",
+				"type": "INT32"
+			},
+			{
+				"name": "TotalChillerItems",
+				"type": "INT32"
+			},
+			{
+				"name": "LineageKey",
+				"type": "INT32"
+			},
+			{
+				"name": "Quarter",
+				"type": "INT32"
+			}
+		]
+	}
+}
