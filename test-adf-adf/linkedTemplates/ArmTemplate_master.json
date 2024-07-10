@@ -85,19 +85,21 @@
 				"testgdpinformationf.blob.core.windows.net"
 			]
 		},
-		"AzureSqlDatabase535_properties_privateLinkResourceId": {
+		"priv-db_properties_privateLinkResourceId": {
 			"type": "string",
 			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Sql/servers/test-priv-rbr"
 		},
-		"AzureSqlDatabase535_properties_groupId": {
+		"priv-db_properties_groupId": {
 			"type": "string",
 			"defaultValue": "sqlServer"
 		},
-		"AzureSqlDatabase535_properties_fqdns": {
-			"type": "array",
-			"defaultValue": [
-				"test-priv-rbr.database.windows.net"
-			]
+		"gdgstordfs_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-onelab-rg/providers/Microsoft.Storage/storageAccounts/testgdpstor2"
+		},
+		"gdgstordfs_properties_groupId": {
+			"type": "string",
+			"defaultValue": "dfs"
 		},
 		"containerUri": {
 			"type": "string",
@@ -132,9 +134,6 @@
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
 					},
-					"AzureSqlDatabase2_connectionString": {
-						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
-					},
 					"CosmosDbNoSql1_connectionString": {
 						"value": "[parameters('CosmosDbNoSql1_connectionString')]"
 					},
@@ -143,9 +142,6 @@
 					},
 					"AKVADF_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AKVADF_properties_typeProperties_baseUrl')]"
-					},
-					"AzureDataLakeStorage1_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
 					"GDPstorageaccount_properties_typeProperties_url": {
 						"value": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
@@ -177,6 +173,9 @@
 					"OracleBuiltIn_connectionString": {
 						"value": "[parameters('OracleBuiltIn_connectionString')]"
 					},
+					"AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
 					"ADLSgen2uami_properties_typeProperties_url": {
 						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
 					},
@@ -192,14 +191,26 @@
 					"AzureBlobStorage988_properties_fqdns": {
 						"value": "[parameters('AzureBlobStorage988_properties_fqdns')]"
 					},
-					"AzureSqlDatabase535_properties_privateLinkResourceId": {
-						"value": "[parameters('AzureSqlDatabase535_properties_privateLinkResourceId')]"
+					"priv-db_properties_privateLinkResourceId": {
+						"value": "[parameters('priv-db_properties_privateLinkResourceId')]"
 					},
-					"AzureSqlDatabase535_properties_groupId": {
-						"value": "[parameters('AzureSqlDatabase535_properties_groupId')]"
+					"priv-db_properties_groupId": {
+						"value": "[parameters('priv-db_properties_groupId')]"
 					},
-					"AzureSqlDatabase535_properties_fqdns": {
-						"value": "[parameters('AzureSqlDatabase535_properties_fqdns')]"
+					"gdgstordfs_properties_privateLinkResourceId": {
+						"value": "[parameters('gdgstordfs_properties_privateLinkResourceId')]"
+					},
+					"gdgstordfs_properties_groupId": {
+						"value": "[parameters('gdgstordfs_properties_groupId')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"AzureDataLakeStorage2_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
+					},
+					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
 					}
 				}
 			},
@@ -220,12 +231,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"AzureDataLakeStorage2_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
-					},
-					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
-						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
 					}
 				}
 			},
