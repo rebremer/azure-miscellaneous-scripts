@@ -109,7 +109,7 @@
 						"referenceName": "Parquet1",
 						"type": "DatasetReference",
 						"parameters": {
-							"filename": "CityKey=37955/part-00000-996cea76-7a66-4730-80dc-53826357b53f.c000.snappy.parquet",
+							"filename": "CityKey=38005/part-00000-185bd9c8-55c7-4826-9b74-b7318ae4130b.c000.snappy.parquet",
 							"foldername": "silver/silver_fact_sale_citykey"
 						}
 					}
