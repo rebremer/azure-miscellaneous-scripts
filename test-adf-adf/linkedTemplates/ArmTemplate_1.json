@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "test-adf-adf"
 		},
+		"OracleBuiltIn_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'OracleBuiltIn'"
+		},
 		"ADLSgen2uami_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
@@ -679,6 +683,24 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/OracleBuiltIn')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "omschrijving",
+				"annotations": [],
+				"type": "Oracle",
+				"typeProperties": {
+					"connectionString": "[parameters('OracleBuiltIn_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime1",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/OracleBuiltInODBC')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -762,6 +784,139 @@
 				"privateLinkResourceId": "[parameters('AzureSqlDatabase535_properties_privateLinkResourceId')]",
 				"groupId": "[parameters('AzureSqlDatabase535_properties_groupId')]",
 				"fqdns": "[parameters('AzureSqlDatabase535_properties_fqdns')]"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": "silver/silver_fact_sale",
+						"fileSystem": "fabricdemo"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "SaleKey",
+						"type": "INT64"
+					},
+					{
+						"name": "CityKey",
+						"type": "INT32"
+					},
+					{
+						"name": "CustomerKey",
+						"type": "INT32"
+					},
+					{
+						"name": "BillToCustomerKey",
+						"type": "INT32"
+					},
+					{
+						"name": "StockItemKey",
+						"type": "INT32"
+					},
+					{
+						"name": "InvoiceDateKey",
+						"type": "INT96"
+					},
+					{
+						"name": "DeliveryDateKey",
+						"type": "INT96"
+					},
+					{
+						"name": "SalespersonKey",
+						"type": "INT32"
+					},
+					{
+						"name": "WWIInvoiceID",
+						"type": "INT32"
+					},
+					{
+						"name": "Description",
+						"type": "UTF8"
+					},
+					{
+						"name": "Package",
+						"type": "UTF8"
+					},
+					{
+						"name": "Quantity",
+						"type": "INT32"
+					},
+					{
+						"name": "UnitPrice",
+						"type": "DECIMAL",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "TaxRate",
+						"type": "DECIMAL",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "TotalExcludingTax",
+						"type": "DECIMAL",
+						"precision": 29,
+						"scale": 2
+					},
+					{
+						"name": "TaxAmount",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 6
+					},
+					{
+						"name": "Profit",
+						"type": "DECIMAL",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "TotalIncludingTax",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 6
+					},
+					{
+						"name": "TotalDryItems",
+						"type": "INT32"
+					},
+					{
+						"name": "TotalChillerItems",
+						"type": "INT32"
+					},
+					{
+						"name": "LineageKey",
+						"type": "INT32"
+					},
+					{
+						"name": "Quarter",
+						"type": "INT32"
+					}
+				]
 			},
 			"dependsOn": []
 		},
@@ -1408,326 +1563,6 @@
 				"[concat(variables('factoryId'), '/datasets/GDPstorDFS')]",
 				"[concat(variables('factoryId'), '/datasets/testadfstorrbrinf')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL to storage')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SQL to storage",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": "SELECT TOP (10) [id]\n      ,[url]\n      ,[title]\n      ,[text]\n      ,[title_vector]\n      ,[content_vector]\n      ,[vector_id]\n  FROM [dbo].[wikipedia_articles_embeddings]",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DelimitedText2",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-01-13T18:47:01Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQLCosmos')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "StorageCosmos",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFolderPath": "raw/csv/full/fact_sale_1y_full",
-									"wildcardFileName": "*.csv",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "CosmosDbSqlApiSink",
-								"writeBehavior": "insert",
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"parallelCopies": 32,
-							"dataIntegrationUnits": 100,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "SaleKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['SaleKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "CityKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['CityKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "CustomerKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['CustomerKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "BillToCustomerKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['BillToCustomerKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "StockItemKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['StockItemKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "InvoiceDateKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['InvoiceDateKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "DeliveryDateKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['DeliveryDateKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "SalespersonKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['SalespersonKey']"
-										}
-									},
-									{
-										"source": {
-											"name": "WWIInvoiceID",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['WWIInvoiceID']"
-										}
-									},
-									{
-										"source": {
-											"name": "Package",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['Package']"
-										}
-									},
-									{
-										"source": {
-											"name": "Quantity",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['Quantity']"
-										}
-									},
-									{
-										"source": {
-											"name": "UnitPrice",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['UnitPrice']"
-										}
-									},
-									{
-										"source": {
-											"name": "TaxRate",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TaxRate']"
-										}
-									},
-									{
-										"source": {
-											"name": "TotalExcludingTax",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TotalExcludingTax']"
-										}
-									},
-									{
-										"source": {
-											"name": "TaxAmount",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TaxAmount']"
-										}
-									},
-									{
-										"source": {
-											"name": "Profit",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['Profit']"
-										}
-									},
-									{
-										"source": {
-											"name": "TotalIncludingTax",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TotalIncludingTax']"
-										}
-									},
-									{
-										"source": {
-											"name": "TotalDryItems",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TotalDryItems']"
-										}
-									},
-									{
-										"source": {
-											"name": "TotalChillerItems",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TotalChillerItems']"
-										}
-									},
-									{
-										"source": {
-											"name": "LineageKey",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['LineageKey']"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DelimitedText1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CosmosDbNoSqlContainer1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"concurrency": 16,
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
 		}
 	]
 }

@@ -17,6 +17,9 @@
 		"CosmosDbNoSql1_connectionString": {
 			"value": ""
 		},
+		"OracleBuiltIn_connectionString": {
+			"value": ""
+		},
 		"testgdpstor2blob_connectionString": {
 			"value": ""
 		},
@@ -34,9 +37,6 @@
 		},
 		"GDPstorageaccount_properties_typeProperties_url": {
 			"value": "https://testgdpstor2.dfs.core.windows.net/"
-		},
-		"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
-			"value": "oraclebuiltin"
 		},
 		"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
 			"value": "oraclebuiltinODBC2"

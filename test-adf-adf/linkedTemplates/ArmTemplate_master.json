@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDbNoSql1'"
 		},
+		"OracleBuiltIn_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'OracleBuiltIn'"
+		},
 		"testgdpstor2blob_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
@@ -46,10 +50,6 @@
 		"GDPstorageaccount_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
-		},
-		"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "oraclebuiltin"
 		},
 		"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
@@ -174,6 +174,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"OracleBuiltIn_connectionString": {
+						"value": "[parameters('OracleBuiltIn_connectionString')]"
+					},
 					"ADLSgen2uami_properties_typeProperties_url": {
 						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
 					},
@@ -220,9 +223,6 @@
 					},
 					"AzureDataLakeStorage2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
-					},
-					"OracleBuiltIn_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('OracleBuiltIn_properties_typeProperties_connectionString_secretName')]"
 					},
 					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
 						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
