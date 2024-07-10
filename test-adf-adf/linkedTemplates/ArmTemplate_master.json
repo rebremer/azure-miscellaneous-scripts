@@ -170,17 +170,26 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"OracleBuiltIn_connectionString": {
-						"value": "[parameters('OracleBuiltIn_connectionString')]"
-					},
 					"AzureSqlDatabase2_connectionString": {
 						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
+					"OracleBuiltIn_connectionString": {
+						"value": "[parameters('OracleBuiltIn_connectionString')]"
 					},
 					"ADLSgen2uami_properties_typeProperties_url": {
 						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
 					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"AzureDataLakeStorage2_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
+					},
 					"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
 						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
+					},
+					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
 					},
 					"AzureBlobStorage988_properties_privateLinkResourceId": {
 						"value": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]"
@@ -202,15 +211,6 @@
 					},
 					"gdgstordfs_properties_groupId": {
 						"value": "[parameters('gdgstordfs_properties_groupId')]"
-					},
-					"AzureDataLakeStorage1_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
-					},
-					"AzureDataLakeStorage2_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
-					},
-					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
-						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
 					}
 				}
 			},
