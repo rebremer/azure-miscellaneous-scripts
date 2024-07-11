@@ -2475,16 +2475,9 @@
 						]
 					},
 					{
-						"name": "Copy data1_copy1",
+						"name": "Copy data2",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy data1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -4408,7 +4401,7 @@
 							"customProperties": []
 						},
 						"copyComputeScaleProperties": {
-							"dataIntegrationUnit": 16,
+							"dataIntegrationUnit": 64,
 							"timeToLive": 10
 						},
 						"pipelineExternalComputeScaleProperties": {
@@ -5385,7 +5378,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy data1_copy1",
+						"name": "Copy data2",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
