@@ -32,8 +32,6 @@
 						"sqlWriterUseTableLock": false
 					},
 					"enableStaging": false,
-					"parallelCopies": 6,
-					"dataIntegrationUnits": 32,
 					"translator": {
 						"type": "TabularTranslator",
 						"typeConversion": true,
@@ -90,8 +88,6 @@
 						"sqlWriterUseTableLock": false
 					},
 					"enableStaging": false,
-					"parallelCopies": 6,
-					"dataIntegrationUnits": 32,
 					"translator": {
 						"type": "TabularTranslator",
 						"typeConversion": true,
