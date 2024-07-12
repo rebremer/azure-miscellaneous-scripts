@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
 		},
+		"DTUDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'DTUDB'"
+		},
 		"ADLSgen2uami_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
@@ -100,6 +104,18 @@
 		"priv-db_properties_groupId": {
 			"type": "string",
 			"defaultValue": "sqlServer"
+		},
+		"DTUDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "test-priv-rbr.database.windows.net"
+		},
+		"DTUDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "test-priv-dtu"
+		},
+		"DTUDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "bremerov"
 		}
 	},
 	"variables": {
@@ -2649,8 +2665,10 @@
 							},
 							"sink": {
 								"type": "AzureSqlSink",
+								"preCopyScript": "TRUNCATE TABLE [dbo].[silver_fact_nested_test]",
 								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
 							},
 							"enableStaging": false,
 							"translator": {
@@ -5450,6 +5468,168 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DTUDB')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('DTUDB_properties_typeProperties_server')]",
+					"database": "[parameters('DTUDB_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('DTUDB_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('DTUDB_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Test_nested_pipelines_dtu')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "TRUNCATE TABLE [dbo].[silver_fact_nested_test]",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Parquet1",
+								"type": "DatasetReference",
+								"parameters": {
+									"filename": "CityKey=37955/part-00000-996cea76-7a66-4730-80dc-53826357b53f.c000.snappy.parquet",
+									"foldername": "silver/silver_fact_sale_citykey"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Copy data2",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Parquet1",
+								"type": "DatasetReference",
+								"parameters": {
+									"filename": "CityKey=38005/part-00000-185bd9c8-55c7-4826-9b74-b7318ae4130b.c000.snappy.parquet",
+									"foldername": "silver/silver_fact_sale_citykey"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Parquet1')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
 			]
 		}
 	]

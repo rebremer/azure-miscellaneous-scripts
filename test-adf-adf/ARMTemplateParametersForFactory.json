@@ -23,6 +23,9 @@
 		"testgdpstor2blob_connectionString": {
 			"value": ""
 		},
+		"DTUDB_password": {
+			"value": ""
+		},
 		"ADLSgen2uami_properties_typeProperties_url": {
 			"value": "https://testgdpstor2.dfs.core.windows.net/"
 		},
@@ -75,6 +78,15 @@
 		},
 		"priv-db_properties_groupId": {
 			"value": "sqlServer"
+		},
+		"DTUDB_properties_typeProperties_server": {
+			"value": "test-priv-rbr.database.windows.net"
+		},
+		"DTUDB_properties_typeProperties_database": {
+			"value": "test-priv-dtu"
+		},
+		"DTUDB_properties_typeProperties_userName": {
+			"value": "bremerov"
 		}
 	}
 }

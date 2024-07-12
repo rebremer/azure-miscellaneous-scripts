@@ -60,16 +60,38 @@
 		"AzureDataLakeStorage2_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
-		},
-		"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
-			"type": "string",
-			"defaultValue": "https://testgdpinformationf.blob.core.windows.net/"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/MoviesDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GDPstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "csv",
+						"fileSystem": "moviesdb"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/fulldataset')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -754,27 +776,6 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureSqlDatabase2_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime2",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/testgdpinformationfblob')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "@utcnow()",
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"serviceEndpoint": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]",
-					"accountKind": "StorageV2"
 				},
 				"connectVia": {
 					"referenceName": "integrationRuntime2",

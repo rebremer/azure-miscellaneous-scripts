@@ -6,12 +6,35 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "test-adf-adf"
+		},
+		"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://testgdpinformationf.blob.core.windows.net/"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/testgdpinformationfblob')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "@utcnow()",
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"serviceEndpoint": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]",
+					"accountKind": "StorageV2"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime2",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/moviesdbdataflowsBloated')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
@@ -1184,7 +1207,9 @@
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/testgdpinformationfblob')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Source_hns_sink_blob')]",
@@ -1236,7 +1261,9 @@
 					]
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/testgdpinformationfblob')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/GDPStor_privBlob')]",
@@ -2234,192 +2261,6 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2023-10-03T12:49:55Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Oracle_built_in_v2')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Oracle to ADLSgen2",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Lookup1",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "OracleSource",
-								"partitionOption": "PhysicalPartitionsOfTable",
-								"partitionSettings": {
-									"partitionNames": []
-								},
-								"convertDecimalToInteger": false,
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "BOOK_ID",
-											"type": "String"
-										},
-										"sink": {
-											"name": "BOOK_ID",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "TITLE",
-											"type": "String"
-										},
-										"sink": {
-											"name": "TITLE",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "AUTHOR_LAST_NAME",
-											"type": "String"
-										},
-										"sink": {
-											"name": "AUTHOR_LAST_NAME",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "AUTHOR_FIRST_NAME",
-											"type": "String"
-										},
-										"sink": {
-											"name": "AUTHOR_FIRST_NAME",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "RATING",
-											"type": "Double"
-										},
-										"sink": {
-											"name": "RATING",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATE_DATE",
-											"type": "DateTime"
-										},
-										"sink": {
-											"name": "CREATE_DATE",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "UPDATE_DATE",
-											"type": "DateTime"
-										},
-										"sink": {
-											"name": "UPDATE_DATE",
-											"type": "String",
-											"physicalType": "String"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "OracleTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DelimitedText1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Lookup1",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "OracleSource",
-								"partitionOption": "None",
-								"queryTimeout": "02:00:00"
-							},
-							"dataset": {
-								"referenceName": "OracleTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2023-10-03T14:59:01Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]"

@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
 		},
+		"DTUDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'DTUDB'"
+		},
 		"ADLSgen2uami_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
@@ -101,6 +105,18 @@
 			"type": "string",
 			"defaultValue": "sqlServer"
 		},
+		"DTUDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "test-priv-rbr.database.windows.net"
+		},
+		"DTUDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "test-priv-dtu"
+		},
+		"DTUDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "bremerov"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -140,6 +156,9 @@
 					"testgdpstor2blob_connectionString": {
 						"value": "[parameters('testgdpstor2blob_connectionString')]"
 					},
+					"DTUDB_password": {
+						"value": "[parameters('DTUDB_password')]"
+					},
 					"AKVADF_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AKVADF_properties_typeProperties_baseUrl')]"
 					},
@@ -151,6 +170,15 @@
 					},
 					"testgdpinfomrationfdfs_properties_typeProperties_url": {
 						"value": "[parameters('testgdpinfomrationfdfs_properties_typeProperties_url')]"
+					},
+					"DTUDB_properties_typeProperties_server": {
+						"value": "[parameters('DTUDB_properties_typeProperties_server')]"
+					},
+					"DTUDB_properties_typeProperties_database": {
+						"value": "[parameters('DTUDB_properties_typeProperties_database')]"
+					},
+					"DTUDB_properties_typeProperties_userName": {
+						"value": "[parameters('DTUDB_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -208,9 +236,6 @@
 					},
 					"AzureDataLakeStorage2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
-					},
-					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
-						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
 					}
 				}
 			},
@@ -231,6 +256,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
 					}
 				}
 			},
