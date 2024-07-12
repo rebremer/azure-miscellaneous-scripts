@@ -1,0 +1,24 @@
+{
+	"name": "Every20minutes",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Test_nested_pipelines",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 20,
+				"startTime": "2024-07-12T15:53:00",
+				"timeZone": "W. Europe Standard Time"
+			}
+		}
+	}
+}
