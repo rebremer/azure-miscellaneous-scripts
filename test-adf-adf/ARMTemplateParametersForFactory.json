@@ -64,17 +64,17 @@
 				"testgdpinformationf.blob.core.windows.net"
 			]
 		},
-		"priv-db_properties_privateLinkResourceId": {
-			"value": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Sql/servers/test-priv-rbr"
-		},
-		"priv-db_properties_groupId": {
-			"value": "sqlServer"
-		},
 		"gdgstordfs_properties_privateLinkResourceId": {
 			"value": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-onelab-rg/providers/Microsoft.Storage/storageAccounts/testgdpstor2"
 		},
 		"gdgstordfs_properties_groupId": {
 			"value": "dfs"
+		},
+		"priv-db_properties_privateLinkResourceId": {
+			"value": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Sql/servers/test-priv-rbr"
+		},
+		"priv-db_properties_groupId": {
+			"value": "sqlServer"
 		}
 	}
 }

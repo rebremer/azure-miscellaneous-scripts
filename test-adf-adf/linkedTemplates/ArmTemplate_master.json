@@ -85,14 +85,6 @@
 				"testgdpinformationf.blob.core.windows.net"
 			]
 		},
-		"priv-db_properties_privateLinkResourceId": {
-			"type": "string",
-			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Sql/servers/test-priv-rbr"
-		},
-		"priv-db_properties_groupId": {
-			"type": "string",
-			"defaultValue": "sqlServer"
-		},
 		"gdgstordfs_properties_privateLinkResourceId": {
 			"type": "string",
 			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-onelab-rg/providers/Microsoft.Storage/storageAccounts/testgdpstor2"
@@ -100,6 +92,14 @@
 		"gdgstordfs_properties_groupId": {
 			"type": "string",
 			"defaultValue": "dfs"
+		},
+		"priv-db_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Sql/servers/test-priv-rbr"
+		},
+		"priv-db_properties_groupId": {
+			"type": "string",
+			"defaultValue": "sqlServer"
 		},
 		"containerUri": {
 			"type": "string",
@@ -170,26 +170,17 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"AzureSqlDatabase2_connectionString": {
-						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
-					},
 					"OracleBuiltIn_connectionString": {
 						"value": "[parameters('OracleBuiltIn_connectionString')]"
+					},
+					"AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
 					},
 					"ADLSgen2uami_properties_typeProperties_url": {
 						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
 					},
-					"AzureDataLakeStorage1_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
-					},
-					"AzureDataLakeStorage2_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
-					},
 					"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
 						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
-					},
-					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
-						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
 					},
 					"AzureBlobStorage988_properties_privateLinkResourceId": {
 						"value": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]"
@@ -200,17 +191,26 @@
 					"AzureBlobStorage988_properties_fqdns": {
 						"value": "[parameters('AzureBlobStorage988_properties_fqdns')]"
 					},
+					"gdgstordfs_properties_privateLinkResourceId": {
+						"value": "[parameters('gdgstordfs_properties_privateLinkResourceId')]"
+					},
+					"gdgstordfs_properties_groupId": {
+						"value": "[parameters('gdgstordfs_properties_groupId')]"
+					},
 					"priv-db_properties_privateLinkResourceId": {
 						"value": "[parameters('priv-db_properties_privateLinkResourceId')]"
 					},
 					"priv-db_properties_groupId": {
 						"value": "[parameters('priv-db_properties_groupId')]"
 					},
-					"gdgstordfs_properties_privateLinkResourceId": {
-						"value": "[parameters('gdgstordfs_properties_privateLinkResourceId')]"
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
-					"gdgstordfs_properties_groupId": {
-						"value": "[parameters('gdgstordfs_properties_groupId')]"
+					"AzureDataLakeStorage2_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
+					},
+					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
 					}
 				}
 			},
