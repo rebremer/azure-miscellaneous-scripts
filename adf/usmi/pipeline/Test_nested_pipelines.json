@@ -124,18 +124,18 @@
 				]
 			},
 			{
-				"name": "ForEach1",
-				"type": "ForEach",
+				"name": "Until1",
+				"type": "Until",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"items": {
-						"value": "@greater(variables('iterator'),10)",
+					"expression": {
+						"value": "@less(variables('iterator'),20)",
 						"type": "Expression"
 					},
 					"activities": [
 						{
-							"name": "Sessions1_fe",
+							"name": "Sessions1_fe_copy1",
 							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
@@ -161,11 +161,11 @@
 							}
 						},
 						{
-							"name": "set dummy",
+							"name": "set dummy_copy1",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Sessions1_fe",
+									"activity": "Sessions1_fe_copy1",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -185,11 +185,11 @@
 							}
 						},
 						{
-							"name": "Set variable1",
+							"name": "Set variable1_copy1",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "set dummy",
+									"activity": "set dummy_copy1",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -209,11 +209,11 @@
 							}
 						},
 						{
-							"name": "Wait1",
+							"name": "Wait1_copy1",
 							"type": "Wait",
 							"dependsOn": [
 								{
-									"activity": "Set variable1",
+									"activity": "Set variable1_copy1",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -221,10 +221,11 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"waitTimeInSeconds": 60
+								"waitTimeInSeconds": 30
 							}
 						}
-					]
+					],
+					"timeout": "0.12:00:00"
 				}
 			}
 		],
