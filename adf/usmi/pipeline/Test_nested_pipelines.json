@@ -234,8 +234,8 @@
 				"defaultValue": 0
 			},
 			"dummy": {
-				"type": "String",
-				"defaultValue": "0"
+				"type": "Integer",
+				"defaultValue": 0
 			}
 		},
 		"annotations": []
