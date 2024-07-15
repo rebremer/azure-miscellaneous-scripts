@@ -2765,7 +2765,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@less(variables('iterator'),20)",
+								"value": "@greater(variables('iterator'),19)",
 								"type": "Expression"
 							},
 							"activities": [
