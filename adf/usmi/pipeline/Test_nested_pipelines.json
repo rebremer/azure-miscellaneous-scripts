@@ -63,14 +63,7 @@
 			{
 				"name": "Copy data2",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy data1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -130,7 +123,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(variables('iterator'),19)",
+						"value": "@greater(variables('iterator'),12)",
 						"type": "Expression"
 					},
 					"activities": [
