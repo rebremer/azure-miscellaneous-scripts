@@ -19,29 +19,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDbNoSql1'"
 		},
-		"testgdpstor2blob_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
-		},
 		"DTUDB_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'DTUDB'"
 		},
+		"testgdpstor2blob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
+		},
 		"AKVADF_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://test-adf-akv.vault.azure.net/"
-		},
-		"GDPstorageaccount_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
-		},
-		"gdpstorsecundary_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "@{linkedService().storname}"
-		},
-		"testgdpinfomrationfdfs_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://testgdpinformationf.dfs.core.windows.net/"
 		},
 		"DTUDB_properties_typeProperties_server": {
 			"type": "string",
@@ -54,6 +42,18 @@
 		"DTUDB_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "bremerov"
+		},
+		"GDPstorageaccount_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"gdpstorsecundary_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{linkedService().storname}"
+		},
+		"testgdpinfomrationfdfs_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testgdpinformationf.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -108,6 +108,28 @@
 				"type": "CosmosDb",
 				"typeProperties": {
 					"connectionString": "[parameters('CosmosDbNoSql1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DTUDB')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('DTUDB_properties_typeProperties_server')]",
+					"database": "[parameters('DTUDB_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('DTUDB_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('DTUDB_password')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -294,28 +316,6 @@
 			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
 			"apiVersion": "2018-06-01",
 			"properties": {},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DTUDB')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"server": "[parameters('DTUDB_properties_typeProperties_server')]",
-					"database": "[parameters('DTUDB_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": false,
-					"authenticationType": "SQL",
-					"userName": "[parameters('DTUDB_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('DTUDB_password')]"
-					}
-				}
-			},
 			"dependsOn": []
 		},
 		{

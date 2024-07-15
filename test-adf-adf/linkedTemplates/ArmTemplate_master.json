@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDbNoSql1'"
 		},
+		"DTUDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'DTUDB'"
+		},
 		"OracleBuiltIn_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OracleBuiltIn'"
@@ -30,10 +34,6 @@
 		"testgdpstor2blob_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
-		},
-		"DTUDB_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'DTUDB'"
 		},
 		"ADLSgen2uami_properties_typeProperties_url": {
 			"type": "string",
@@ -50,6 +50,18 @@
 		"AzureDataLakeStorage2_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"DTUDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "test-priv-rbr.database.windows.net"
+		},
+		"DTUDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "test-priv-dtu"
+		},
+		"DTUDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "bremerov"
 		},
 		"GDPstorageaccount_properties_typeProperties_url": {
 			"type": "string",
@@ -70,10 +82,6 @@
 		"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
 			"type": "string",
 			"defaultValue": "https://testgdpinformationf.blob.core.windows.net/"
-		},
-		"trigger1_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Storage/storageAccounts/testadfstorrbr"
 		},
 		"AzureBlobStorage988_properties_privateLinkResourceId": {
 			"type": "string",
@@ -104,18 +112,6 @@
 		"priv-db_properties_groupId": {
 			"type": "string",
 			"defaultValue": "sqlServer"
-		},
-		"DTUDB_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "test-priv-rbr.database.windows.net"
-		},
-		"DTUDB_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "test-priv-dtu"
-		},
-		"DTUDB_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "bremerov"
 		},
 		"containerUri": {
 			"type": "string",
@@ -153,23 +149,14 @@
 					"CosmosDbNoSql1_connectionString": {
 						"value": "[parameters('CosmosDbNoSql1_connectionString')]"
 					},
-					"testgdpstor2blob_connectionString": {
-						"value": "[parameters('testgdpstor2blob_connectionString')]"
-					},
 					"DTUDB_password": {
 						"value": "[parameters('DTUDB_password')]"
 					},
+					"testgdpstor2blob_connectionString": {
+						"value": "[parameters('testgdpstor2blob_connectionString')]"
+					},
 					"AKVADF_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AKVADF_properties_typeProperties_baseUrl')]"
-					},
-					"GDPstorageaccount_properties_typeProperties_url": {
-						"value": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
-					},
-					"gdpstorsecundary_properties_typeProperties_url": {
-						"value": "[parameters('gdpstorsecundary_properties_typeProperties_url')]"
-					},
-					"testgdpinfomrationfdfs_properties_typeProperties_url": {
-						"value": "[parameters('testgdpinfomrationfdfs_properties_typeProperties_url')]"
 					},
 					"DTUDB_properties_typeProperties_server": {
 						"value": "[parameters('DTUDB_properties_typeProperties_server')]"
@@ -179,6 +166,15 @@
 					},
 					"DTUDB_properties_typeProperties_userName": {
 						"value": "[parameters('DTUDB_properties_typeProperties_userName')]"
+					},
+					"GDPstorageaccount_properties_typeProperties_url": {
+						"value": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
+					},
+					"gdpstorsecundary_properties_typeProperties_url": {
+						"value": "[parameters('gdpstorsecundary_properties_typeProperties_url')]"
+					},
+					"testgdpinfomrationfdfs_properties_typeProperties_url": {
+						"value": "[parameters('testgdpinfomrationfdfs_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -279,9 +275,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"trigger1_properties_typeProperties_scope": {
-						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
 					}
 				}
 			},
