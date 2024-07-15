@@ -2638,7 +2638,14 @@
 					{
 						"name": "Copy data1",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -2757,6 +2764,32 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT\n    s.session_id,\n    c.client_net_address AS [Client IP Address],\n    s.host_name AS [Host Name],\n    c.connect_time AS [Connection Time],\n    r.command AS [Command],\n    t.text AS [SQL Text],\n\ts.last_request_start_time,\n\ts.last_request_end_time,\n\tc.last_read,\n\tc.last_write\nFROM sys.dm_exec_sessions AS s\nJOIN sys.dm_exec_connections AS c ON s.session_id = c.session_id\nCROSS APPLY sys.dm_exec_sql_text(c.most_recent_sql_handle) AS t\nJOIN sys.dm_exec_requests AS r ON s.session_id = r.session_id\nWHERE s.is_user_process = 1\n  AND s.status = 'running'\nORDER BY s.session_id;",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
 					}
 				],
 				"policy": {
