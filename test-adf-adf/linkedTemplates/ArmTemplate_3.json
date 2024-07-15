@@ -2086,6 +2086,36 @@
 				"[concat(variables('factoryId'), '/pipelines/Test_nested_pipeline_worker1')]",
 				"[concat(variables('factoryId'), '/pipelines/Test_nested_pipeline_worker2')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Every20minutesv2')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Test_nested_pipelines",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 20,
+						"startTime": "2024-07-15T10:53:00",
+						"timeZone": "W. Europe Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Test_nested_pipelines')]"
+			]
 		}
 	]
 }
