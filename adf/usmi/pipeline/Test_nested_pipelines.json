@@ -117,7 +117,7 @@
 				]
 			},
 			{
-				"name": "Until1",
+				"name": "Check db queries 30s",
 				"type": "Until",
 				"dependsOn": [],
 				"userProperties": [],
