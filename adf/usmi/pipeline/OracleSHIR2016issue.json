@@ -17,12 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "OracleSource",
-						"partitionOption": "PhysicalPartitionsOfTable",
-						"partitionSettings": {
-							"partitionNames": [
-								"Feyenoord"
-							]
-						},
+						"partitionOption": "None",
 						"convertDecimalToInteger": false,
 						"queryTimeout": "02:00:00"
 					},
