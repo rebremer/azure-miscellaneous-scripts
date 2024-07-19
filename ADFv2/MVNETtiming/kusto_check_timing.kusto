@@ -1,0 +1,6 @@
+ADFActivityRun  
+| where Status == "Succeeded" 
+| project TimeGenerated, ActivityRunId, OutputJson = parse_json(Output)
+| project TimeGenerated, ActivityRunId, OutputJson, total=OutputJson.executionDetails[0].profile.transfer.duration, writing=OutputJson.executionDetails[0].profile.transfer.details.writingToSink.workingDuration
+| where todouble(total) - todouble(writing) > 100 
+| order  by TimeGenerated
