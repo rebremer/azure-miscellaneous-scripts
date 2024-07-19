@@ -20,6 +20,9 @@
 		"DTUDB_password": {
 			"value": ""
 		},
+		"Oracle2016_connectionString": {
+			"value": ""
+		},
 		"OracleBuiltIn_connectionString": {
 			"value": ""
 		},

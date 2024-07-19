@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'DTUDB'"
 		},
+		"Oracle2016_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Oracle2016'"
+		},
 		"OracleBuiltIn_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OracleBuiltIn'"
@@ -194,11 +198,11 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"Oracle2016_connectionString": {
+						"value": "[parameters('Oracle2016_connectionString')]"
+					},
 					"OracleBuiltIn_connectionString": {
 						"value": "[parameters('OracleBuiltIn_connectionString')]"
-					},
-					"AzureSqlDatabase2_connectionString": {
-						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
 					},
 					"ADLSgen2uami_properties_typeProperties_url": {
 						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
@@ -226,12 +230,6 @@
 					},
 					"priv-db_properties_groupId": {
 						"value": "[parameters('priv-db_properties_groupId')]"
-					},
-					"AzureDataLakeStorage1_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
-					},
-					"AzureDataLakeStorage2_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -252,6 +250,15 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"AzureDataLakeStorage2_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
 					},
 					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
 						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
