@@ -1,0 +1,19 @@
+{
+	"name": "Oracle2016issue",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "oracle2016"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

@@ -17,7 +17,6 @@
 				"typeProperties": {
 					"source": {
 						"type": "OracleSource",
-						"oracleReaderQuery": "select 1 from dual ?AdfTabularPartitionName",
 						"partitionOption": "PhysicalPartitionsOfTable",
 						"partitionSettings": {
 							"partitionNames": [
@@ -28,14 +27,12 @@
 						"queryTimeout": "02:00:00"
 					},
 					"sink": {
-						"type": "DelimitedTextSink",
+						"type": "ParquetSink",
 						"storeSettings": {
 							"type": "AzureBlobFSWriteSettings"
 						},
 						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
+							"type": "ParquetWriteSettings"
 						}
 					},
 					"enableStaging": false,
@@ -82,7 +79,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DelimitedText1",
+						"referenceName": "Oracle2016issue",
 						"type": "DatasetReference"
 					}
 				]
