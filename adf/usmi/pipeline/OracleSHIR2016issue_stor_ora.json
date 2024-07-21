@@ -126,12 +126,12 @@
 							{
 								"source": {
 									"name": "KKKKK",
-									"type": "Double",
-									"physicalType": "Double"
+									"type": "Decimal",
+									"physicalType": "Decimal"
 								},
 								"sink": {
 									"name": "KKKKK",
-									"type": "Double"
+									"type": "Decimal"
 								}
 							}
 						],
