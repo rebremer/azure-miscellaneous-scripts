@@ -148,12 +148,89 @@
 							{
 								"source": {
 									"name": "KKKKK",
-									"type": "String",
-									"physicalType": "Double"
+									"type": "Double",
+									"physicalType": "UTF8"
 								},
 								"sink": {
 									"name": "KKKKK",
 									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LLLLL",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "LLLLL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MMMMM",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "MMMMM",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NNNNN",
+									"type": "DateTime",
+									"physicalType": "INT96"
+								},
+								"sink": {
+									"name": "NNNNN",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "OOOO",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "OOOO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PPPP",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "PPPP",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "QQQQ",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "QQQQ",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RRRR",
+									"type": "DateTime",
+									"physicalType": "INT96"
+								},
+								"sink": {
+									"name": "RRRR",
+									"type": "DateTime"
 								}
 							}
 						],
