@@ -149,7 +149,7 @@
 								"source": {
 									"name": "KKKKK",
 									"type": "String",
-									"physicalType": "UTF8"
+									"physicalType": "INT96"
 								},
 								"sink": {
 									"name": "KKKKK",
