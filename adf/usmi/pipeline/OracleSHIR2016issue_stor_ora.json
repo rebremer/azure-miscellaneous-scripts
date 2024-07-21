@@ -17,6 +17,12 @@
 				"typeProperties": {
 					"source": {
 						"type": "ParquetSource",
+						"additionalColumns": [
+							{
+								"name": "KKKKKK",
+								"value": "999999999"
+							}
+						],
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
@@ -143,18 +149,6 @@
 									"name": "JJJJJ",
 									"type": "DateTime",
 									"physicalType": "INT_96"
-								}
-							},
-							{
-								"source": {
-									"name": "KKKKK",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "KKKKK",
-									"type": "Decimal",
-									"physicalType": "decimal"
 								}
 							}
 						],
