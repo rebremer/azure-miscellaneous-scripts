@@ -19,8 +19,8 @@
 						"type": "ParquetSource",
 						"additionalColumns": [
 							{
-								"name": "@int(KKKKKv2)",
-								"value": "$$COLUMN:KKKKK"
+								"name": "KKKKK",
+								"value": "99999999"
 							}
 						],
 						"storeSettings": {
