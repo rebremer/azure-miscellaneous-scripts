@@ -17,12 +17,6 @@
 				"typeProperties": {
 					"source": {
 						"type": "ParquetSource",
-						"additionalColumns": [
-							{
-								"name": "KKKKKv2",
-								"value": "99999999999999.999999999999"
-							}
-						],
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
@@ -157,8 +151,7 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "KKKKK",
-									"type": "String"
+									"name": "99999999999999.999999999999"
 								}
 							}
 						],
