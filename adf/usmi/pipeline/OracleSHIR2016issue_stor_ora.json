@@ -152,8 +152,8 @@
 								},
 								"sink": {
 									"name": "KKKKK",
-									"type": "Integer",
-									"physicalType": "UTF8"
+									"type": "Decimal",
+									"physicalType": "decimal"
 								}
 							}
 						],
