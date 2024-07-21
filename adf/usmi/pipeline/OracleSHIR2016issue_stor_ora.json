@@ -125,28 +125,6 @@
 							},
 							{
 								"source": {
-									"name": "IIIII",
-									"type": "String",
-									"physicalType": "UTF8"
-								},
-								"sink": {
-									"name": "IIIII",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "JJJJJ",
-									"type": "DateTime",
-									"physicalType": "INT96"
-								},
-								"sink": {
-									"name": "JJJJJ",
-									"type": "DateTime"
-								}
-							},
-							{
-								"source": {
 									"name": "KKKKK",
 									"type": "Double",
 									"physicalType": "UTF8"
