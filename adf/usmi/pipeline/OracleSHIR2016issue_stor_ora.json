@@ -92,22 +92,22 @@
 							},
 							{
 								"source": {
-									"name": "FFFFF",
+									"name": "GGGGG",
 									"type": "String"
 								},
 								"sink": {
-									"name": "FFFFF",
+									"name": "GGGGG",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
-									"name": "GGGGG",
+									"name": "FFFFF",
 									"type": "String"
 								},
 								"sink": {
-									"name": "GGGGG",
+									"name": "FFFFF",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
@@ -143,6 +143,17 @@
 									"name": "JJJJJ",
 									"type": "DateTime",
 									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "KKKKK",
+									"type": "String"
+								},
+								"sink": {
+									"name": "KKKKK",
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							}
 						],
