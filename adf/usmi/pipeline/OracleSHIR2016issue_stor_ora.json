@@ -131,7 +131,7 @@
 								},
 								"sink": {
 									"name": "KKKKK",
-									"type": "String"
+									"type": "Double"
 								}
 							}
 						],
