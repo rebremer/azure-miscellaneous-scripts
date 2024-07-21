@@ -147,10 +147,13 @@
 							},
 							{
 								"source": {
-									"name": "KKKKK"
+									"name": "KKKKK",
+									"type": "String",
+									"physicalType": "UTF8"
 								},
 								"sink": {
-									"name": "\"99999999999999.999999999999\""
+									"name": "KKKKK",
+									"type": "String"
 								}
 							}
 						],
