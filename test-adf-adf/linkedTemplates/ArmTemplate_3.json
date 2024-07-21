@@ -3102,12 +3102,6 @@
 						"typeProperties": {
 							"source": {
 								"type": "ParquetSource",
-								"additionalColumns": [
-									{
-										"name": "KKKKK",
-										"value": "$$COLUMN:@int(KKKKK)"
-									}
-								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
@@ -3129,111 +3123,199 @@
 									{
 										"source": {
 											"name": "AAAAA",
-											"type": "String"
+											"type": "String",
+											"physicalType": "UTF8"
 										},
 										"sink": {
 											"name": "AAAAA",
-											"type": "String",
-											"physicalType": "UTF8"
+											"type": "String"
 										}
 									},
 									{
 										"source": {
 											"name": "BBBBB",
-											"type": "String"
+											"type": "String",
+											"physicalType": "UTF8"
 										},
 										"sink": {
 											"name": "BBBBB",
-											"type": "String",
-											"physicalType": "UTF8"
+											"type": "String"
 										}
 									},
 									{
 										"source": {
 											"name": "CCCCC",
-											"type": "DateTime"
+											"type": "DateTime",
+											"physicalType": "INT96"
 										},
 										"sink": {
 											"name": "CCCCC",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "DDDDD",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "DDDDD",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EEEEE",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "EEEEE",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FFFFF",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "FFFFF",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GGGGG",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "GGGGG",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "HHHHH",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "HHHHH",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "IIIII",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "IIIII",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "JJJJJ",
 											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "DDDDD",
-											"type": "String"
+											"physicalType": "INT96"
 										},
 										"sink": {
-											"name": "DDDDD",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "EEEEE",
-											"type": "String"
-										},
-										"sink": {
-											"name": "EEEEE",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "GGGGG",
-											"type": "String"
-										},
-										"sink": {
-											"name": "GGGGG",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "FFFFF",
-											"type": "String"
-										},
-										"sink": {
-											"name": "FFFFF",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "HHHHH",
-											"type": "String"
-										},
-										"sink": {
-											"name": "HHHHH",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "IIIII",
-											"type": "String"
-										},
-										"sink": {
-											"name": "IIIII",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
 											"name": "JJJJJ",
 											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "KKKKK",
+											"type": "Double",
+											"physicalType": "UTF8"
 										},
 										"sink": {
-											"name": "JJJJJ",
+											"name": "KKKKK",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LLLLL",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "LLLLL",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MMMMM",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "MMMMM",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NNNNN",
 											"type": "DateTime",
-											"physicalType": "INT_96"
+											"physicalType": "INT96"
+										},
+										"sink": {
+											"name": "NNNNN",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "OOOO",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "OOOO",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PPPP",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "PPPP",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "QQQQ",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "QQQQ",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RRRR",
+											"type": "DateTime",
+											"physicalType": "INT96"
+										},
+										"sink": {
+											"name": "RRRR",
+											"type": "DateTime"
 										}
 									}
 								],
