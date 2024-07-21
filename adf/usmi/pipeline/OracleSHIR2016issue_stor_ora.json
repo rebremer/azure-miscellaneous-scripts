@@ -20,7 +20,7 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
-							"wildcardFileName": "*.parquet",
+							"wildcardFileName": "TESTRBADMIN.TEST_PROD_ISSUE_v2 (2).parquet",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
