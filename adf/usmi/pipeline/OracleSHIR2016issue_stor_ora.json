@@ -127,7 +127,7 @@
 								"source": {
 									"name": "KKKKK",
 									"type": "Double",
-									"physicalType": "UTF8"
+									"physicalType": "Double"
 								},
 								"sink": {
 									"name": "KKKKK",
