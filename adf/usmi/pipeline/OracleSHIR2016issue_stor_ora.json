@@ -20,7 +20,7 @@
 						"additionalColumns": [
 							{
 								"name": "KKKKKK",
-								"value": "999999999"
+								"value": "$$COLUMN:"
 							}
 						],
 						"storeSettings": {
