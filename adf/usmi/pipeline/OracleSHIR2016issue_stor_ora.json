@@ -19,8 +19,8 @@
 						"type": "ParquetSource",
 						"additionalColumns": [
 							{
-								"name": "KKKKK",
-								"value": "99999999"
+								"name": "KKKKKv2",
+								"value": "9999999999"
 							}
 						],
 						"storeSettings": {
