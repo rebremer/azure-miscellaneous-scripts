@@ -19,7 +19,7 @@
 						"type": "ParquetSource",
 						"additionalColumns": [
 							{
-								"name": "KKKKK",
+								"name": "KKKKKv2",
 								"value": "$$COLUMN:@int(KKKKK)"
 							}
 						],
