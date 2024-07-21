@@ -152,7 +152,7 @@
 								},
 								"sink": {
 									"name": "KKKKK",
-									"type": "String",
+									"type": "Integer",
 									"physicalType": "UTF8"
 								}
 							}
