@@ -3233,7 +3233,8 @@
 									{
 										"source": {
 											"name": "KKKKK",
-											"type": "String"
+											"type": "Decimal",
+											"physicalType": "decimal"
 										},
 										"sink": {
 											"name": "KKKKK",
