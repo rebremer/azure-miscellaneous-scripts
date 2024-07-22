@@ -44,7 +44,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> source1",
-				"source1 derive(KKKKK = toDouble(99999999999999999999.999999999999999999)) ~> castdata"
+				"source1 derive(KKKKK = 999999999999999.9999999999999) ~> castdata"
 			]
 		}
 	}
