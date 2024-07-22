@@ -166,8 +166,6 @@
 					{
 						"name": "cast data",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -218,12 +216,6 @@
 						"typeProperties": {
 							"source": {
 								"type": "ParquetSource",
-								"additionalColumns": [
-									{
-										"name": "KKKKKKv2",
-										"value": "10000000000000"
-									}
-								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
@@ -332,7 +324,7 @@
 									},
 									{
 										"source": {
-											"name": "KKKKKKv2",
+											"name": "KKKKK",
 											"physicalType": "DOUBLE"
 										},
 										"sink": {

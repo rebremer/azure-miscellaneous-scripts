@@ -6197,12 +6197,7 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> source1",
-						"source1 derive(KKKKK = round(9999999999999.33333333333333333333333333,5)\r",
-						"\r",
-						"/*round(toDouble(KKKKK),5)*/\r",
-						"\r",
-						"/*round(9999999999999.33333333333333333333333333,5)*/\r",
-						",",
+						"source1 derive(KKKKK = 100000000000000,",
 						"     partitionBy('hash', 1)) ~> castdata",
 						"castdata sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -6551,8 +6546,6 @@
 					{
 						"name": "cast data",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -6603,12 +6596,6 @@
 						"typeProperties": {
 							"source": {
 								"type": "ParquetSource",
-								"additionalColumns": [
-									{
-										"name": "KKKKKKv2",
-										"value": "10000000000000"
-									}
-								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
@@ -6717,7 +6704,7 @@
 									},
 									{
 										"source": {
-											"name": "KKKKKKv2",
+											"name": "KKKKK",
 											"physicalType": "DOUBLE"
 										},
 										"sink": {
