@@ -126,12 +126,12 @@
 							{
 								"source": {
 									"name": "KKKKK",
-									"type": "Double",
-									"physicalType": "Double"
+									"type": "INT96",
+									"physicalType": "INT96"
 								},
 								"sink": {
 									"name": "KKKKK",
-									"type": "Double"
+									"type": "INT96"
 								}
 							}
 						],
