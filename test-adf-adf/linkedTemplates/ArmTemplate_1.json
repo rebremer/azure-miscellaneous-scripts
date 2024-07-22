@@ -15,13 +15,29 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OracleBuiltIn'"
 		},
+		"OracleBuiltInODBC_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'OracleBuiltInODBC'"
+		},
+		"OracleBuiltInODBC_credential": {
+			"type": "secureString",
+			"metadata": "Secure string for 'credential' of 'OracleBuiltInODBC'"
+		},
 		"ADLSgen2uami_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
 		},
 		"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
 			"defaultValue": "oraclebuiltinODBC2"
+		},
+		"OracleBuiltInODBC_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sdaf"
 		},
 		"AzureBlobStorage988_properties_privateLinkResourceId": {
 			"type": "string",
@@ -248,6 +264,23 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "SHIR2016",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Oracle2016')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -276,7 +309,7 @@
 					"connectionString": "[parameters('OracleBuiltIn_connectionString')]"
 				},
 				"connectVia": {
-					"referenceName": "integrationRuntime1",
+					"referenceName": "SHIR2016",
 					"type": "IntegrationRuntimeReference"
 				}
 			},
@@ -308,10 +341,19 @@
 						},
 						"secretName": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
 					},
-					"authenticationType": "anonymous"
+					"authenticationType": "Basic",
+					"userName": "[parameters('OracleBuiltInODBC_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('OracleBuiltInODBC_password')]"
+					},
+					"credential": {
+						"type": "SecureString",
+						"value": "[parameters('OracleBuiltInODBC_credential')]"
+					}
 				},
 				"connectVia": {
-					"referenceName": "integrationRuntime1",
+					"referenceName": "SHIR2016",
 					"type": "IntegrationRuntimeReference"
 				}
 			},
@@ -677,6 +719,61 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "raw/csv/full/fact_sale_1y_full",
+						"fileSystem": "fabricdemo"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "sqldb"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/OdbcTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -716,77 +813,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/Oracle2016')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleTable1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "OracleBuiltIn",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "OracleTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "TESTRBADMIN",
-					"table": "BOOKS"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/OracleBuiltIn')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleTable1ODBC')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "OracleBuiltInODBC",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"asdf": "adsf"
-					}
-				},
-				"annotations": [],
-				"type": "OdbcTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "hjg"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/OracleBuiltInODBC')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/csvuami')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ADLSgen2uami",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "person"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ADLSgen2uami')]"
 			]
 		}
 	]

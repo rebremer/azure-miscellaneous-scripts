@@ -26,6 +26,12 @@
 		"OracleBuiltIn_connectionString": {
 			"value": ""
 		},
+		"OracleBuiltInODBC_password": {
+			"value": ""
+		},
+		"OracleBuiltInODBC_credential": {
+			"value": ""
+		},
 		"testgdpstor2blob_connectionString": {
 			"value": ""
 		},
@@ -55,6 +61,9 @@
 		},
 		"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
 			"value": "oraclebuiltinODBC2"
+		},
+		"OracleBuiltInODBC_properties_typeProperties_userName": {
+			"value": "sdaf"
 		},
 		"gdpstorsecundary_properties_typeProperties_url": {
 			"value": "@{linkedService().storname}"
