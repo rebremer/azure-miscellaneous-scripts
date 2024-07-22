@@ -25,6 +25,171 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "ADLSgen2 to Oracle",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "cast data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"additionalColumns": [
+							{
+								"name": "KKKKKv2",
+								"value": "999999999999999.99999999999999 "
+							}
+						],
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "part-00000-48500e26-eec1-4af5-8e72-3572dd3b36e9-c000.snappy.parquet",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "OracleSink",
+						"writeBatchSize": 10000
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "AAAAA",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "AAAAA",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BBBBB",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "BBBBB",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CCCCC",
+									"type": "DateTime",
+									"physicalType": "INT96"
+								},
+								"sink": {
+									"name": "CCCCC",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "DDDDD",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "DDDDD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EEEEE",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "EEEEE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FFFFF",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "FFFFF",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "GGGGG",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "GGGGG",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "HHHHH",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "HHHHH",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "KKKKK",
+									"physicalType": "DOUBLE"
+								},
+								"sink": {
+									"name": "KKKKK",
+									"type": "DOUBLE"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Oracle2016issue",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Oracle2016",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"annotations": []
