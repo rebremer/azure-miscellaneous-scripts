@@ -52,7 +52,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> source1",
-				"source1 derive(KKKKK = toDouble(\"10000000000\"),",
+				"source1 derive(KKKKK = toDouble(\"1000000000.33333333333333333333333333333333333333333333333333333\"),",
 				"     partitionBy('hash', 1)) ~> castdata",
 				"castdata sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
