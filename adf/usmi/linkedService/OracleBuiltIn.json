@@ -7,10 +7,10 @@
 		"type": "Oracle",
 		"typeProperties": {
 			"connectionString": "host=40.68.168.32;port=1521;servicename=ORATEST1;user id=testrbadmin",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIyMzJmMGU1ZC0yZmU1LTQ3ZGEtYWQ4NC1kYjg4MDRjYzRmM2IiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJkMzVkZTliNC0yZDY4LTRiNzktOWVmNi04MzI1ZjFjYTFjMDgiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
-			"referenceName": "integrationRuntime1",
+			"referenceName": "SHIR2016",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
