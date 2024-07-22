@@ -52,7 +52,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> source1",
-				"source1 derive(KKKKK = 999999999999999.1999999999999,",
+				"source1 derive(KKKKK = 999999999999999.19999999999999999999999999999999999,",
 				"     partitionBy('hash', 1)) ~> castdata",
 				"castdata sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
