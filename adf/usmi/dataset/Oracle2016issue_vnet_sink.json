@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "casted_data.parquet",
+				"fileName": "parquetcasted_data.parquet",
 				"fileSystem": "oracle2016"
 			},
 			"compressionCodec": "snappy"
