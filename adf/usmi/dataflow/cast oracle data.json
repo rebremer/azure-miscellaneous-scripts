@@ -1,0 +1,53 @@
+{
+	"name": "cast oracle data",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Oracle2016issue_vnet",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "castdata",
+					"description": "cast data"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          AAAAA as string,",
+				"          BBBBB as string,",
+				"          CCCCC as timestamp,",
+				"          DDDDD as string,",
+				"          EEEEE as string,",
+				"          FFFFF as string,",
+				"          GGGGG as string,",
+				"          HHHHH as string,",
+				"          IIIII as string,",
+				"          JJJJJ as timestamp,",
+				"          KKKKK as string,",
+				"          LLLLL as string,",
+				"          MMMMM as string,",
+				"          NNNNN as timestamp,",
+				"          OOOO as string,",
+				"          PPPP as string,",
+				"          QQQQ as string,",
+				"          RRRR as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> source1",
+				"source1 derive(KKKKK = toDouble(KKKKK, '####################.##################')\r",
+				"\r",
+				") ~> castdata"
+			]
+		}
+	}
+}
