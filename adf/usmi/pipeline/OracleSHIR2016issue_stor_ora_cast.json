@@ -59,7 +59,7 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
-							"wildcardFileName": "part-00000-48500e26-eec1-4af5-8e72-3572dd3b36e9-c000.snappy.parquet",
+							"wildcardFileName": "parquetcasted_data.parquet",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
