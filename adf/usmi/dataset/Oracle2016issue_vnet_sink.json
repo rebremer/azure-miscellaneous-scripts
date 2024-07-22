@@ -15,6 +15,79 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "AAAAA",
+				"type": "UTF8"
+			},
+			{
+				"name": "BBBBB",
+				"type": "UTF8"
+			},
+			{
+				"name": "CCCCC",
+				"type": "INT96"
+			},
+			{
+				"name": "DDDDD",
+				"type": "UTF8"
+			},
+			{
+				"name": "EEEEE",
+				"type": "UTF8"
+			},
+			{
+				"name": "FFFFF",
+				"type": "UTF8"
+			},
+			{
+				"name": "GGGGG",
+				"type": "UTF8"
+			},
+			{
+				"name": "HHHHH",
+				"type": "UTF8"
+			},
+			{
+				"name": "IIIII",
+				"type": "UTF8"
+			},
+			{
+				"name": "JJJJJ",
+				"type": "INT96"
+			},
+			{
+				"name": "KKKKK",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "LLLLL",
+				"type": "UTF8"
+			},
+			{
+				"name": "MMMMM",
+				"type": "UTF8"
+			},
+			{
+				"name": "NNNNN",
+				"type": "INT96"
+			},
+			{
+				"name": "OOOO",
+				"type": "UTF8"
+			},
+			{
+				"name": "PPPP",
+				"type": "UTF8"
+			},
+			{
+				"name": "QQQQ",
+				"type": "UTF8"
+			},
+			{
+				"name": "RRRR",
+				"type": "INT96"
+			}
+		]
 	}
 }
