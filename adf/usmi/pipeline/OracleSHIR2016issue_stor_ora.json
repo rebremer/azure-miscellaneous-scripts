@@ -19,7 +19,7 @@
 						"type": "ParquetSource",
 						"additionalColumns": [
 							{
-								"name": "KKKKK",
+								"name": "KKKKKv2",
 								"value": "9999999999999999.99999999999999"
 							}
 						],
@@ -127,6 +127,16 @@
 								"sink": {
 									"name": "HHHHH",
 									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "KKKKKv2",
+									"physicalType": "INT96"
+								},
+								"sink": {
+									"name": "KKKKK",
+									"type": "INT96"
 								}
 							}
 						],
