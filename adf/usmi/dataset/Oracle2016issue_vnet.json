@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "TESTRBADMIN.TEST_PROD_ISSUE_v2 (2).parquet",
 				"fileSystem": "oracle2016"
 			},
 			"compressionCodec": "snappy"
