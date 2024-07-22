@@ -2,11 +2,6 @@
 	"name": "OracleBuiltInODBC",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
-		"type": "Odbc",
-		"connectVia": {
-			"referenceName": "integrationRuntime1",
-			"type": "IntegrationRuntimeReference"
-		},
 		"description": "omschrijving",
 		"parameters": {
 			"asdf": {
@@ -18,6 +13,7 @@
 			"dsadafs",
 			"asdf"
 		],
+		"type": "Odbc",
 		"typeProperties": {
 			"connectionString": {
 				"type": "AzureKeyVaultSecret",
@@ -27,7 +23,20 @@
 				},
 				"secretName": "oraclebuiltinODBC2"
 			},
-			"authenticationType": "anonymous"
+			"authenticationType": "Basic",
+			"userName": "sdaf",
+			"password": {
+				"type": "SecureString",
+				"value": "**********"
+			},
+			"credential": {
+				"type": "SecureString",
+				"value": "**********"
+			}
+		},
+		"connectVia": {
+			"referenceName": "SHIR2016",
+			"type": "IntegrationRuntimeReference"
 		}
 	}
 }
