@@ -128,17 +128,6 @@
 									"name": "HHHHH",
 									"type": "String"
 								}
-							},
-							{
-								"source": {
-									"name": "KKKKK",
-									"type": "INT96",
-									"physicalType": "INT96"
-								},
-								"sink": {
-									"name": "KKKKK",
-									"type": "INT96"
-								}
 							}
 						],
 						"typeConversion": true,
