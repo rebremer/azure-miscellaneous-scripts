@@ -68,8 +68,7 @@
 					},
 					"sink": {
 						"type": "OracleSink",
-						"writeBatchSize": 10000,
-						"preCopyScript": "TRUNCATE TABLE testrbadmin.Test_prod_issue;"
+						"writeBatchSize": 10000
 					},
 					"enableStaging": false,
 					"translator": {
