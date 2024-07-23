@@ -53,7 +53,7 @@
 						"additionalColumns": [
 							{
 								"name": "rbr",
-								"value": "999999999999999.9999999999999"
+								"value": "999999999999999.9999999999999999999999"
 							}
 						],
 						"storeSettings": {
@@ -68,7 +68,8 @@
 					},
 					"sink": {
 						"type": "OracleSink",
-						"writeBatchSize": 10000
+						"writeBatchSize": 10000,
+						"preCopyScript": "TRUNCATE TABLE testrbadmin.Test_prod_issue;"
 					},
 					"enableStaging": false,
 					"translator": {
