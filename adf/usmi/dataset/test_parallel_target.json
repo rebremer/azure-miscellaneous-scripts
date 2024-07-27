@@ -1,0 +1,17 @@
+{
+	"name": "test_parallel_target",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GDPstorageaccount",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "adfparalleltest"
+			}
+		}
+	}
+}

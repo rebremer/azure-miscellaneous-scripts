@@ -1,0 +1,17 @@
+{
+	"name": "parallel_test_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GDPstorageaccount",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "fabricdemo"
+			}
+		}
+	}
+}
