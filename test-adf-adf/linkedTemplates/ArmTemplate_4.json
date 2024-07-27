@@ -13,6 +13,509 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/csv_to_sql_fulldataset')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "fulldatasetcopy",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "raw/csv/full/fact_sale_1y_full",
+									"wildcardFileName": "*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": true,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "SaleKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "SaleKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "CityKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CityKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "CustomerKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CustomerKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "BillToCustomerKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BillToCustomerKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "StockItemKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "StockItemKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "InvoiceDateKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "InvoiceDateKey",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "DeliveryDateKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "DeliveryDateKey",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "SalespersonKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "SalespersonKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "WWIInvoiceID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "WWIInvoiceID",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Description",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Description",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Package",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Package",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Quantity",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Quantity",
+											"type": "Int16",
+											"physicalType": "smallint"
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPrice",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "UnitPrice",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "TaxRate",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TaxRate",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "TotalExcludingTax",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TotalExcludingTax",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "TaxAmount",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TaxAmount",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "Profit",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Profit",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "TotalIncludingTax",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TotalIncludingTax",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 38
+										}
+									},
+									{
+										"source": {
+											"name": "TotalDryItems",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TotalDryItems",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalChillerItems",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TotalChillerItems",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "LineageKey",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "LineageKey",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Fullcsvdataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sql_silver_fact_sale",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Source_sink_same_container_df')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "testgdpstor2blob",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "sql_silver_fact_sale",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     container: 'fabricdemo',",
+						"     folderPath: 'silver/silver_fact_sale') ~> source1",
+						"source1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          SaleKey as integer,",
+						"          CityKey as integer,",
+						"          CustomerKey as integer,",
+						"          BillToCustomerKey as integer,",
+						"          StockItemKey as integer,",
+						"          InvoiceDateKey as timestamp,",
+						"          DeliveryDateKey as timestamp,",
+						"          SalespersonKey as integer,",
+						"          WWIInvoiceID as integer,",
+						"          Description as string,",
+						"          Package as string,",
+						"          Quantity as integer,",
+						"          UnitPrice as decimal(38,6),",
+						"          TaxRate as decimal(38,6),",
+						"          TotalExcludingTax as decimal(38,6),",
+						"          TaxAmount as decimal(38,6),",
+						"          Profit as decimal(38,6),",
+						"          TotalIncludingTax as decimal(38,6),",
+						"          TotalDryItems as integer,",
+						"          TotalChillerItems as integer,",
+						"          LineageKey as integer,",
+						"          Quarter as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cast oracle data')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Oracle2016issue_vnet",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Oracle2016issue_vnet_sink",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "castdata",
+							"description": "cast data"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          AAAAA as string,",
+						"          BBBBB as string,",
+						"          CCCCC as timestamp,",
+						"          DDDDD as string,",
+						"          EEEEE as string,",
+						"          FFFFF as string,",
+						"          GGGGG as string,",
+						"          HHHHH as string,",
+						"          IIIII as string,",
+						"          JJJJJ as timestamp,",
+						"          KKKKK as string,",
+						"          LLLLL as string,",
+						"          MMMMM as string,",
+						"          NNNNN as timestamp,",
+						"          OOOO as string,",
+						"          PPPP as string,",
+						"          QQQQ as string,",
+						"          RRRR as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> source1",
+						"source1 derive(KKKKK = \"1000000000.3333333333333333333333333333333\",",
+						"     partitionBy('hash', 1)) ~> castdata",
+						"castdata sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          AAAAA as string,",
+						"          BBBBB as string,",
+						"          CCCCC as timestamp,",
+						"          DDDDD as string,",
+						"          EEEEE as string,",
+						"          FFFFF as string,",
+						"          GGGGG as string,",
+						"          HHHHH as string,",
+						"          IIIII as string,",
+						"          JJJJJ as timestamp,",
+						"          KKKKK as double,",
+						"          LLLLL as string,",
+						"          MMMMM as string,",
+						"          NNNNN as timestamp,",
+						"          OOOO as string,",
+						"          PPPP as string,",
+						"          QQQQ as string,",
+						"          RRRR as timestamp",
+						"     ),",
+						"     format: 'parquet',",
+						"     partitionFileNames:['parquetcasted_data.parquet'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/GDPStor_privBlob_df')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -55,107 +558,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-04-07T18:28:00Z"
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Source_sink_same_container_df')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Source_sink_same_container_df",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "Source_sink_same_container_df",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-02-10T18:42:27Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Test_nested_pipeline_root')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Execute Pipeline1",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Test_nested_pipeline_worker1",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "Execute Pipeline2",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Execute Pipeline1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Test_nested_pipeline_worker2",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Source_sink_same_container_df')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/OracleSHIR2016issue_stor_ora_cast')]",
@@ -166,6 +571,8 @@
 					{
 						"name": "cast data",
 						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -183,8 +590,7 @@
 								"datasetParameters": {
 									"source1": {},
 									"sink1": {}
-								},
-								"linkedServiceParameters": {}
+								}
 							},
 							"staging": {},
 							"integrationRuntime": {
@@ -216,6 +622,12 @@
 						"typeProperties": {
 							"source": {
 								"type": "ParquetSource",
+								"additionalColumns": [
+									{
+										"name": "rbr",
+										"value": "100000000000000"
+									}
+								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
@@ -324,7 +736,7 @@
 									},
 									{
 										"source": {
-											"name": "KKKKK",
+											"name": "rbr",
 											"physicalType": "DOUBLE"
 										},
 										"sink": {
@@ -354,6 +766,110 @@
 								"parameters": {}
 							}
 						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/cast oracle data')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Source_sink_same_container_df')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Source_sink_same_container_df",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Source_sink_same_container_df",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-02-10T18:42:27Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Source_sink_same_container_df')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Test_nested_pipeline_root')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Execute Pipeline1",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Test_nested_pipeline_worker1",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Execute Pipeline2",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute Pipeline1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Test_nested_pipeline_worker2",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"policy": {

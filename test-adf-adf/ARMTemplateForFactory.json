@@ -1263,6 +1263,401 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/OracleSHIR2016issue_stor_ora')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ADLSgen2 to Oracle",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"additionalColumns": [
+									{
+										"name": "KKKKKv2",
+										"value": "999999999999999.99999999999999 "
+									}
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "TESTRBADMIN.TEST_PROD_ISSUE_v2 (2).parquet",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "OracleSink",
+								"writeBatchSize": 10000
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "AAAAA",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "AAAAA",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BBBBB",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "BBBBB",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CCCCC",
+											"type": "DateTime",
+											"physicalType": "INT96"
+										},
+										"sink": {
+											"name": "CCCCC",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "DDDDD",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "DDDDD",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EEEEE",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "EEEEE",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FFFFF",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "FFFFF",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GGGGG",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "GGGGG",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "HHHHH",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "HHHHH",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "KKKKKv2",
+											"physicalType": "DOUBLE"
+										},
+										"sink": {
+											"name": "KKKKK",
+											"type": "DOUBLE"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Oracle2016issue",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Oracle2016",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Oracle2016issue')]",
+				"[concat(variables('factoryId'), '/datasets/Oracle2016')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OracleSHIR2016issue_stor_ora_cast')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "cast data",
+						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "cast oracle data",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime2",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "ADLSgen2 to Oracle",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "cast data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"additionalColumns": [
+									{
+										"name": "rbr",
+										"value": "100000000000000"
+									}
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "parquetcasted_data.parquet",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "OracleSink",
+								"writeBatchSize": 10000
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "AAAAA",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "AAAAA",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BBBBB",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "BBBBB",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CCCCC",
+											"type": "DateTime",
+											"physicalType": "INT96"
+										},
+										"sink": {
+											"name": "CCCCC",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "DDDDD",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "DDDDD",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EEEEE",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "EEEEE",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FFFFF",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "FFFFF",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GGGGG",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "GGGGG",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "HHHHH",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "HHHHH",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "rbr",
+											"physicalType": "DOUBLE"
+										},
+										"sink": {
+											"name": "KKKKK",
+											"type": "DOUBLE"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Oracle2016issue",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Oracle2016",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/cast oracle data')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime2')]",
+				"[concat(variables('factoryId'), '/datasets/Oracle2016issue')]",
+				"[concat(variables('factoryId'), '/datasets/Oracle2016')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Oracle_ODBC')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -4434,6 +4829,129 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Oracle2016issue_vnet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "TESTRBADMIN.TEST_PROD_ISSUE_v2 (2).parquet",
+						"fileSystem": "oracle2016"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Oracle2016issue_vnet_sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "parquetcasted_data.parquet",
+						"fileSystem": "oracle2016"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "AAAAA",
+						"type": "UTF8"
+					},
+					{
+						"name": "BBBBB",
+						"type": "UTF8"
+					},
+					{
+						"name": "CCCCC",
+						"type": "INT96"
+					},
+					{
+						"name": "DDDDD",
+						"type": "UTF8"
+					},
+					{
+						"name": "EEEEE",
+						"type": "UTF8"
+					},
+					{
+						"name": "FFFFF",
+						"type": "UTF8"
+					},
+					{
+						"name": "GGGGG",
+						"type": "UTF8"
+					},
+					{
+						"name": "HHHHH",
+						"type": "UTF8"
+					},
+					{
+						"name": "IIIII",
+						"type": "UTF8"
+					},
+					{
+						"name": "JJJJJ",
+						"type": "INT96"
+					},
+					{
+						"name": "KKKKK",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "LLLLL",
+						"type": "UTF8"
+					},
+					{
+						"name": "MMMMM",
+						"type": "UTF8"
+					},
+					{
+						"name": "NNNNN",
+						"type": "INT96"
+					},
+					{
+						"name": "OOOO",
+						"type": "UTF8"
+					},
+					{
+						"name": "PPPP",
+						"type": "UTF8"
+					},
+					{
+						"name": "QQQQ",
+						"type": "UTF8"
+					},
+					{
+						"name": "RRRR",
+						"type": "INT96"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/OracleTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5493,6 +6011,102 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/cast oracle data')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Oracle2016issue_vnet",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Oracle2016issue_vnet_sink",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "castdata",
+							"description": "cast data"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          AAAAA as string,",
+						"          BBBBB as string,",
+						"          CCCCC as timestamp,",
+						"          DDDDD as string,",
+						"          EEEEE as string,",
+						"          FFFFF as string,",
+						"          GGGGG as string,",
+						"          HHHHH as string,",
+						"          IIIII as string,",
+						"          JJJJJ as timestamp,",
+						"          KKKKK as string,",
+						"          LLLLL as string,",
+						"          MMMMM as string,",
+						"          NNNNN as timestamp,",
+						"          OOOO as string,",
+						"          PPPP as string,",
+						"          QQQQ as string,",
+						"          RRRR as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> source1",
+						"source1 derive(KKKKK = \"1000000000.3333333333333333333333333333333\",",
+						"     partitionBy('hash', 1)) ~> castdata",
+						"castdata sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          AAAAA as string,",
+						"          BBBBB as string,",
+						"          CCCCC as timestamp,",
+						"          DDDDD as string,",
+						"          EEEEE as string,",
+						"          FFFFF as string,",
+						"          GGGGG as string,",
+						"          HHHHH as string,",
+						"          IIIII as string,",
+						"          JJJJJ as timestamp,",
+						"          KKKKK as double,",
+						"          LLLLL as string,",
+						"          MMMMM as string,",
+						"          NNNNN as timestamp,",
+						"          OOOO as string,",
+						"          PPPP as string,",
+						"          QQQQ as string,",
+						"          RRRR as timestamp",
+						"     ),",
+						"     format: 'parquet',",
+						"     partitionFileNames:['parquetcasted_data.parquet'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Oracle2016issue_vnet')]",
+				"[concat(variables('factoryId'), '/datasets/Oracle2016issue_vnet_sink')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/moviesdbFlowletsOptimized')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -6142,610 +6756,111 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/cast oracle data')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
+			"name": "[concat(parameters('factoryName'), '/Parallel testing')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"type": "MappingDataFlow",
+				"activities": [
+					{
+						"name": "parallel testing",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "PreserveHierarchy"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "parallel_test_source",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "test_parallel_target",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/parallel_test_source')]",
+				"[concat(variables('factoryId'), '/datasets/test_parallel_target')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/parallel_test_source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GDPstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
 				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Oracle2016issue_vnet",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "Oracle2016issue_vnet_sink",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "castdata",
-							"description": "cast data"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          AAAAA as string,",
-						"          BBBBB as string,",
-						"          CCCCC as timestamp,",
-						"          DDDDD as string,",
-						"          EEEEE as string,",
-						"          FFFFF as string,",
-						"          GGGGG as string,",
-						"          HHHHH as string,",
-						"          IIIII as string,",
-						"          JJJJJ as timestamp,",
-						"          KKKKK as string,",
-						"          LLLLL as string,",
-						"          MMMMM as string,",
-						"          NNNNN as timestamp,",
-						"          OOOO as string,",
-						"          PPPP as string,",
-						"          QQQQ as string,",
-						"          RRRR as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> source1",
-						"source1 derive(KKKKK = 100000000000000,",
-						"     partitionBy('hash', 1)) ~> castdata",
-						"castdata sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          AAAAA as string,",
-						"          BBBBB as string,",
-						"          CCCCC as timestamp,",
-						"          DDDDD as string,",
-						"          EEEEE as string,",
-						"          FFFFF as string,",
-						"          GGGGG as string,",
-						"          HHHHH as string,",
-						"          IIIII as string,",
-						"          JJJJJ as timestamp,",
-						"          KKKKK as double,",
-						"          LLLLL as string,",
-						"          MMMMM as string,",
-						"          NNNNN as timestamp,",
-						"          OOOO as string,",
-						"          PPPP as string,",
-						"          QQQQ as string,",
-						"          RRRR as timestamp",
-						"     ),",
-						"     format: 'parquet',",
-						"     partitionFileNames:['parquetcasted_data.parquet'],",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink1"
-					]
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "fabricdemo"
+					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Oracle2016issue_vnet')]",
-				"[concat(variables('factoryId'), '/datasets/Oracle2016issue_vnet_sink')]"
+				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Oracle2016issue_vnet')]",
+			"name": "[concat(parameters('factoryName'), '/test_parallel_target')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage2",
+					"referenceName": "GDPstorageaccount",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "Parquet",
+				"type": "Binary",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "TESTRBADMIN.TEST_PROD_ISSUE_v2 (2).parquet",
-						"fileSystem": "oracle2016"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleSHIR2016issue_stor_ora')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ADLSgen2 to Oracle",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource",
-								"additionalColumns": [
-									{
-										"name": "KKKKKv2",
-										"value": "999999999999999.99999999999999 "
-									}
-								],
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFileName": "TESTRBADMIN.TEST_PROD_ISSUE_v2 (2).parquet",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "ParquetReadSettings"
-								}
-							},
-							"sink": {
-								"type": "OracleSink",
-								"writeBatchSize": 10000
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "AAAAA",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "AAAAA",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "BBBBB",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "BBBBB",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "CCCCC",
-											"type": "DateTime",
-											"physicalType": "INT96"
-										},
-										"sink": {
-											"name": "CCCCC",
-											"type": "DateTime"
-										}
-									},
-									{
-										"source": {
-											"name": "DDDDD",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "DDDDD",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "EEEEE",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "EEEEE",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "FFFFF",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "FFFFF",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "GGGGG",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "GGGGG",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "HHHHH",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "HHHHH",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "KKKKKv2",
-											"physicalType": "DOUBLE"
-										},
-										"sink": {
-											"name": "KKKKK",
-											"type": "DOUBLE"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "Oracle2016issue",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Oracle2016",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
+						"fileSystem": "adfparalleltest"
 					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Oracle2016issue')]",
-				"[concat(variables('factoryId'), '/datasets/Oracle2016')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Oracle2016issue_vnet_sink')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "parquetcasted_data.parquet",
-						"fileSystem": "oracle2016"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "AAAAA",
-						"type": "UTF8"
-					},
-					{
-						"name": "BBBBB",
-						"type": "UTF8"
-					},
-					{
-						"name": "CCCCC",
-						"type": "INT96"
-					},
-					{
-						"name": "DDDDD",
-						"type": "UTF8"
-					},
-					{
-						"name": "EEEEE",
-						"type": "UTF8"
-					},
-					{
-						"name": "FFFFF",
-						"type": "UTF8"
-					},
-					{
-						"name": "GGGGG",
-						"type": "UTF8"
-					},
-					{
-						"name": "HHHHH",
-						"type": "UTF8"
-					},
-					{
-						"name": "IIIII",
-						"type": "UTF8"
-					},
-					{
-						"name": "JJJJJ",
-						"type": "INT96"
-					},
-					{
-						"name": "KKKKK",
-						"type": "DOUBLE"
-					},
-					{
-						"name": "LLLLL",
-						"type": "UTF8"
-					},
-					{
-						"name": "MMMMM",
-						"type": "UTF8"
-					},
-					{
-						"name": "NNNNN",
-						"type": "INT96"
-					},
-					{
-						"name": "OOOO",
-						"type": "UTF8"
-					},
-					{
-						"name": "PPPP",
-						"type": "UTF8"
-					},
-					{
-						"name": "QQQQ",
-						"type": "UTF8"
-					},
-					{
-						"name": "RRRR",
-						"type": "INT96"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleSHIR2016issue_stor_ora_cast')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "cast data",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "cast oracle data",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								},
-								"linkedServiceParameters": {}
-							},
-							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime2",
-								"type": "IntegrationRuntimeReference"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "ADLSgen2 to Oracle",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "cast data",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFileName": "parquetcasted_data.parquet",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "ParquetReadSettings"
-								}
-							},
-							"sink": {
-								"type": "OracleSink",
-								"writeBatchSize": 10000
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "AAAAA",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "AAAAA",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "BBBBB",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "BBBBB",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "CCCCC",
-											"type": "DateTime",
-											"physicalType": "INT96"
-										},
-										"sink": {
-											"name": "CCCCC",
-											"type": "DateTime"
-										}
-									},
-									{
-										"source": {
-											"name": "DDDDD",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "DDDDD",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "EEEEE",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "EEEEE",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "FFFFF",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "FFFFF",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "GGGGG",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "GGGGG",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "HHHHH",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "HHHHH",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "KKKKK",
-											"physicalType": "DOUBLE"
-										},
-										"sink": {
-											"name": "KKKKK",
-											"type": "DOUBLE"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "Oracle2016issue",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Oracle2016",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/cast oracle data')]",
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime2')]",
-				"[concat(variables('factoryId'), '/datasets/Oracle2016issue')]",
-				"[concat(variables('factoryId'), '/datasets/Oracle2016')]"
+				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
 			]
 		}
 	]
