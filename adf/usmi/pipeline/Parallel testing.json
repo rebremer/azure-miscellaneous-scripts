@@ -115,10 +115,12 @@
 		],
 		"variables": {
 			"dummy": {
-				"type": "Integer"
+				"type": "Integer",
+				"defaultValue": 0
 			},
 			"iterator": {
-				"type": "Integer"
+				"type": "Integer",
+				"defaultValue": 0
 			}
 		},
 		"annotations": []
