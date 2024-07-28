@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(variables('iterator'),2)",
+						"value": "@greater(variables('iterator'),101)",
 						"type": "Expression"
 					},
 					"activities": [
