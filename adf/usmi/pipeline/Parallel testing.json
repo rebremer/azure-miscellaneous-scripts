@@ -48,12 +48,6 @@
 							"inputs": [
 								{
 									"referenceName": "parallel_test_source",
-									"type": "DatasetReference"
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "test_parallel_target",
 									"type": "DatasetReference",
 									"parameters": {
 										"number": {
@@ -61,6 +55,12 @@
 											"type": "Expression"
 										}
 									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "test_parallel_target",
+									"type": "DatasetReference"
 								}
 							]
 						},
