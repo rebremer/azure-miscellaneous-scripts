@@ -96,6 +96,9 @@
 		},
 		"priv-db_properties_groupId": {
 			"value": "sqlServer"
+		},
+		"backupstorage_properties_typeProperties_url": {
+			"value": "https://testconposixstor.dfs.core.windows.net/"
 		}
 	}
 }

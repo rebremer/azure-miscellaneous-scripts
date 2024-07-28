@@ -129,6 +129,10 @@
 			"type": "string",
 			"defaultValue": "sqlServer"
 		},
+		"backupstorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testconposixstor.dfs.core.windows.net/"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -191,6 +195,9 @@
 					},
 					"testgdpinfomrationfdfs_properties_typeProperties_url": {
 						"value": "[parameters('testgdpinfomrationfdfs_properties_typeProperties_url')]"
+					},
+					"backupstorage_properties_typeProperties_url": {
+						"value": "[parameters('backupstorage_properties_typeProperties_url')]"
 					}
 				}
 			},
