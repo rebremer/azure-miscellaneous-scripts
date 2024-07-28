@@ -15,7 +15,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "dataobject",
+				"folderPath": {
+					"value": "@concat('dataobject',dataset().number)",
+					"type": "Expression"
+				},
 				"fileSystem": "p004standardized"
 			}
 		}
