@@ -60,7 +60,10 @@
 							"outputs": [
 								{
 									"referenceName": "test_parallel_target",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"number": "78"
+									}
 								}
 							]
 						},
