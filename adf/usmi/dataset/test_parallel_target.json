@@ -5,12 +5,18 @@
 			"referenceName": "GDPstorageaccount",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"number": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileSystem": "adfparalleltest"
+				"folderPath": "dataobject",
+				"fileSystem": "p004standardized"
 			}
 		}
 	}
