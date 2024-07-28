@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"folderPath": "silver/silver_fact_sale_year_quarter",
 				"fileSystem": "fabricdemo"
 			}
 		}
