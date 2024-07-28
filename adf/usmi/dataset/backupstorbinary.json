@@ -5,11 +5,20 @@
 			"referenceName": "backupstorage",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"number": {
+				"type": "int"
+			}
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@if(less(int(dataset().number),10), concat('dataobject0',string(dataset().number)), concat('dataobject',string(dataset().number)))",
+					"type": "Expression"
+				},
 				"fileSystem": "p004standardized"
 			}
 		}
