@@ -3,51 +3,124 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "parallel testing",
-				"type": "Copy",
+				"name": "Until1",
+				"type": "Until",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "BinarySource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true
+					"activities": [
+						{
+							"name": "parallel testing",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings",
+										"copyBehavior": "PreserveHierarchy"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "parallel_test_source",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "test_parallel_target",
+									"type": "DatasetReference",
+									"parameters": {
+										"number": {
+											"value": "@variables('iterator')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						},
-						"formatSettings": {
-							"type": "BinaryReadSettings"
+						{
+							"name": "set dummy",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "parallel testing",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "dummy",
+								"value": {
+									"value": "@variables('iterator')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "set variable1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "set dummy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "iterator",
+								"value": {
+									"value": "@add(variables('dummy'),1)",
+									"type": "Expression"
+								}
+							}
 						}
-					},
-					"sink": {
-						"type": "BinarySink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings",
-							"copyBehavior": "PreserveHierarchy"
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "parallel_test_source",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "test_parallel_target",
-						"type": "DatasetReference"
-					}
-				]
+					],
+					"timeout": "0.12:00:00"
+				}
 			}
 		],
+		"variables": {
+			"dummy": {
+				"type": "Integer"
+			},
+			"iterator": {
+				"type": "Integer"
+			}
+		},
 		"annotations": []
 	}
 }
