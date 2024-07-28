@@ -8,6 +8,10 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@greater(variables('iterator'),2)",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "parallel testing",
