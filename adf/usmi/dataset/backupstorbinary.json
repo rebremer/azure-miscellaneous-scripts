@@ -1,21 +1,15 @@
 {
-	"name": "parallel_test_source",
+	"name": "backupstorbinary",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "GDPstorageaccount",
+			"referenceName": "backupstorage",
 			"type": "LinkedServiceReference"
-		},
-		"parameters": {
-			"number": {
-				"type": "string"
-			}
 		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "dataobject",
 				"fileSystem": "p004standardized"
 			}
 		}
