@@ -59,7 +59,13 @@
 							"outputs": [
 								{
 									"referenceName": "backupstorbinary",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"number": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
