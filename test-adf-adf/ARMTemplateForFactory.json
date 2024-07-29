@@ -2918,7 +2918,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "target_data_object_folder",
+											"referenceName": "source_data_object_folder",
 											"type": "DatasetReference",
 											"parameters": {
 												"dataobject": {
@@ -2934,7 +2934,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "source_data_object_folder",
+											"referenceName": "target_data_object_folder",
 											"type": "DatasetReference",
 											"parameters": {
 												"dataobject": {
@@ -2965,8 +2965,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Binary_lookup_folders_data_object')]",
-				"[concat(variables('factoryId'), '/datasets/target_data_object_folder')]",
-				"[concat(variables('factoryId'), '/datasets/source_data_object_folder')]"
+				"[concat(variables('factoryId'), '/datasets/source_data_object_folder')]",
+				"[concat(variables('factoryId'), '/datasets/target_data_object_folder')]"
 			]
 		},
 		{
@@ -5990,7 +5990,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": {
-							"value": "@concat(dataset().dataobject,'/Year=2002/',dataset().folder)",
+							"value": "@concat(dataset().dataobject,'/',dataset().folder)",
 							"type": "Expression"
 						},
 						"fileSystem": "p004standardized"
