@@ -8,9 +8,6 @@
 		"parameters": {
 			"dataobject": {
 				"type": "string"
-			},
-			"f": {
-				"type": "string"
 			}
 		},
 		"annotations": [],

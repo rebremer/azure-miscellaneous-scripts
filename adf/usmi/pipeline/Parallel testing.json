@@ -50,7 +50,7 @@
 									"referenceName": "parallel_test_source",
 									"type": "DatasetReference",
 									"parameters": {
-										"number": {
+										"dataobject": {
 											"value": "@variables('iterator')",
 											"type": "Expression"
 										}
