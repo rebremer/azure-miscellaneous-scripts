@@ -1,5 +1,5 @@
 {
-	"name": "Parallel testing_for_each_lookup_dataobject",
+	"name": "Parallel_testing_for_each_lookup_dataobject",
 	"properties": {
 		"activities": [
 			{
@@ -61,7 +61,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "Parallel testing_for_each_lookup_folders_dataobject",
+									"referenceName": "Parallel_testing_for_each_lookup_folders_dataobject",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": false,
