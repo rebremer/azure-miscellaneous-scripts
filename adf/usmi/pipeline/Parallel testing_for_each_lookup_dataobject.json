@@ -63,7 +63,13 @@
 									"referenceName": "Parallel testing_for_each_lookup_folders_dataobject",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": false
+								"waitOnCompletion": false,
+								"parameters": {
+									"data_object": {
+										"value": "@item().name",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					]
