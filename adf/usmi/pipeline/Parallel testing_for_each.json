@@ -50,10 +50,7 @@
 									"referenceName": "parallel_test_source",
 									"type": "DatasetReference",
 									"parameters": {
-										"dataobject": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
+										"number": "@item().name"
 									}
 								}
 							],
@@ -63,7 +60,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"number": {
-											"value": "@item().name",
+											"value": "@item()",
 											"type": "Expression"
 										}
 									}

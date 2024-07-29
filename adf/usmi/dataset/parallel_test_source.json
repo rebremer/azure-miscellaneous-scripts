@@ -6,9 +6,6 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"dataobject": {
-				"type": "string"
-			},
 			"number": {
 				"type": "string"
 			}

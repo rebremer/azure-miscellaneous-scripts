@@ -48,13 +48,7 @@
 							"inputs": [
 								{
 									"referenceName": "parallel_test_source",
-									"type": "DatasetReference",
-									"parameters": {
-										"dataobject": {
-											"value": "@variables('iterator')",
-											"type": "Expression"
-										}
-									}
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
