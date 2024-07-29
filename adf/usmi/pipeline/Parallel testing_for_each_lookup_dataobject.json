@@ -45,9 +45,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('get_data_objects').output",
+						"value": "@activity('get_data_objects').output.childItems",
 						"type": "Expression"
 					},
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "get folders data object",
@@ -62,7 +63,7 @@
 									"referenceName": "Parallel testing_for_each_lookup_folders_dataobject",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true
+								"waitOnCompletion": false
 							}
 						}
 					]
