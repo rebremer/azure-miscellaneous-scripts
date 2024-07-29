@@ -38,7 +38,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "copy folder recursively",
 				"type": "ForEach",
 				"dependsOn": [
 					{
