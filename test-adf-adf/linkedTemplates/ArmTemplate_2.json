@@ -760,7 +760,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "source_data_object_folder",
+											"referenceName": "target_data_object_folder",
 											"type": "DatasetReference",
 											"parameters": {
 												"dataobject": {
@@ -776,7 +776,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "target_data_object_folder",
+											"referenceName": "source_data_object_folder",
 											"type": "DatasetReference",
 											"parameters": {
 												"dataobject": {
