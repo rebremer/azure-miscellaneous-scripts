@@ -1,9 +1,9 @@
 {
-	"name": "Parallel testing_for_each_lookup",
+	"name": "Parallel testing_for_each_lookup_dataobject",
 	"properties": {
 		"activities": [
 			{
-				"name": "get_root_folders",
+				"name": "get_data_objects",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -29,6 +29,43 @@
 					"formatSettings": {
 						"type": "BinaryReadSettings"
 					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "get_data_objects",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('get_data_objects').output",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "get folders data object",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Parallel testing_for_each_lookup_folders_dataobject",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
 				}
 			}
 		],
