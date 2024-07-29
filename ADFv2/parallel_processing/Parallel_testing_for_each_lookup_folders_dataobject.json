@@ -1,0 +1,131 @@
+{
+    "name": "Parallel_testing_for_each_lookup_folders_dataobject",
+    "properties": {
+        "activities": [
+            {
+                "name": "get_folders_data_object",
+                "type": "GetMetadata",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "dataset": {
+                        "referenceName": "Binary_lookup_folders_data_object",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "data_object": {
+                                "value": "@pipeline().parameters.data_object",
+                                "type": "Expression"
+                            }
+                        }
+                    },
+                    "fieldList": [
+                        "childItems"
+                    ],
+                    "storeSettings": {
+                        "type": "AzureBlobFSReadSettings",
+                        "enablePartitionDiscovery": false
+                    },
+                    "formatSettings": {
+                        "type": "BinaryReadSettings"
+                    }
+                }
+            },
+            {
+                "name": "ForEach1",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "get_folders_data_object",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('get_folders_data_object').output.childItems",
+                        "type": "Expression"
+                    },
+                    "batchCount": 10,
+                    "activities": [
+                        {
+                            "name": "backup data",
+                            "type": "Copy",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "source": {
+                                    "type": "BinarySource",
+                                    "storeSettings": {
+                                        "type": "AzureBlobFSReadSettings",
+                                        "recursive": true
+                                    },
+                                    "formatSettings": {
+                                        "type": "BinaryReadSettings"
+                                    }
+                                },
+                                "sink": {
+                                    "type": "BinarySink",
+                                    "storeSettings": {
+                                        "type": "AzureBlobFSWriteSettings"
+                                    }
+                                },
+                                "enableStaging": false
+                            },
+                            "inputs": [
+                                {
+                                    "referenceName": "source_data_object_folder",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "dataobject": {
+                                            "value": "@pipeline().parameters.data_object",
+                                            "type": "Expression"
+                                        },
+                                        "folder": {
+                                            "value": "@item().name",
+                                            "type": "Expression"
+                                        }
+                                    }
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "target_data_object_folder",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "dataobject": {
+                                            "value": "@pipeline().parameters.data_object",
+                                            "type": "Expression"
+                                        },
+                                        "folder": "@item().name"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ],
+        "parameters": {
+            "data_object": {
+                "type": "string"
+            }
+        },
+        "annotations": []
+    }
+}
