@@ -48,7 +48,10 @@
 							"inputs": [
 								{
 									"referenceName": "parallel_test_source",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"number": "78"
+									}
 								}
 							],
 							"outputs": [
