@@ -19,7 +19,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"folderPath": {
-					"value": "@concat(dataset().dataobject,'/1999/',dataset().folder)",
+					"value": "@concat(dataset().dataobject,'/Year=2001/',dataset().folder)",
 					"type": "Expression"
 				},
 				"fileSystem": "p004standardized"
