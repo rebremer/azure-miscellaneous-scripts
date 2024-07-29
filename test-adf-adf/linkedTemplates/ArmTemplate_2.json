@@ -760,7 +760,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "target_data_object_folder",
+											"referenceName": "source_data_object_folder",
 											"type": "DatasetReference",
 											"parameters": {
 												"dataobject": {
@@ -776,14 +776,17 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "source_data_object_folder",
+											"referenceName": "target_data_object_folder",
 											"type": "DatasetReference",
 											"parameters": {
 												"dataobject": {
 													"value": "@pipeline().parameters.data_object",
 													"type": "Expression"
 												},
-												"folder": "@item().name"
+												"folder": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
 											}
 										}
 									]
