@@ -90,14 +90,8 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "parallel_test_source",
-									"type": "DatasetReference",
-									"parameters": {
-										"number": {
-											"value": "@item()",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "source_data_object_folder",
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [

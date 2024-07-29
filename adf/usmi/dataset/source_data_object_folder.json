@@ -1,5 +1,5 @@
 {
-	"name": "data_object_folder",
+	"name": "source_data_object_folder",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "GDPstorageaccount",
