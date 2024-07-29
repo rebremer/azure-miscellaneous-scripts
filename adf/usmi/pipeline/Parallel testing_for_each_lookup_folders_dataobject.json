@@ -96,14 +96,8 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "backupstorbinary",
-									"type": "DatasetReference",
-									"parameters": {
-										"number": {
-											"value": "@item()",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "target_data_object_folder",
+									"type": "DatasetReference"
 								}
 							]
 						}
