@@ -51,7 +51,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('get_folders_data_object').output",
+						"value": "@activity('get_folders_data_object').output.childItems",
 						"type": "Expression"
 					},
 					"activities": [
