@@ -32,7 +32,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "pipeline per data object",
 				"type": "ForEach",
 				"dependsOn": [
 					{
