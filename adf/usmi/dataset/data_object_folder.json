@@ -1,0 +1,25 @@
+{
+	"name": "data_object_folder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GDPstorageaccount",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dataobject": {
+				"type": "string"
+			},
+			"folder": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "p004standardized"
+			}
+		}
+	}
+}
