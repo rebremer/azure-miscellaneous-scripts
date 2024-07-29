@@ -11,9 +11,6 @@
 			},
 			"folder": {
 				"type": "string"
-			},
-			"filesystem": {
-				"type": "string"
 			}
 		},
 		"annotations": [],

@@ -91,13 +91,30 @@
 							"inputs": [
 								{
 									"referenceName": "source_data_object_folder",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"dataobject": {
+											"value": "@pipeline().parameters.data_object",
+											"type": "Expression"
+										},
+										"folder": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
 								{
 									"referenceName": "target_data_object_folder",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"dataobject": {
+											"value": "@pipeline().parameters.data_object",
+											"type": "Expression"
+										},
+										"folder": "@item().name"
+									}
 								}
 							]
 						}
