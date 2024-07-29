@@ -87,6 +87,10 @@
 			"type": "string",
 			"defaultValue": "sdaf"
 		},
+		"backupstorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testconposixstor.dfs.core.windows.net/"
+		},
 		"gdpstorsecundary_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{linkedService().storname}"
@@ -128,10 +132,6 @@
 		"priv-db_properties_groupId": {
 			"type": "string",
 			"defaultValue": "sqlServer"
-		},
-		"backupstorage_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://testconposixstor.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -190,14 +190,14 @@
 					"GDPstorageaccount_properties_typeProperties_url": {
 						"value": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
 					},
+					"backupstorage_properties_typeProperties_url": {
+						"value": "[parameters('backupstorage_properties_typeProperties_url')]"
+					},
 					"gdpstorsecundary_properties_typeProperties_url": {
 						"value": "[parameters('gdpstorsecundary_properties_typeProperties_url')]"
 					},
 					"testgdpinfomrationfdfs_properties_typeProperties_url": {
 						"value": "[parameters('testgdpinfomrationfdfs_properties_typeProperties_url')]"
-					},
-					"backupstorage_properties_typeProperties_url": {
-						"value": "[parameters('backupstorage_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -255,12 +255,6 @@
 					},
 					"gdgstordfs_properties_groupId": {
 						"value": "[parameters('gdgstordfs_properties_groupId')]"
-					},
-					"priv-db_properties_privateLinkResourceId": {
-						"value": "[parameters('priv-db_properties_privateLinkResourceId')]"
-					},
-					"priv-db_properties_groupId": {
-						"value": "[parameters('priv-db_properties_groupId')]"
 					}
 				}
 			},
@@ -284,6 +278,12 @@
 					},
 					"AzureSqlDatabase2_connectionString": {
 						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
+					"priv-db_properties_privateLinkResourceId": {
+						"value": "[parameters('priv-db_properties_privateLinkResourceId')]"
+					},
+					"priv-db_properties_groupId": {
+						"value": "[parameters('priv-db_properties_groupId')]"
 					},
 					"AzureDataLakeStorage2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"

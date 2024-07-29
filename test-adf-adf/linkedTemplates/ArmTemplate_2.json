@@ -11,6 +11,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
 		},
+		"priv-db_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-adf-rg/providers/Microsoft.Sql/servers/test-priv-rbr"
+		},
+		"priv-db_properties_groupId": {
+			"type": "string",
+			"defaultValue": "sqlServer"
+		},
 		"AzureDataLakeStorage2_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
@@ -25,31 +33,12 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/target_data_object_folder')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/default/priv-db')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "backupstorage",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"dataobject": {
-						"type": "string"
-					},
-					"folder": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "@concat(dataset().dataobject,'/',dataset().folder)",
-						"fileSystem": "p004standardized"
-					}
-				}
+				"privateLinkResourceId": "[parameters('priv-db_properties_privateLinkResourceId')]",
+				"groupId": "[parameters('priv-db_properties_groupId')]"
 			},
 			"dependsOn": []
 		},
@@ -339,6 +328,479 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2024-04-05T13:57:16Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parallel testing')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Until1",
+						"type": "Until",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(variables('iterator'),99)",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "parallel testing",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings",
+												"copyBehavior": "PreserveHierarchy"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "parallel_test_source",
+											"type": "DatasetReference",
+											"parameters": {
+												"number": "78"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "test_parallel_target",
+											"type": "DatasetReference",
+											"parameters": {
+												"number": "78"
+											}
+										}
+									]
+								},
+								{
+									"name": "set dummy",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "parallel testing",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "dummy",
+										"value": {
+											"value": "@variables('iterator')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "set variable1",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "set dummy",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "iterator",
+										"value": {
+											"value": "@add(variables('dummy'),1)",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "0.12:00:00"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"dummy": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"iterator": {
+						"type": "Integer",
+						"defaultValue": 0
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parallel testing_for_each')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Parallel copy",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('item_array')",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "parallel_test_source",
+											"type": "DatasetReference",
+											"parameters": {
+												"number": "@item().name"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "backupstorbinary",
+											"type": "DatasetReference",
+											"parameters": {
+												"number": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"dummy": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"iterator": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"item_array": {
+						"type": "Array",
+						"defaultValue": [
+							0,
+							1,
+							2,
+							3,
+							4,
+							5,
+							6,
+							7,
+							8,
+							9,
+							10,
+							11,
+							12,
+							13,
+							14,
+							15,
+							16,
+							17,
+							18,
+							19,
+							20,
+							21,
+							22,
+							23,
+							24,
+							25,
+							26,
+							27,
+							28,
+							29,
+							30,
+							31,
+							32,
+							33,
+							34,
+							35,
+							36,
+							37,
+							38,
+							39,
+							40,
+							41,
+							42,
+							43,
+							44,
+							45,
+							46,
+							47,
+							48,
+							49,
+							50,
+							51,
+							52,
+							53,
+							54,
+							55,
+							56,
+							57,
+							58,
+							59,
+							60,
+							61,
+							62,
+							63,
+							64,
+							65,
+							66,
+							67,
+							68,
+							69,
+							70,
+							71,
+							72,
+							73,
+							74,
+							75,
+							76,
+							77,
+							78,
+							79,
+							80,
+							81,
+							82,
+							83,
+							84,
+							85,
+							86,
+							87,
+							88,
+							89,
+							90,
+							91,
+							92,
+							93,
+							94,
+							95,
+							96,
+							97,
+							98,
+							99
+						]
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parallel_testing_for_each_lookup_folders_dataobject')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "get_folders_data_object",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Binary_lookup_folders_data_object",
+								"type": "DatasetReference",
+								"parameters": {
+									"data_object": {
+										"value": "@pipeline().parameters.data_object",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "copy folder recursively",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "get_folders_data_object",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('get_folders_data_object').output.childItems",
+								"type": "Expression"
+							},
+							"batchCount": 10,
+							"activities": [
+								{
+									"name": "backup data",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "target_data_object_folder",
+											"type": "DatasetReference",
+											"parameters": {
+												"dataobject": {
+													"value": "@pipeline().parameters.data_object",
+													"type": "Expression"
+												},
+												"folder": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "source_data_object_folder",
+											"type": "DatasetReference",
+											"parameters": {
+												"dataobject": {
+													"value": "@pipeline().parameters.data_object",
+													"type": "Expression"
+												},
+												"folder": "@item().name"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"data_object": {
+						"type": "string"
+					}
+				},
+				"annotations": []
 			},
 			"dependsOn": []
 		},
@@ -1009,367 +1471,6 @@
 						"     skipDuplicateMapOutputs: true) ~> sink8"
 					]
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/moviesdbdataflowsOptimized')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "MoviesDB",
-								"type": "DatasetReference"
-							},
-							"name": "CSVMovieDataInput"
-						},
-						{
-							"linkedService": {
-								"referenceName": "GDPstorageaccount",
-								"type": "LinkedServiceReference"
-							},
-							"name": "DeltaMoviesDataInput"
-						}
-					],
-					"sinks": [
-						{
-							"linkedService": {
-								"referenceName": "GDPstorageaccount",
-								"type": "LinkedServiceReference"
-							},
-							"name": "sink1"
-						},
-						{
-							"linkedService": {
-								"referenceName": "GDPstorageaccount",
-								"type": "LinkedServiceReference"
-							},
-							"name": "sink5"
-						}
-					],
-					"transformations": [
-						{
-							"name": "FlowletRatingLogic1",
-							"flowlet": {
-								"referenceName": "NewRatingFlowlet",
-								"type": "DataFlowReference",
-								"parameters": {}
-							}
-						},
-						{
-							"name": "FlowletRatingLogic2",
-							"flowlet": {
-								"referenceName": "NewRatingFlowlet",
-								"type": "DataFlowReference",
-								"parameters": {}
-							}
-						},
-						{
-							"name": "CorrectSpelling"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          movie as integer,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as short,",
-						"          Rating as short,",
-						"          {Rotton Tomato} as short",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> CSVMovieDataInput",
-						"source(output(",
-						"          movie as integer,",
-						"          title as string,",
-						"          genres as string,",
-						"          year as short,",
-						"          Rating as short,",
-						"          RottenTomato as short",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'delta',",
-						"     fileSystem: 'moviesdb',",
-						"     folderPath: 'delta') ~> DeltaMoviesDataInput",
-						"CorrectSpelling compose(mapColumn(",
-						"          movie,",
-						"          title,",
-						"          genres,",
-						"          year,",
-						"          Rating,",
-						"          RottenTomato",
-						"     ),",
-						"     composition: 'NewRatingFlowlet') ~> FlowletRatingLogic1@(output1)",
-						"DeltaMoviesDataInput compose(mapColumn(",
-						"          movie,",
-						"          title,",
-						"          genres,",
-						"          year,",
-						"          Rating,",
-						"          RottenTomato",
-						"     ),",
-						"     composition: 'NewRatingFlowlet') ~> FlowletRatingLogic2@(output1)",
-						"CSVMovieDataInput select(mapColumn(",
-						"          movie,",
-						"          title,",
-						"          genres,",
-						"          year,",
-						"          Rating,",
-						"          RottenTomato = {Rotton Tomato}",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> CorrectSpelling",
-						"FlowletRatingLogic1@output1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'delta',",
-						"     fileSystem: 'moviesdbaggregated',",
-						"     mergeSchema: false,",
-						"     autoCompact: false,",
-						"     optimizedWrite: false,",
-						"     vacuum: 0,",
-						"     deletable: false,",
-						"     insertable: true,",
-						"     updateable: false,",
-						"     upsertable: false,",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink1",
-						"FlowletRatingLogic2@output1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'delta',",
-						"     fileSystem: 'moviesdbaggregated',",
-						"     mergeSchema: false,",
-						"     autoCompact: false,",
-						"     optimizedWrite: false,",
-						"     vacuum: 0,",
-						"     deletable: false,",
-						"     insertable: true,",
-						"     updateable: false,",
-						"     upsertable: false,",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink5"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/xmltest')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"linkedService": {
-								"referenceName": "GDPstorageaccount",
-								"type": "LinkedServiceReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DelimitedText3",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "select1"
-						},
-						{
-							"name": "flatten1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          {http://schemas.xmlsoap.org/soap/envelope/,Envelope} as ({http://schemas.xmlsoap.org/soap/envelope/,Body} as ({URI,BatchCKIToetsen} as ({URI,Application} as ({URI,BatchToetsHeader} as ({URI,XXXX1} as boolean, {URI,XXXX2} as boolean, {URI,XXXX3} as boolean, {URI,YYYY} as ({URI,Nummer} as short)), {URI,BatchToetsingen} as string[], {URI,XXXX} as boolean), {URI,Header} as ({URI,H1} as boolean, {URI,H2} as short, {URI,H3} as short, {URI,H4} as short, {URI,H6} as short, {URI,H7} as short, {URI,Referentie} as string))), {http://schemas.xmlsoap.org/soap/envelope/,Header} as string)",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'xml',",
-						"     fileSystem: 'xmltest',",
-						"     fileName: 'testrb.xml',",
-						"     validationMode: 'none',",
-						"     namespaces: true) ~> source1",
-						"source1 select(mapColumn(",
-						"          Toetsingen = {http://schemas.xmlsoap.org/soap/envelope/,Envelope}.{http://schemas.xmlsoap.org/soap/envelope/,Body}.{URI,BatchCKIToetsen}.{URI,Application}.{URI,BatchToetsingen}",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 foldDown(unroll(Toetsingen, Toetsingen),",
-						"     mapColumn(",
-						"          Toetsingen",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> flatten1",
-						"flatten1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     partitionFileNames:['testrb.csv'],",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Parallel testing')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Until1",
-						"type": "Until",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@greater(variables('iterator'),99)",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "parallel testing",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "BinarySource",
-											"storeSettings": {
-												"type": "AzureBlobFSReadSettings",
-												"recursive": true
-											},
-											"formatSettings": {
-												"type": "BinaryReadSettings"
-											}
-										},
-										"sink": {
-											"type": "BinarySink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings",
-												"copyBehavior": "PreserveHierarchy"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "parallel_test_source",
-											"type": "DatasetReference",
-											"parameters": {
-												"number": "78"
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "test_parallel_target",
-											"type": "DatasetReference",
-											"parameters": {
-												"number": "78"
-											}
-										}
-									]
-								},
-								{
-									"name": "set dummy",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "parallel testing",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "dummy",
-										"value": {
-											"value": "@variables('iterator')",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "set variable1",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "set dummy",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "iterator",
-										"value": {
-											"value": "@add(variables('dummy'),1)",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"timeout": "0.12:00:00"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"dummy": {
-						"type": "Integer",
-						"defaultValue": 0
-					},
-					"iterator": {
-						"type": "Integer",
-						"defaultValue": 0
-					}
-				},
-				"annotations": []
 			},
 			"dependsOn": []
 		}

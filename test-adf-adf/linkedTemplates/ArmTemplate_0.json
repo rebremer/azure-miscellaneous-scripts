@@ -47,6 +47,10 @@
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
 		},
+		"backupstorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testconposixstor.dfs.core.windows.net/"
+		},
 		"gdpstorsecundary_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{linkedService().storname}"
@@ -54,10 +58,6 @@
 		"testgdpinfomrationfdfs_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpinformationf.dfs.core.windows.net/"
-		},
-		"backupstorage_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://testconposixstor.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -147,6 +147,19 @@
 				"type": "AzureBlobFS",
 				"typeProperties": {
 					"url": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/backupstorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('backupstorage_properties_typeProperties_url')]"
 				}
 			},
 			"dependsOn": []
@@ -333,19 +346,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/backupstorage')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('backupstorage_properties_typeProperties_url')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/Binary1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -376,6 +376,59 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Binary_lookup_data_objects')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GDPstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "p004standardized"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Binary_lookup_folders_data_object')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GDPstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"data_object": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().data_object",
+							"type": "Expression"
+						},
+						"fileSystem": "p004standardized"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSqlContainer1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -393,145 +446,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/CosmosDbNoSql1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DelimitedText3')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "GDPstorageaccount",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "xmltest"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Fullcsvdataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "GDPstorageaccount",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "fabricdemo"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "SaleKey",
-						"type": "String"
-					},
-					{
-						"name": "CityKey",
-						"type": "String"
-					},
-					{
-						"name": "CustomerKey",
-						"type": "String"
-					},
-					{
-						"name": "BillToCustomerKey",
-						"type": "String"
-					},
-					{
-						"name": "StockItemKey",
-						"type": "String"
-					},
-					{
-						"name": "InvoiceDateKey",
-						"type": "String"
-					},
-					{
-						"name": "DeliveryDateKey",
-						"type": "String"
-					},
-					{
-						"name": "SalespersonKey",
-						"type": "String"
-					},
-					{
-						"name": "WWIInvoiceID",
-						"type": "String"
-					},
-					{
-						"name": "Description",
-						"type": "String"
-					},
-					{
-						"name": "Package",
-						"type": "String"
-					},
-					{
-						"name": "Quantity",
-						"type": "String"
-					},
-					{
-						"name": "UnitPrice",
-						"type": "String"
-					},
-					{
-						"name": "TaxRate",
-						"type": "String"
-					},
-					{
-						"name": "TotalExcludingTax",
-						"type": "String"
-					},
-					{
-						"name": "TaxAmount",
-						"type": "String"
-					},
-					{
-						"name": "Profit",
-						"type": "String"
-					},
-					{
-						"name": "TotalIncludingTax",
-						"type": "String"
-					},
-					{
-						"name": "TotalDryItems",
-						"type": "String"
-					},
-					{
-						"name": "TotalChillerItems",
-						"type": "String"
-					},
-					{
-						"name": "LineageKey",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
 			]
 		}
 	]

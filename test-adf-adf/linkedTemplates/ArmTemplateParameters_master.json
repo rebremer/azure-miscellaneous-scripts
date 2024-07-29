@@ -65,6 +65,9 @@
 		"OracleBuiltInODBC_properties_typeProperties_userName": {
 			"value": "sdaf"
 		},
+		"backupstorage_properties_typeProperties_url": {
+			"value": "https://testconposixstor.dfs.core.windows.net/"
+		},
 		"gdpstorsecundary_properties_typeProperties_url": {
 			"value": "@{linkedService().storname}"
 		},
@@ -96,9 +99,6 @@
 		},
 		"priv-db_properties_groupId": {
 			"value": "sqlServer"
-		},
-		"backupstorage_properties_typeProperties_url": {
-			"value": "https://testconposixstor.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""
