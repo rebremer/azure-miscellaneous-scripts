@@ -50,6 +50,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('get_folders_data_object').output",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "backup data",
