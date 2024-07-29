@@ -6813,10 +6813,7 @@
 											"referenceName": "parallel_test_source",
 											"type": "DatasetReference",
 											"parameters": {
-												"number": {
-													"value": "@variables('iterator')",
-													"type": "Expression"
-												}
+												"number": "78"
 											}
 										}
 									],
@@ -7019,10 +7016,7 @@
 											"referenceName": "parallel_test_source",
 											"type": "DatasetReference",
 											"parameters": {
-												"number": {
-													"value": "@item()",
-													"type": "Expression"
-												}
+												"number": "@item().name"
 											}
 										}
 									],
@@ -7204,6 +7198,586 @@
 							"value": "@if(less(int(dataset().number),10), concat('dataobject0',string(dataset().number)), concat('dataobject',string(dataset().number)))",
 							"type": "Expression"
 						},
+						"fileSystem": "p004standardized"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/backupstorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parallel testing_for_each_lookup_dataobject')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "get_data_objects",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Binary_lookup_data_objects",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "get_data_objects",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('get_data_objects').output.childItems",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "get folders data object",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "Parallel testing_for_each_lookup_folders_dataobject",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": false,
+										"parameters": {
+											"data_object": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"dummy": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"iterator": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"item_array": {
+						"type": "Array",
+						"defaultValue": [
+							0,
+							1,
+							2,
+							3,
+							4,
+							5,
+							6,
+							7,
+							8,
+							9,
+							10,
+							11,
+							12,
+							13,
+							14,
+							15,
+							16,
+							17,
+							18,
+							19,
+							20,
+							21,
+							22,
+							23,
+							24,
+							25,
+							26,
+							27,
+							28,
+							29,
+							30,
+							31,
+							32,
+							33,
+							34,
+							35,
+							36,
+							37,
+							38,
+							39,
+							40,
+							41,
+							42,
+							43,
+							44,
+							45,
+							46,
+							47,
+							48,
+							49,
+							50,
+							51,
+							52,
+							53,
+							54,
+							55,
+							56,
+							57,
+							58,
+							59,
+							60,
+							61,
+							62,
+							63,
+							64,
+							65,
+							66,
+							67,
+							68,
+							69,
+							70,
+							71,
+							72,
+							73,
+							74,
+							75,
+							76,
+							77,
+							78,
+							79,
+							80,
+							81,
+							82,
+							83,
+							84,
+							85,
+							86,
+							87,
+							88,
+							89,
+							90,
+							91,
+							92,
+							93,
+							94,
+							95,
+							96,
+							97,
+							98,
+							99
+						]
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Binary_lookup_data_objects')]",
+				"[concat(variables('factoryId'), '/pipelines/Parallel testing_for_each_lookup_folders_dataobject')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Binary_lookup_data_objects')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GDPstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "p004standardized"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parallel testing_for_each_lookup_folders_dataobject')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "get_folders_data_object",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Binary_lookup_folders_data_object",
+								"type": "DatasetReference",
+								"parameters": {
+									"data_object": {
+										"value": "@pipeline().parameters.data_object",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "get_folders_data_object",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('get_folders_data_object').output.childItems",
+								"type": "Expression"
+							},
+							"batchCount": 10,
+							"activities": [
+								{
+									"name": "backup data",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "source_data_object_folder",
+											"type": "DatasetReference",
+											"parameters": {
+												"dataobject": {
+													"value": "@pipeline().parameters.data_object",
+													"type": "Expression"
+												},
+												"folder": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "target_data_object_folder",
+											"type": "DatasetReference",
+											"parameters": {
+												"dataobject": {
+													"value": "@pipeline().parameters.data_object",
+													"type": "Expression"
+												},
+												"folder": "@item().name"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"data_object": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"dummy": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"iterator": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"item_array": {
+						"type": "Array",
+						"defaultValue": [
+							0,
+							1,
+							2,
+							3,
+							4,
+							5,
+							6,
+							7,
+							8,
+							9,
+							10,
+							11,
+							12,
+							13,
+							14,
+							15,
+							16,
+							17,
+							18,
+							19,
+							20,
+							21,
+							22,
+							23,
+							24,
+							25,
+							26,
+							27,
+							28,
+							29,
+							30,
+							31,
+							32,
+							33,
+							34,
+							35,
+							36,
+							37,
+							38,
+							39,
+							40,
+							41,
+							42,
+							43,
+							44,
+							45,
+							46,
+							47,
+							48,
+							49,
+							50,
+							51,
+							52,
+							53,
+							54,
+							55,
+							56,
+							57,
+							58,
+							59,
+							60,
+							61,
+							62,
+							63,
+							64,
+							65,
+							66,
+							67,
+							68,
+							69,
+							70,
+							71,
+							72,
+							73,
+							74,
+							75,
+							76,
+							77,
+							78,
+							79,
+							80,
+							81,
+							82,
+							83,
+							84,
+							85,
+							86,
+							87,
+							88,
+							89,
+							90,
+							91,
+							92,
+							93,
+							94,
+							95,
+							96,
+							97,
+							98,
+							99
+						]
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Binary_lookup_folders_data_object')]",
+				"[concat(variables('factoryId'), '/datasets/source_data_object_folder')]",
+				"[concat(variables('factoryId'), '/datasets/target_data_object_folder')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Binary_lookup_folders_data_object')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GDPstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"data_object": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().data_object",
+							"type": "Expression"
+						},
+						"fileSystem": "p004standardized"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/source_data_object_folder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GDPstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"dataobject": {
+						"type": "string"
+					},
+					"folder": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@concat(dataset().dataobject,'/',dataset().folder)",
+							"type": "Expression"
+						},
+						"fileSystem": "p004standardized"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/target_data_object_folder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "backupstorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"dataobject": {
+						"type": "string"
+					},
+					"folder": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "@concat(dataset().dataobject,'/',dataset().folder)",
 						"fileSystem": "p004standardized"
 					}
 				}
