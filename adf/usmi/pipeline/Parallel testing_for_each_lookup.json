@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get root folders",
+				"name": "get_root_folders",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
