@@ -63,7 +63,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"number": {
-											"value": "@item()",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
