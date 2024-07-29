@@ -51,7 +51,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"dataobject": {
-											"value": "@item()",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
