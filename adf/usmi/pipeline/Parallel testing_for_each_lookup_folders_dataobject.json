@@ -16,8 +16,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "Binary_lookup",
-						"type": "DatasetReference"
+						"referenceName": "Binary_lookup_folders_data_object",
+						"type": "DatasetReference",
+						"parameters": {
+							"data_object": {
+								"value": "@pipeline().parameters.data_object",
+								"type": "Expression"
+							}
+						}
 					},
 					"fieldList": [
 						"childItems"
@@ -107,6 +113,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"data_object": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"dummy": {
 				"type": "Integer",

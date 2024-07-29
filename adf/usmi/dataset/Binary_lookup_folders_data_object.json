@@ -1,0 +1,22 @@
+{
+	"name": "Binary_lookup_folders_data_object",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GDPstorageaccount",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"data_object": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "p004standardized"
+			}
+		}
+	}
+}
