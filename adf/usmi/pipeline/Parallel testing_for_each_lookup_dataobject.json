@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "Binary_lookup",
+						"referenceName": "Binary_lookup_data_objects",
 						"type": "DatasetReference"
 					},
 					"fieldList": [

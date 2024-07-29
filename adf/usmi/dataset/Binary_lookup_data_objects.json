@@ -1,5 +1,5 @@
 {
-	"name": "Binary_lookup",
+	"name": "Binary_lookup_data_objects",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "GDPstorageaccount",
