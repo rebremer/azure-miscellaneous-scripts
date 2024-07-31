@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=test-priv-rbr.database.windows.net;Initial Catalog=test-priv-dtu"
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=1;Data Source=test-priv-rbr.database.windows.net;Initial Catalog=test-priv-dtu;ConnectRetryCount=0"
 		},
 		"connectVia": {
 			"referenceName": "integrationRuntime2",
