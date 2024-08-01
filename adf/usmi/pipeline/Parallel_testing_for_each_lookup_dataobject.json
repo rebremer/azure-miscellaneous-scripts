@@ -53,7 +53,7 @@
 					"batchCount": 10,
 					"activities": [
 						{
-							"name": "get folders data object",
+							"name": "copy folders recursively in data object",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"policy": {
