@@ -52,14 +52,6 @@
 			"defaultValue": [
 				"testgdpinformationf.blob.core.windows.net"
 			]
-		},
-		"gdgstordfs_properties_privateLinkResourceId": {
-			"type": "string",
-			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-onelab-rg/providers/Microsoft.Storage/storageAccounts/testgdpstor2"
-		},
-		"gdgstordfs_properties_groupId": {
-			"type": "string",
-			"defaultValue": "dfs"
 		}
 	},
 	"variables": {
@@ -289,6 +281,28 @@
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GDPstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "deltabig"
+					},
+					"compressionCodec": "snappy"
 				},
 				"schema": []
 			},
@@ -717,16 +731,6 @@
 				"privateLinkResourceId": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]",
 				"groupId": "[parameters('AzureBlobStorage988_properties_groupId')]",
 				"fqdns": "[parameters('AzureBlobStorage988_properties_fqdns')]"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/default/gdgstordfs')]",
-			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"privateLinkResourceId": "[parameters('gdgstordfs_properties_privateLinkResourceId')]",
-				"groupId": "[parameters('gdgstordfs_properties_groupId')]"
 			},
 			"dependsOn": []
 		}

@@ -10,7 +10,15 @@
 		"AzureSqlDatabase2_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'",
-			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=test-priv-rbr.database.windows.net;Initial Catalog=test-priv-dtu"
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=1;Data Source=test-priv-rbr.database.windows.net;Initial Catalog=test-priv-dtu;ConnectRetryCount=0"
+		},
+		"gdgstordfs_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2a8ece59-09e0-4a84-9124-e965b97f5d2c/resourceGroups/test-onelab-rg/providers/Microsoft.Storage/storageAccounts/testgdpstor2"
+		},
+		"gdgstordfs_properties_groupId": {
+			"type": "string",
+			"defaultValue": "dfs"
 		},
 		"priv-db_properties_privateLinkResourceId": {
 			"type": "string",
@@ -34,34 +42,22 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/default/gdgstordfs')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"privateLinkResourceId": "[parameters('gdgstordfs_properties_privateLinkResourceId')]",
+				"groupId": "[parameters('gdgstordfs_properties_groupId')]"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/default/priv-db')]",
 			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"privateLinkResourceId": "[parameters('priv-db_properties_privateLinkResourceId')]",
 				"groupId": "[parameters('priv-db_properties_groupId')]"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Parquet2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "GDPstorageaccount",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "deltabig"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
 			},
 			"dependsOn": []
 		},
@@ -748,7 +744,7 @@
 								"value": "@activity('get_folders_data_object').output.childItems",
 								"type": "Expression"
 							},
-							"batchCount": 10,
+							"isSequential": true,
 							"activities": [
 								{
 									"name": "backup data",

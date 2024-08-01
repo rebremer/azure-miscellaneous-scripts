@@ -18,7 +18,7 @@
 		"AzureSqlDatabase2_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'",
-			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=test-priv-rbr.database.windows.net;Initial Catalog=test-priv-dtu"
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=1;Data Source=test-priv-rbr.database.windows.net;Initial Catalog=test-priv-dtu;ConnectRetryCount=0"
 		},
 		"CosmosDbNoSql1_connectionString": {
 			"type": "secureString",
@@ -250,12 +250,6 @@
 					},
 					"AzureBlobStorage988_properties_fqdns": {
 						"value": "[parameters('AzureBlobStorage988_properties_fqdns')]"
-					},
-					"gdgstordfs_properties_privateLinkResourceId": {
-						"value": "[parameters('gdgstordfs_properties_privateLinkResourceId')]"
-					},
-					"gdgstordfs_properties_groupId": {
-						"value": "[parameters('gdgstordfs_properties_groupId')]"
 					}
 				}
 			},
@@ -279,6 +273,12 @@
 					},
 					"AzureSqlDatabase2_connectionString": {
 						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
+					"gdgstordfs_properties_privateLinkResourceId": {
+						"value": "[parameters('gdgstordfs_properties_privateLinkResourceId')]"
+					},
+					"gdgstordfs_properties_groupId": {
+						"value": "[parameters('gdgstordfs_properties_groupId')]"
 					},
 					"priv-db_properties_privateLinkResourceId": {
 						"value": "[parameters('priv-db_properties_privateLinkResourceId')]"

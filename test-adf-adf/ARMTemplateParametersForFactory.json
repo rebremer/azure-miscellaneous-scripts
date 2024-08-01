@@ -12,7 +12,7 @@
 			"value": ""
 		},
 		"AzureSqlDatabase2_connectionString": {
-			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=test-priv-rbr.database.windows.net;Initial Catalog=test-priv-dtu"
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=1;Data Source=test-priv-rbr.database.windows.net;Initial Catalog=test-priv-dtu;ConnectRetryCount=0"
 		},
 		"CosmosDbNoSql1_connectionString": {
 			"value": ""
