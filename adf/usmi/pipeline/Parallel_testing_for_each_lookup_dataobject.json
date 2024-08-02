@@ -49,7 +49,8 @@
 						"value": "@activity('get_data_objects').output.childItems",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
+					"batchCount": 10,
 					"activities": [
 						{
 							"name": "copy folders recursively in data object",
