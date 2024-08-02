@@ -1480,7 +1480,8 @@
 								"value": "@activity('get_folders_data_object').output.childItems",
 								"type": "Expression"
 							},
-							"isSequential": true,
+							"isSequential": false,
+							"batchCount": 10,
 							"activities": [
 								{
 									"name": "backup data",
