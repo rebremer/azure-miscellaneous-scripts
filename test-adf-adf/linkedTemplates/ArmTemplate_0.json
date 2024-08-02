@@ -50,10 +50,6 @@
 		"testgdpinfomrationfdfs_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpinformationf.dfs.core.windows.net/"
-		},
-		"ADLSgen2uami_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -198,6 +194,42 @@
 				"typeProperties": {}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime2')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "West Europe",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
+						},
+						"copyComputeScaleProperties": {
+							"dataIntegrationUnit": 256,
+							"timeToLive": 10
+						},
+						"pipelineExternalComputeScaleProperties": {
+							"timeToLive": 60,
+							"numberOfPipelineNodes": 1,
+							"numberOfExternalNodes": 1
+						}
+					}
+				},
+				"managedVirtualNetwork": {
+					"type": "ManagedVirtualNetworkReference",
+					"referenceName": "default"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/NewRatingFlowlet')]",
@@ -471,25 +503,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/testgdpinfomrationfdfs')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ADLSgen2uami')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('ADLSgen2uami_properties_typeProperties_url')]",
-					"credential": {
-						"referenceName": "credential1",
-						"type": "CredentialReference"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/credentials/credential1')]"
 			]
 		}
 	]

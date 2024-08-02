@@ -13,339 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/Oracle2016issue_vnet')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "TESTRBADMIN.TEST_PROD_ISSUE_v2 (2).parquet",
-						"fileSystem": "oracle2016"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Oracle2016issue_vnet_sink')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "parquetcasted_data.parquet",
-						"fileSystem": "oracle2016"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "AAAAA",
-						"type": "UTF8"
-					},
-					{
-						"name": "BBBBB",
-						"type": "UTF8"
-					},
-					{
-						"name": "CCCCC",
-						"type": "INT96"
-					},
-					{
-						"name": "DDDDD",
-						"type": "UTF8"
-					},
-					{
-						"name": "EEEEE",
-						"type": "UTF8"
-					},
-					{
-						"name": "FFFFF",
-						"type": "UTF8"
-					},
-					{
-						"name": "GGGGG",
-						"type": "UTF8"
-					},
-					{
-						"name": "HHHHH",
-						"type": "UTF8"
-					},
-					{
-						"name": "IIIII",
-						"type": "UTF8"
-					},
-					{
-						"name": "JJJJJ",
-						"type": "INT96"
-					},
-					{
-						"name": "KKKKK",
-						"type": "DOUBLE"
-					},
-					{
-						"name": "LLLLL",
-						"type": "UTF8"
-					},
-					{
-						"name": "MMMMM",
-						"type": "UTF8"
-					},
-					{
-						"name": "NNNNN",
-						"type": "INT96"
-					},
-					{
-						"name": "OOOO",
-						"type": "UTF8"
-					},
-					{
-						"name": "PPPP",
-						"type": "UTF8"
-					},
-					{
-						"name": "QQQQ",
-						"type": "UTF8"
-					},
-					{
-						"name": "RRRR",
-						"type": "INT96"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Parquet2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "GDPstorageaccount",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "deltabig"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Xml_output')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Xml",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "xmltest"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/backupstorbinary')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "backupstorage",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"number": {
-						"type": "int"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": {
-							"value": "@if(less(int(dataset().number),10), concat('dataobject0',string(dataset().number)), concat('dataobject',string(dataset().number)))",
-							"type": "Expression"
-						},
-						"fileSystem": "p004standardized"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/fulldataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "GDPstorageaccount",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "fabricdemo"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "CityKey",
-						"type": "String"
-					},
-					{
-						"name": "WWICityID",
-						"type": "String"
-					},
-					{
-						"name": "City",
-						"type": "String"
-					},
-					{
-						"name": "StateProvince",
-						"type": "String"
-					},
-					{
-						"name": "Country",
-						"type": "String"
-					},
-					{
-						"name": "Continent",
-						"type": "String"
-					},
-					{
-						"name": "SalesTerritory",
-						"type": "String"
-					},
-					{
-						"name": "Region",
-						"type": "String"
-					},
-					{
-						"name": "Subregion",
-						"type": "String"
-					},
-					{
-						"name": "Location",
-						"type": "String"
-					},
-					{
-						"name": "LatestRecordedPopulation",
-						"type": "String"
-					},
-					{
-						"name": "ValidFrom",
-						"type": "String"
-					},
-					{
-						"name": "ValidTo",
-						"type": "String"
-					},
-					{
-						"name": "LineageKey",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/parallel_test_source')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "GDPstorageaccount",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"number": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": {
-							"value": "@if(less(int(dataset().number),10), concat('dataobject0',string(dataset().number)), concat('dataobject',string(dataset().number)))",
-							"type": "Expression"
-						},
-						"fileSystem": "p004standardized"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/source_data_object_folder')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "GDPstorageaccount",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"dataobject": {
-						"type": "string"
-					},
-					"folder": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": {
-							"value": "@concat(dataset().dataobject,'/',dataset().folder)",
-							"type": "Expression"
-						},
-						"fileSystem": "p004standardized"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/sql_silver_fact_sale')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1076,9 +743,1166 @@
 				"lastPublishTime": "2024-04-06T15:09:25Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/fulldataset')]",
 				"[concat(variables('factoryId'), '/datasets/sql_silver_fact_sale')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OracleSHIR2016issue_ora_stor')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Oracle to ADLSgen2",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OracleSource",
+								"partitionOption": "None",
+								"convertDecimalToInteger": false,
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "AAAAA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "AAAAA",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "BBBBB",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BBBBB",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "CCCCC",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "CCCCC",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "DDDDD",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DDDDD",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "EEEEE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "EEEEE",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "FFFFF",
+											"type": "String"
+										},
+										"sink": {
+											"name": "FFFFF",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "GGGGG",
+											"type": "String"
+										},
+										"sink": {
+											"name": "GGGGG",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "HHHHH",
+											"type": "String"
+										},
+										"sink": {
+											"name": "HHHHH",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "IIIII",
+											"type": "String"
+										},
+										"sink": {
+											"name": "IIIII",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "JJJJJ",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "JJJJJ",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "KKKKK",
+											"type": "String"
+										},
+										"sink": {
+											"name": "KKKKK",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "LLLLL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LLLLL",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "MMMMM",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MMMMM",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "NNNNN",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "NNNNN",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "OOOO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "OOOO",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "PPPP",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PPPP",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "QQQQ",
+											"type": "String"
+										},
+										"sink": {
+											"name": "QQQQ",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "RRRR",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "RRRR",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Oracle2016",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Oracle2016issue",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OracleSHIR2016issue_stor_ora')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ADLSgen2 to Oracle",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"additionalColumns": [
+									{
+										"name": "KKKKKv2",
+										"value": "999999999999999.99999999999999 "
+									}
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "TESTRBADMIN.TEST_PROD_ISSUE_v2 (2).parquet",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "OracleSink",
+								"writeBatchSize": 10000
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "AAAAA",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "AAAAA",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BBBBB",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "BBBBB",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CCCCC",
+											"type": "DateTime",
+											"physicalType": "INT96"
+										},
+										"sink": {
+											"name": "CCCCC",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "DDDDD",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "DDDDD",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EEEEE",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "EEEEE",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FFFFF",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "FFFFF",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GGGGG",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "GGGGG",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "HHHHH",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "HHHHH",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "KKKKKv2",
+											"physicalType": "DOUBLE"
+										},
+										"sink": {
+											"name": "KKKKK",
+											"type": "DOUBLE"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Oracle2016issue",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Oracle2016",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Oracle_ODBC')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ODBC to GDP",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OdbcSource",
+								"query": "select 1 from dual",
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "firstname"
+										},
+										"sink": {
+											"name": "firstname"
+										}
+									},
+									{
+										"source": {
+											"name": "lastname"
+										},
+										"sink": {
+											"name": "lastname"
+										}
+									},
+									{
+										"source": {
+											"name": "id"
+										},
+										"sink": {
+											"name": "id"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OdbcTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-09-25T14:05:15Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Oracle_built_in')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Oracle to ADLSgen2",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OracleSource",
+								"oracleReaderQuery": "select 1 from dual ?AdfTabularPartitionName",
+								"partitionOption": "PhysicalPartitionsOfTable",
+								"partitionSettings": {
+									"partitionNames": [
+										"Feyenoord"
+									]
+								},
+								"convertDecimalToInteger": false,
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "firstname"
+										},
+										"sink": {
+											"name": "firstname"
+										}
+									},
+									{
+										"source": {
+											"name": "lastname"
+										},
+										"sink": {
+											"name": "lastname"
+										}
+									},
+									{
+										"source": {
+											"name": "id"
+										},
+										"sink": {
+											"name": "id"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OracleTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Oracle to ADLSgen2 v2",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Oracle to ADLSgen2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OracleSource",
+								"oracleReaderQuery": "select 1 from dual",
+								"partitionOption": "None",
+								"convertDecimalToInteger": false,
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "firstname"
+										},
+										"sink": {
+											"name": "firstname"
+										}
+									},
+									{
+										"source": {
+											"name": "lastname"
+										},
+										"sink": {
+											"name": "lastname"
+										}
+									},
+									{
+										"source": {
+											"name": "id"
+										},
+										"sink": {
+											"name": "id"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OracleTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OracleSource",
+								"partitionOption": "None",
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "OracleTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-03T14:59:01Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Oracle_built_inODBC')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Oracle to ADLSgen2",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OdbcSource",
+								"query": "select 1 from dual",
+								"queryTimeout": "02:00:00",
+								"convertDecimalToInteger": false
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "firstname"
+										},
+										"sink": {
+											"name": "firstname"
+										}
+									},
+									{
+										"source": {
+											"name": "lastname"
+										},
+										"sink": {
+											"name": "lastname"
+										}
+									},
+									{
+										"source": {
+											"name": "id"
+										},
+										"sink": {
+											"name": "id"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OracleTable1ODBC",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Oracle to ADLSgen2 v2",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Oracle to ADLSgen2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OdbcSource",
+								"query": "select 1 from dual",
+								"queryTimeout": "02:00:00",
+								"convertDecimalToInteger": false
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "firstname"
+										},
+										"sink": {
+											"name": "firstname"
+										}
+									},
+									{
+										"source": {
+											"name": "lastname"
+										},
+										"sink": {
+											"name": "lastname"
+										}
+									},
+									{
+										"source": {
+											"name": "id"
+										},
+										"sink": {
+											"name": "id"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OracleTable1ODBC",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OdbcSource",
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "OracleTable1ODBC",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-03T12:49:55Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Oracle_built_in_v2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Oracle to ADLSgen2",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OracleSource",
+								"partitionOption": "PhysicalPartitionsOfTable",
+								"partitionSettings": {
+									"partitionNames": []
+								},
+								"convertDecimalToInteger": false,
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "BOOK_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BOOK_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TITLE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TITLE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AUTHOR_LAST_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "AUTHOR_LAST_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AUTHOR_FIRST_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "AUTHOR_FIRST_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RATING",
+											"type": "Double"
+										},
+										"sink": {
+											"name": "RATING",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CREATE_DATE",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "CREATE_DATE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "UPDATE_DATE",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "UPDATE_DATE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OracleTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "OracleSource",
+								"partitionOption": "None",
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "OracleTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-03T14:59:01Z"
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Parallel testing')]",
@@ -1217,7 +2041,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/parallel_test_source')]",
 				"[concat(variables('factoryId'), '/datasets/test_parallel_target')]"
 			]
 		},
@@ -1416,10 +2239,7 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/parallel_test_source')]",
-				"[concat(variables('factoryId'), '/datasets/backupstorbinary')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Parallel_testing_for_each_lookup_folders_dataobject')]",
@@ -1562,7 +2382,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/source_data_object_folder')]",
 				"[concat(variables('factoryId'), '/datasets/target_data_object_folder')]"
 			]
 		},
@@ -1932,9 +2751,7 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Parquet2')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SQL to SQL')]",
@@ -2275,6 +3092,326 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2024-01-13T18:47:01Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL to storage')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SQL to storage",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT TOP (10) [id]\n      ,[url]\n      ,[title]\n      ,[text]\n      ,[title_vector]\n      ,[content_vector]\n      ,[vector_id]\n  FROM [dbo].[wikipedia_articles_embeddings]",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-13T18:47:01Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQLCosmos')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "StorageCosmos",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "raw/csv/full/fact_sale_1y_full",
+									"wildcardFileName": "*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "CosmosDbSqlApiSink",
+								"writeBehavior": "insert",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"parallelCopies": 32,
+							"dataIntegrationUnits": 100,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "SaleKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['SaleKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "CityKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['CityKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "CustomerKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['CustomerKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "BillToCustomerKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['BillToCustomerKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "StockItemKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['StockItemKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "InvoiceDateKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['InvoiceDateKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "DeliveryDateKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['DeliveryDateKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "SalespersonKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['SalespersonKey']"
+										}
+									},
+									{
+										"source": {
+											"name": "WWIInvoiceID",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['WWIInvoiceID']"
+										}
+									},
+									{
+										"source": {
+											"name": "Package",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Package']"
+										}
+									},
+									{
+										"source": {
+											"name": "Quantity",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Quantity']"
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPrice",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['UnitPrice']"
+										}
+									},
+									{
+										"source": {
+											"name": "TaxRate",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TaxRate']"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalExcludingTax",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TotalExcludingTax']"
+										}
+									},
+									{
+										"source": {
+											"name": "TaxAmount",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TaxAmount']"
+										}
+									},
+									{
+										"source": {
+											"name": "Profit",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Profit']"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalIncludingTax",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TotalIncludingTax']"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalDryItems",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TotalDryItems']"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalChillerItems",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TotalChillerItems']"
+										}
+									},
+									{
+										"source": {
+											"name": "LineageKey",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['LineageKey']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CosmosDbNoSqlContainer1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"concurrency": 16,
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
 			},
 			"dependsOn": []
 		}
