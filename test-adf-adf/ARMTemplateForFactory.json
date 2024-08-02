@@ -6820,9 +6820,15 @@
 				"type": "AzureBlobFS",
 				"typeProperties": {
 					"url": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime2",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime2')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Oracle2016')]",
@@ -6919,9 +6925,15 @@
 				"type": "AzureBlobFS",
 				"typeProperties": {
 					"url": "[parameters('backupstorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime2",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime2')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/gdpstorsecundary')]",

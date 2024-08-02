@@ -188,17 +188,14 @@
 					"DTUDB_properties_typeProperties_userName": {
 						"value": "[parameters('DTUDB_properties_typeProperties_userName')]"
 					},
-					"GDPstorageaccount_properties_typeProperties_url": {
-						"value": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
-					},
-					"backupstorage_properties_typeProperties_url": {
-						"value": "[parameters('backupstorage_properties_typeProperties_url')]"
-					},
 					"gdpstorsecundary_properties_typeProperties_url": {
 						"value": "[parameters('gdpstorsecundary_properties_typeProperties_url')]"
 					},
 					"testgdpinfomrationfdfs_properties_typeProperties_url": {
 						"value": "[parameters('testgdpinfomrationfdfs_properties_typeProperties_url')]"
+					},
+					"ADLSgen2uami_properties_typeProperties_url": {
+						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -230,9 +227,6 @@
 					"OracleBuiltInODBC_credential": {
 						"value": "[parameters('OracleBuiltInODBC_credential')]"
 					},
-					"ADLSgen2uami_properties_typeProperties_url": {
-						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
-					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
@@ -250,6 +244,18 @@
 					},
 					"AzureBlobStorage988_properties_fqdns": {
 						"value": "[parameters('AzureBlobStorage988_properties_fqdns')]"
+					},
+					"gdgstordfs_properties_privateLinkResourceId": {
+						"value": "[parameters('gdgstordfs_properties_privateLinkResourceId')]"
+					},
+					"gdgstordfs_properties_groupId": {
+						"value": "[parameters('gdgstordfs_properties_groupId')]"
+					},
+					"priv-db_properties_privateLinkResourceId": {
+						"value": "[parameters('priv-db_properties_privateLinkResourceId')]"
+					},
+					"priv-db_properties_groupId": {
+						"value": "[parameters('priv-db_properties_groupId')]"
 					}
 				}
 			},
@@ -274,20 +280,14 @@
 					"AzureSqlDatabase2_connectionString": {
 						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
 					},
-					"gdgstordfs_properties_privateLinkResourceId": {
-						"value": "[parameters('gdgstordfs_properties_privateLinkResourceId')]"
-					},
-					"gdgstordfs_properties_groupId": {
-						"value": "[parameters('gdgstordfs_properties_groupId')]"
-					},
-					"priv-db_properties_privateLinkResourceId": {
-						"value": "[parameters('priv-db_properties_privateLinkResourceId')]"
-					},
-					"priv-db_properties_groupId": {
-						"value": "[parameters('priv-db_properties_groupId')]"
-					},
 					"AzureDataLakeStorage2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
+					},
+					"GDPstorageaccount_properties_typeProperties_url": {
+						"value": "[parameters('GDPstorageaccount_properties_typeProperties_url')]"
+					},
+					"backupstorage_properties_typeProperties_url": {
+						"value": "[parameters('backupstorage_properties_typeProperties_url')]"
 					},
 					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
 						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
