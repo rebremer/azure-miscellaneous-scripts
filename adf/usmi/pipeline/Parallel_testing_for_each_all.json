@@ -55,14 +55,10 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "source_data_object_folder",
+									"referenceName": "source_data_object_all",
 									"type": "DatasetReference",
 									"parameters": {
 										"dataobject": {
-											"value": "@pipeline().parameters.data_object",
-											"type": "Expression"
-										},
-										"folder": {
 											"value": "@item().name",
 											"type": "Expression"
 										}
@@ -71,14 +67,10 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "target_data_object_folder",
+									"referenceName": "target_data_object_all",
 									"type": "DatasetReference",
 									"parameters": {
 										"dataobject": {
-											"value": "@pipeline().parameters.data_object",
-											"type": "Expression"
-										},
-										"folder": {
 											"value": "@item().name",
 											"type": "Expression"
 										}
