@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('get_folders_data_object').output.childItems",
+						"value": "@activity('get_data_objects').output.childItems",
 						"type": "Expression"
 					},
 					"isSequential": false,
