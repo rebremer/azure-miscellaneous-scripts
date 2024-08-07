@@ -15,7 +15,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "@dataset().folder",
+				"folderPath": "@dataset().folder",
 				"fileSystem": "p004standardized"
 			}
 		}
