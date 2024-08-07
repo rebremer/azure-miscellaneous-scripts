@@ -453,10 +453,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": {
-							"value": "@dataset().folder",
-							"type": "Expression"
-						},
+						"fileName": "@dataset().folder",
 						"fileSystem": "p004standardized"
 					}
 				}
@@ -514,10 +511,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": {
-							"value": "@dataset().folder",
-							"type": "Expression"
-						},
+						"fileName": "@dataset().folder",
 						"fileSystem": "p004standardized"
 					}
 				}
