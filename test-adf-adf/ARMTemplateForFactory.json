@@ -2741,14 +2741,7 @@
 					{
 						"name": "copy data objects concurrently",
 						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "get_data_objects",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
@@ -2815,37 +2808,6 @@
 									]
 								}
 							]
-						}
-					},
-					{
-						"name": "get_data_objects",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "Binary_lookup_data_objects",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"fieldList": [
-								"childItems"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "BinaryReadSettings"
-							}
 						}
 					}
 				],
@@ -4962,7 +4924,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Binary_lookup_data_objects')]",
 				"[concat(variables('factoryId'), '/datasets/source_data_object_all')]",
 				"[concat(variables('factoryId'), '/datasets/target_data_object_all')]"
 			]
@@ -8618,7 +8579,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "@dataset().folder",
+						"folderPath": "@dataset().folder",
 						"fileSystem": "p004standardized"
 					}
 				}
@@ -8816,7 +8777,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "@dataset().folder",
+						"folderPath": "@dataset().folder",
 						"fileSystem": "p004standardized"
 					}
 				}
