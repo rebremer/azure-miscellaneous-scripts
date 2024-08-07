@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"dataobject": {
+			"folder": {
 				"type": "string"
 			}
 		},

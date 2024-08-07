@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('get_data_objects').output.childItems",
+						"value": "@pipeline().parameters.folders",
 						"type": "Expression"
 					},
 					"isSequential": false,
@@ -57,7 +57,7 @@
 									"referenceName": "source_data_object_all",
 									"type": "DatasetReference",
 									"parameters": {
-										"dataobject": {
+										"folder": {
 											"value": "@item().name",
 											"type": "Expression"
 										}
@@ -69,7 +69,7 @@
 									"referenceName": "target_data_object_all",
 									"type": "DatasetReference",
 									"parameters": {
-										"dataobject": {
+										"folder": {
 											"value": "@item().name",
 											"type": "Expression"
 										}
