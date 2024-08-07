@@ -241,15 +241,6 @@
 					},
 					"OracleBuiltInODBC_properties_typeProperties_userName": {
 						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_userName')]"
-					},
-					"AzureBlobStorage988_properties_privateLinkResourceId": {
-						"value": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]"
-					},
-					"AzureBlobStorage988_properties_groupId": {
-						"value": "[parameters('AzureBlobStorage988_properties_groupId')]"
-					},
-					"AzureBlobStorage988_properties_fqdns": {
-						"value": "[parameters('AzureBlobStorage988_properties_fqdns')]"
 					}
 				}
 			},
@@ -271,6 +262,15 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AzureBlobStorage988_properties_privateLinkResourceId": {
+						"value": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]"
+					},
+					"AzureBlobStorage988_properties_groupId": {
+						"value": "[parameters('AzureBlobStorage988_properties_groupId')]"
+					},
+					"AzureBlobStorage988_properties_fqdns": {
+						"value": "[parameters('AzureBlobStorage988_properties_fqdns')]"
+					},
 					"gdgstordfs_properties_privateLinkResourceId": {
 						"value": "[parameters('gdgstordfs_properties_privateLinkResourceId')]"
 					},
@@ -282,9 +282,6 @@
 					},
 					"priv-db_properties_groupId": {
 						"value": "[parameters('priv-db_properties_groupId')]"
-					},
-					"AzureDataLakeStorage2_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -308,6 +305,9 @@
 					},
 					"AzureSqlDatabase2_connectionString": {
 						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
+					"AzureDataLakeStorage2_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
 					},
 					"testgdpinformationfblob_properties_typeProperties_serviceEndpoint": {
 						"value": "[parameters('testgdpinformationfblob_properties_typeProperties_serviceEndpoint')]"
