@@ -16,7 +16,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"folderPath": {
-					"value": "@dataset().dataobject",
+					"value": "@dataset().folder",
 					"type": "Expression"
 				},
 				"fileSystem": "p004standardized"
