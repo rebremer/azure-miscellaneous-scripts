@@ -1,0 +1,16 @@
+{
+	"name": "OracleTableProdV2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Oracle2016",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "testrbadmin ",
+			"table": "Test_prod_issue2"
+		}
+	}
+}

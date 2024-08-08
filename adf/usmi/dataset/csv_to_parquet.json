@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "max_values.parquet",
 				"fileSystem": "oracle2016"
 			},
 			"compressionCodec": "snappy"
