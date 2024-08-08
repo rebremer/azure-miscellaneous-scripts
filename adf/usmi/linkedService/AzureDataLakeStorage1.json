@@ -5,10 +5,6 @@
 		"type": "AzureBlobFS",
 		"typeProperties": {
 			"url": "https://testgdpstor2.dfs.core.windows.net/"
-		},
-		"connectVia": {
-			"referenceName": "SHIR2016",
-			"type": "IntegrationRuntimeReference"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/linkedservices"
