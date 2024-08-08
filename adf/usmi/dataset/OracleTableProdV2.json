@@ -9,8 +9,8 @@
 		"type": "OracleTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "testrbadmin ",
-			"table": "Test_prod_issue2"
+			"schema": "TESTRBADMIN",
+			"table": "TEST_PROD_ISSUE2"
 		}
 	}
 }
