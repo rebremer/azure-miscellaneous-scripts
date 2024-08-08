@@ -38,48 +38,44 @@
 								"source": {
 									"name": "a1",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "UTF8"
 								},
 								"sink": {
-									"name": "a1",
-									"type": "String",
-									"physicalType": "UTF8"
+									"name": "A1",
+									"type": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "b1",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "UTF8"
 								},
 								"sink": {
-									"name": "b1",
-									"type": "String",
-									"physicalType": "UTF8"
+									"name": "B1",
+									"type": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "c1",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "UTF8"
 								},
 								"sink": {
-									"name": "c1",
-									"type": "String",
-									"physicalType": "UTF8"
+									"name": "C1",
+									"type": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "d1",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "UTF8"
 								},
 								"sink": {
-									"name": "d1",
-									"type": "String",
-									"physicalType": "UTF8"
+									"name": "D1",
+									"type": "String"
 								}
 							}
 						],
