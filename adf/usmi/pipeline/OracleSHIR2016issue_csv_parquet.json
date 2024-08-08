@@ -1,0 +1,264 @@
+{
+	"name": "OracleSHIR2016issue_csv_parquet",
+	"properties": {
+		"activities": [
+			{
+				"name": "csv to parquet",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "AAAAA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AAAAA",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "BBBBB",
+									"type": "String"
+								},
+								"sink": {
+									"name": "BBBBB",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "CCCCC",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "CCCCC",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "DDDDD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DDDDD",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "EEEEE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EEEEE",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "FFFFF",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FFFFF",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "GGGGG",
+									"type": "String"
+								},
+								"sink": {
+									"name": "GGGGG",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "HHHHH",
+									"type": "String"
+								},
+								"sink": {
+									"name": "HHHHH",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "IIIII",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IIIII",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "JJJJJ",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "JJJJJ",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "KKKKK",
+									"type": "String"
+								},
+								"sink": {
+									"name": "KKKKK",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "LLLLL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LLLLL",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "MMMMM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MMMMM",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "NNNNN",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "NNNNN",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "OOOO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OOOO",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "PPPP",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PPPP",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "QQQQ",
+									"type": "String"
+								},
+								"sink": {
+									"name": "QQQQ",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "RRRR",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "RRRR",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Oracle2016issue",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}

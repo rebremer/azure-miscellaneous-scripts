@@ -10,8 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "raw/csv/full/fact_sale_1y_full",
-				"fileSystem": "fabricdemo"
+				"fileName": "max_values.txt",
+				"fileSystem": "oracle2016"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
