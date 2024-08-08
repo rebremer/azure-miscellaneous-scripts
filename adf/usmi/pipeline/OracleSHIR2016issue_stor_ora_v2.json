@@ -36,100 +36,46 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "AAAAA",
+									"name": "a1",
 									"type": "String",
 									"physicalType": "UTF8"
 								},
 								"sink": {
-									"name": "AAAAA",
+									"name": "A1",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "BBBBB",
+									"name": "b1",
 									"type": "String",
 									"physicalType": "UTF8"
 								},
 								"sink": {
-									"name": "BBBBB",
+									"name": "B1",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "CCCCC",
-									"type": "DateTime",
-									"physicalType": "INT96"
-								},
-								"sink": {
-									"name": "CCCCC",
-									"type": "DateTime"
-								}
-							},
-							{
-								"source": {
-									"name": "DDDDD",
+									"name": "c1",
 									"type": "String",
 									"physicalType": "UTF8"
 								},
 								"sink": {
-									"name": "DDDDD",
+									"name": "C1",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "EEEEE",
+									"name": "d1",
 									"type": "String",
 									"physicalType": "UTF8"
 								},
 								"sink": {
-									"name": "EEEEE",
+									"name": "D1",
 									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "FFFFF",
-									"type": "String",
-									"physicalType": "UTF8"
-								},
-								"sink": {
-									"name": "FFFFF",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "GGGGG",
-									"type": "String",
-									"physicalType": "UTF8"
-								},
-								"sink": {
-									"name": "GGGGG",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "HHHHH",
-									"type": "String",
-									"physicalType": "UTF8"
-								},
-								"sink": {
-									"name": "HHHHH",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "KKKKKv2",
-									"physicalType": "DOUBLE"
-								},
-								"sink": {
-									"name": "KKKKK",
-									"type": "DOUBLE"
 								}
 							}
 						],
