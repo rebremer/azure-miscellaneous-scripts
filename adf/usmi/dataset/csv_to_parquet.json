@@ -1,0 +1,92 @@
+{
+	"name": "csv_to_parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "oracle2016"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "AAAAA",
+				"type": "UTF8"
+			},
+			{
+				"name": "BBBBB",
+				"type": "UTF8"
+			},
+			{
+				"name": "CCCCC",
+				"type": "INT96"
+			},
+			{
+				"name": "DDDDD",
+				"type": "UTF8"
+			},
+			{
+				"name": "EEEEE",
+				"type": "UTF8"
+			},
+			{
+				"name": "FFFFF",
+				"type": "UTF8"
+			},
+			{
+				"name": "GGGGG",
+				"type": "UTF8"
+			},
+			{
+				"name": "HHHHH",
+				"type": "UTF8"
+			},
+			{
+				"name": "IIIII",
+				"type": "UTF8"
+			},
+			{
+				"name": "JJJJJ",
+				"type": "INT96"
+			},
+			{
+				"name": "KKKKK",
+				"type": "UTF8"
+			},
+			{
+				"name": "LLLLL",
+				"type": "UTF8"
+			},
+			{
+				"name": "MMMMM",
+				"type": "UTF8"
+			},
+			{
+				"name": "NNNNN",
+				"type": "INT96"
+			},
+			{
+				"name": "OOOO",
+				"type": "UTF8"
+			},
+			{
+				"name": "PPPP",
+				"type": "UTF8"
+			},
+			{
+				"name": "QQQQ",
+				"type": "UTF8"
+			},
+			{
+				"name": "RRRR",
+				"type": "INT96"
+			}
+		]
+	}
+}

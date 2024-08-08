@@ -253,7 +253,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Oracle2016issue",
+						"referenceName": "csv_to_parquet",
 						"type": "DatasetReference"
 					}
 				]
