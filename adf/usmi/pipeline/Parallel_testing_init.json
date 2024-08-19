@@ -39,10 +39,7 @@
 						"referenceName": "source_data_object_all",
 						"type": "DatasetReference",
 						"parameters": {
-							"folder": {
-								"value": "dataobject00",
-								"type": "Expression"
-							}
+							"folder": "dataobject00"
 						}
 					}
 				],
