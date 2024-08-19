@@ -37,10 +37,7 @@
 				"inputs": [
 					{
 						"referenceName": "target_data_object_all",
-						"type": "DatasetReference",
-						"parameters": {
-							"folder": "\"\""
-						}
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
