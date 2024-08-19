@@ -1,0 +1,62 @@
+{
+	"name": "Parallel_testing_init",
+	"properties": {
+		"activities": [
+			{
+				"name": "backup data",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"deleteFilesAfterCompletion": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "source_data_object_all",
+						"type": "DatasetReference",
+						"parameters": {
+							"folder": {
+								"value": "dataobject00",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "source_data_object_all",
+						"type": "DatasetReference",
+						"parameters": {
+							"folder": "p004standardized/dataobject08/Year=2000/Quarter=2"
+						}
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
