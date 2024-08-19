@@ -42,7 +42,7 @@
 							{
 								"source": {
 									"name": "a1",
-									"type": "Double",
+									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
@@ -54,7 +54,7 @@
 							{
 								"source": {
 									"name": "b1",
-									"type": "Double",
+									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
@@ -66,7 +66,7 @@
 							{
 								"source": {
 									"name": "c1",
-									"type": "Double",
+									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
@@ -78,7 +78,7 @@
 							{
 								"source": {
 									"name": "d1",
-									"type": "Double",
+									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
