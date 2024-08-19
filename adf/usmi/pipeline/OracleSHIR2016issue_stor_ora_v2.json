@@ -37,8 +37,10 @@
 							{
 								"source": {
 									"name": "a1",
-									"type": "String",
-									"physicalType": "UTF8"
+									"type": "Decimal",
+									"physicalType": "DECIMAL",
+									"scale": 18,
+									"precision": 38
 								},
 								"sink": {
 									"name": "A1",
@@ -48,8 +50,10 @@
 							{
 								"source": {
 									"name": "b1",
-									"type": "String",
-									"physicalType": "UTF8"
+									"type": "Decimal",
+									"physicalType": "DECIMAL",
+									"scale": 18,
+									"precision": 38
 								},
 								"sink": {
 									"name": "B1",
@@ -59,8 +63,10 @@
 							{
 								"source": {
 									"name": "c1",
-									"type": "String",
-									"physicalType": "UTF8"
+									"type": "Decimal",
+									"physicalType": "DECIMAL",
+									"scale": 18,
+									"precision": 38
 								},
 								"sink": {
 									"name": "C1",
@@ -70,8 +76,10 @@
 							{
 								"source": {
 									"name": "d1",
-									"type": "String",
-									"physicalType": "UTF8"
+									"type": "Decimal",
+									"physicalType": "DECIMAL",
+									"scale": 18,
+									"precision": 38
 								},
 								"sink": {
 									"name": "D1",
