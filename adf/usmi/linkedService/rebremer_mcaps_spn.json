@@ -1,0 +1,16 @@
+{
+	"name": "rebremer_mcaps_spn",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Lakehouse",
+		"typeProperties": {
+			"workspaceId": "b97f5869-ce6c-4723-be1f-6bec4a82725a",
+			"artifactId": "cddeaf5a-7e02-433e-aa6a-d905bdc55bac",
+			"tenant": "a397ab19-f84d-4b7a-a738-eeadafe5fb38",
+			"servicePrincipalId": "9b5f8581-9372-4462-8592-28a5993a97e5",
+			"servicePrincipalCredentialType": "ServicePrincipalKey",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEExMUFENkE2LUNBNkUtNDUxOC05RjFFLTM4QzhCRkJEOEMzN183ZGNkNGUxMS1hNmRlLTQ3M2ItOTVhMy05MWZiMmU1MjY2YTciDQp9"
+		}
+	}
+}
