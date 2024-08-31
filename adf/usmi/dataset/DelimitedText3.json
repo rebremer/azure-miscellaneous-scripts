@@ -10,7 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileSystem": "xmltest"
+				"fileName": "max_values.txt",
+				"fileSystem": "oracle2016"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
