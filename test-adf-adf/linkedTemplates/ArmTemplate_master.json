@@ -44,6 +44,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'credential' of 'OracleBuiltInODBC'"
 		},
+		"rebremer_mcaps_spn_servicePrincipalCredential": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalCredential' of 'rebremer_mcaps_spn'"
+		},
 		"testgdpstor2blob_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
@@ -95,6 +99,14 @@
 		"gdpstorsecundary_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{linkedService().storname}"
+		},
+		"rebremer_mcaps_spn_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "a397ab19-f84d-4b7a-a738-eeadafe5fb38"
+		},
+		"rebremer_mcaps_spn_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "9b5f8581-9372-4462-8592-28a5993a97e5"
 		},
 		"testgdpinfomrationfdfs_properties_typeProperties_url": {
 			"type": "string",
@@ -150,7 +162,7 @@
 		{
 			"name": "test-adf-adf_ArmTemplate_0",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {
@@ -172,6 +184,9 @@
 					},
 					"DTUDB_password": {
 						"value": "[parameters('DTUDB_password')]"
+					},
+					"rebremer_mcaps_spn_servicePrincipalCredential": {
+						"value": "[parameters('rebremer_mcaps_spn_servicePrincipalCredential')]"
 					},
 					"testgdpstor2blob_connectionString": {
 						"value": "[parameters('testgdpstor2blob_connectionString')]"
@@ -197,6 +212,12 @@
 					"gdpstorsecundary_properties_typeProperties_url": {
 						"value": "[parameters('gdpstorsecundary_properties_typeProperties_url')]"
 					},
+					"rebremer_mcaps_spn_properties_typeProperties_tenant": {
+						"value": "[parameters('rebremer_mcaps_spn_properties_typeProperties_tenant')]"
+					},
+					"rebremer_mcaps_spn_properties_typeProperties_servicePrincipalId": {
+						"value": "[parameters('rebremer_mcaps_spn_properties_typeProperties_servicePrincipalId')]"
+					},
 					"testgdpinfomrationfdfs_properties_typeProperties_url": {
 						"value": "[parameters('testgdpinfomrationfdfs_properties_typeProperties_url')]"
 					}
@@ -207,7 +228,7 @@
 		{
 			"name": "test-adf-adf_ArmTemplate_1",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {
@@ -221,26 +242,11 @@
 					"Oracle2016_connectionString": {
 						"value": "[parameters('Oracle2016_connectionString')]"
 					},
-					"OracleBuiltIn_connectionString": {
-						"value": "[parameters('OracleBuiltIn_connectionString')]"
-					},
-					"OracleBuiltInODBC_password": {
-						"value": "[parameters('OracleBuiltInODBC_password')]"
-					},
-					"OracleBuiltInODBC_credential": {
-						"value": "[parameters('OracleBuiltInODBC_credential')]"
-					},
 					"ADLSgen2uami_properties_typeProperties_url": {
 						"value": "[parameters('ADLSgen2uami_properties_typeProperties_url')]"
 					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
-					},
-					"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
-					},
-					"OracleBuiltInODBC_properties_typeProperties_userName": {
-						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -251,7 +257,7 @@
 		{
 			"name": "test-adf-adf_ArmTemplate_2",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {
@@ -261,6 +267,21 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"OracleBuiltIn_connectionString": {
+						"value": "[parameters('OracleBuiltIn_connectionString')]"
+					},
+					"OracleBuiltInODBC_password": {
+						"value": "[parameters('OracleBuiltInODBC_password')]"
+					},
+					"OracleBuiltInODBC_credential": {
+						"value": "[parameters('OracleBuiltInODBC_credential')]"
+					},
+					"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
+					},
+					"OracleBuiltInODBC_properties_typeProperties_userName": {
+						"value": "[parameters('OracleBuiltInODBC_properties_typeProperties_userName')]"
 					},
 					"AzureBlobStorage988_properties_privateLinkResourceId": {
 						"value": "[parameters('AzureBlobStorage988_properties_privateLinkResourceId')]"
@@ -292,7 +313,7 @@
 		{
 			"name": "test-adf-adf_ArmTemplate_3",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {
@@ -321,7 +342,7 @@
 		{
 			"name": "test-adf-adf_ArmTemplate_4",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {
@@ -341,7 +362,7 @@
 		{
 			"name": "test-adf-adf_ArmTemplate_5",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {

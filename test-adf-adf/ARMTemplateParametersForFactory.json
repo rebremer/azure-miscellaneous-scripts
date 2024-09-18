@@ -32,6 +32,9 @@
 		"OracleBuiltInODBC_credential": {
 			"value": ""
 		},
+		"rebremer_mcaps_spn_servicePrincipalCredential": {
+			"value": ""
+		},
 		"testgdpstor2blob_connectionString": {
 			"value": ""
 		},
@@ -70,6 +73,12 @@
 		},
 		"gdpstorsecundary_properties_typeProperties_url": {
 			"value": "@{linkedService().storname}"
+		},
+		"rebremer_mcaps_spn_properties_typeProperties_tenant": {
+			"value": "a397ab19-f84d-4b7a-a738-eeadafe5fb38"
+		},
+		"rebremer_mcaps_spn_properties_typeProperties_servicePrincipalId": {
+			"value": "9b5f8581-9372-4462-8592-28a5993a97e5"
 		},
 		"testgdpinfomrationfdfs_properties_typeProperties_url": {
 			"value": "https://testgdpinformationf.dfs.core.windows.net/"

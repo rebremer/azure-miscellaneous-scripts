@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'DTUDB'"
 		},
+		"rebremer_mcaps_spn_servicePrincipalCredential": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalCredential' of 'rebremer_mcaps_spn'"
+		},
 		"testgdpstor2blob_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'testgdpstor2blob'"
@@ -54,6 +58,14 @@
 		"gdpstorsecundary_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{linkedService().storname}"
+		},
+		"rebremer_mcaps_spn_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "a397ab19-f84d-4b7a-a738-eeadafe5fb38"
+		},
+		"rebremer_mcaps_spn_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "9b5f8581-9372-4462-8592-28a5993a97e5"
 		},
 		"testgdpinfomrationfdfs_properties_typeProperties_url": {
 			"type": "string",
@@ -179,6 +191,27 @@
 				"type": "AzureBlobFS",
 				"typeProperties": {
 					"url": "[parameters('gdpstorsecundary_properties_typeProperties_url')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/rebremer_mcaps_spn')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "Lakehouse",
+				"typeProperties": {
+					"workspaceId": "b97f5869-ce6c-4723-be1f-6bec4a82725a",
+					"artifactId": "cddeaf5a-7e02-433e-aa6a-d905bdc55bac",
+					"tenant": "[parameters('rebremer_mcaps_spn_properties_typeProperties_tenant')]",
+					"servicePrincipalId": "[parameters('rebremer_mcaps_spn_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalCredentialType": "ServicePrincipalKey",
+					"servicePrincipalCredential": {
+						"type": "SecureString",
+						"value": "[parameters('rebremer_mcaps_spn_servicePrincipalCredential')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -426,26 +459,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/GDPstorageaccount')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSqlContainer1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "CosmosDbNoSql1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "CosmosDbSqlApiCollection",
-				"schema": {},
-				"typeProperties": {
-					"collectionName": "silver_fact_sale"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CosmosDbNoSql1')]"
 			]
 		}
 	]

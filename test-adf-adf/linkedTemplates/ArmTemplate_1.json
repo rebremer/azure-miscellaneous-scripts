@@ -11,18 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Oracle2016'"
 		},
-		"OracleBuiltIn_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'OracleBuiltIn'"
-		},
-		"OracleBuiltInODBC_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'OracleBuiltInODBC'"
-		},
-		"OracleBuiltInODBC_credential": {
-			"type": "secureString",
-			"metadata": "Secure string for 'credential' of 'OracleBuiltInODBC'"
-		},
 		"ADLSgen2uami_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
@@ -30,20 +18,30 @@
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testgdpstor2.dfs.core.windows.net/"
-		},
-		"OracleBuiltInODBC_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "oraclebuiltinODBC2"
-		},
-		"OracleBuiltInODBC_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "sdaf"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSqlContainer1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CosmosDbNoSql1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "CosmosDbSqlApiCollection",
+				"schema": {},
+				"typeProperties": {
+					"collectionName": "silver_fact_sale"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText3')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -58,7 +56,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileSystem": "xmltest"
+						"fileName": "max_values.txt",
+						"fileSystem": "oracle2016"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
@@ -66,6 +65,40 @@
 					"quoteChar": "\""
 				},
 				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText4')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "rebremer_mcaps_spn",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "LakehouseLocation",
+						"folderPath": "p001derived"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "firstname",
+						"type": "String"
+					},
+					{
+						"name": "lastname",
+						"type": "String"
+					}
+				]
 			},
 			"dependsOn": []
 		},
@@ -663,68 +696,6 @@
 				"type": "Oracle",
 				"typeProperties": {
 					"connectionString": "[parameters('Oracle2016_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "SHIR2016",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleBuiltIn')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "omschrijving",
-				"annotations": [],
-				"type": "Oracle",
-				"typeProperties": {
-					"connectionString": "[parameters('OracleBuiltIn_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "SHIR2016",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleBuiltInODBC')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "omschrijving",
-				"parameters": {
-					"asdf": {
-						"type": "string",
-						"defaultValue": "adsf"
-					}
-				},
-				"annotations": [
-					"dsadafs",
-					"asdf"
-				],
-				"type": "Odbc",
-				"typeProperties": {
-					"connectionString": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "AKVADF",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "[parameters('OracleBuiltInODBC_properties_typeProperties_connectionString_secretName')]"
-					},
-					"authenticationType": "Basic",
-					"userName": "[parameters('OracleBuiltInODBC_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('OracleBuiltInODBC_password')]"
-					},
-					"credential": {
-						"type": "SecureString",
-						"value": "[parameters('OracleBuiltInODBC_credential')]"
-					}
 				},
 				"connectVia": {
 					"referenceName": "SHIR2016",
