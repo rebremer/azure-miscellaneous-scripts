@@ -5,8 +5,8 @@
 		"annotations": [],
 		"type": "Oracle",
 		"typeProperties": {
-			"connectionString": "host=40.68.168.32;port=1521;sid=ORATEST1;user id=testrbadmin;enablepacketlogging=5;packetloggingfileprefix=C:\\temp\\pkt_.log",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJjMmU2OWYwZC03YTE2LTRiNjUtOGFmMi01Nzc1NWZkOTU4YzEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"connectionString": "host=40.68.168.32;port=1521;sid=ORATEST1;user id=testrbadmin;x_enablepacketlogging=5;x_packetloggingfileprefix=C:\\temp\\pkt_.log",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI4ZTIyM2Q2YS05NDYyLTQ4MDktYjk3MC01YmY4MmNlOTUyMmQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "SHIR2016",
