@@ -1,0 +1,56 @@
+{
+    "time": "2024-10-31T11:29:56.8425894Z",
+    "resourceId": "/subscriptions/1df2c6aa-3f08-49e5-bebf-26d9b5c77f07/resourceGroups/test-analytics-rg/providers/Microsoft.Storage/storageAccounts/testanalyticsstor/blobServices/default",
+    "category": "StorageRead",
+    "operationName": "GetPathStatus",
+    "operationVersion": "2019-12-12",
+    "schemaVersion": "1.0",
+    "statusCode": 200,
+    "statusText": "Success",
+    "durationMs": 5,
+    "callerIpAddress": "10.96.2.118",
+    "correlationId": "a8dd1ae9-101f-007a-1688-2bf83a000000",
+    "identity": {
+        "type": "DelegationSAS",
+        "tokenHash": "system-delegation(18F5BF2314347100B621B89949628C25CB7808E27F74E343E048FF57884D149F),SasSignature(BE7CE626039F91B203F365C4D1F72CA2186454509F6576D6D4F6051F8B2049CE)",
+        "authorization": [
+            {
+                "action": "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read",
+                "roleAssignmentId": "44b78ba9-53b0-4b1a-a165-908f0590d187",
+                "roleDefinitionId": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+                "principals": [
+                    {
+                        "id": "b7e12a0a-5908-4288-8269-f7dc899d082c",
+                        "type": "Group"
+                    }
+                ],
+                "denyAssignmentId": "",
+                "type": "RBAC",
+                "result": "Granted",
+                "reason": "Policy"
+            }
+        ],
+        "requester": {
+            "objectId": "6be524c2-2286-4f75-9275-65bd17a42d1c",
+            "tenantId": "0c168bff-cab2-48d4-98d6-1501ff474f9a"
+        }
+    },
+    "location": "eastus",
+    "properties": {
+        "accountName": "testanalyticsstor",
+        "userAgentHeader": "APN/1.0 Azure Blob FS/3.3 (AzulSystems,Inc. JavaJRE 1.8.0_412; Linux 5.15.0-1074-azure/amd64; SunJSSE-1.8; UNKNOWN/UNKNOWN) unknown",
+        "clientRequestId": "1031-112942-d1h0ov6g-v2n--28--79--0:b21c1d88-d038-42a0-a51f-1da29229f604:f30f1524-024d-4136-89ad-a328eb02e6fc:::GF:0",
+        "serviceType": "blob",
+        "objectKey": "/testanalyticsstor/consumer1/testcsv.csv",
+        "lastModifiedTime": "2024/10/19 14:55:56.2370056",
+        "metricResponseType": "Success",
+        "serverLatencyMs": 4,
+        "requestHeaderSize": 932,
+        "responseHeaderSize": 458,
+        "tlsVersion": "TLS 1.3",
+        "accessTier": "None"
+    },
+    "uri": "https://testanalyticsstor.dfs.core.windows.net/consumer1/testcsv.csv?upn=false&action=getStatus&timeout=90&st=2024-10-31T11%3A19%3A53Z&sv=2020-02-10&ske=2024-10-31T13%3A19%3A53Z&sig=XXXXX&sktid=0c168bff-cab2-48d4-98d6-1501ff474f9a&se=2024-10-31T12%3A29%3A53Z&sdd=0&skoid=6be524c2-2286-4f75XXXXXXXXXXXXXXXXXX&spr=https&sks=b&skt=2024-10-31T11%3A19%3A53Z&sp=rl&skv=2024-05-04&sr=c",
+    "protocol": "HTTPS",
+    "resourceType": "Microsoft.Storage/storageAccounts/blobServices"
+}
