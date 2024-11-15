@@ -1,8 +1,4 @@
-I mean from all steps, not only the first steps
-Understood! Here's a complete README.md file that outlines all the steps, including downloading Conda packages, setting up a local channel, and using these packages within an Azure Machine Learning (AML) system-managed environment:
-
-markdown
-# Setting Up Conda Packages in Azure ML System-Managed Environment
+# Setting Up Private Conda Packages in Azure ML System-Managed Environment
 
 This guide provides step-by-step instructions to download Conda packages, set up a local channel, and use these packages within an Azure Machine Learning (AML) system-managed environment.
 
