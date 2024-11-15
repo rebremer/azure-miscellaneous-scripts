@@ -49,6 +49,8 @@ conda index local_channel
 
 ### 7. Create a Conda Environment YAML File
 Create an environment YAML file (environment.yml) that specifies your local channel and the packages to be installed:
+yaml file shall be created on the fly injecting password from a key vault. File shall be deleted. In case it is not acceptable,
+it can also be decided download files from trusted channel first to a local directory and create a private channel there.
 
 ```yaml
 name: my_env
