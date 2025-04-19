@@ -13,7 +13,7 @@ CREATE TABLE dbo.transformator
     id int not null primary key,
     naam nvarchar(100) null,
     gemeente nvarchar(100) not null,
-	locatie json not null
+    locatie json not null
 )
 GO
 
