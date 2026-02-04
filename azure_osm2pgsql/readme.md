@@ -1,4 +1,4 @@
-Todo, already really description what stepts to take:
+Todo, already really short description what steps to take:
 
 1. Create PostgreSQL database on Azure and install the following extensions:
    - DROP SCHEMA public CASCASE
