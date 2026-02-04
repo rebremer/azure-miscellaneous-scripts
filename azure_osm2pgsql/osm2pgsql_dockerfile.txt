@@ -1,0 +1,4 @@
+FROM iboates/osm2pgsql:latest
+
+# (Optional) Make sure the default shell is `sh -c` so ACI YAML `command` works as expected.
+SHELL ["/bin/sh", "-c"]
