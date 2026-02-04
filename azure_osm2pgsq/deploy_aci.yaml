@@ -14,7 +14,7 @@ properties:
     - name: work
       emptyDir: {}
   imageRegistryCredentials:
-  - server: testacracr.azurecr.io
+  - server: <<YOUR ACI NAME>>.azurecr.io
     identity: '/subscriptions/<<YOUR SUB ID>>/resourcegroups/<<YOUR RG NAME>>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aci_uami'
   containers:
   - name: azcopy-runner
