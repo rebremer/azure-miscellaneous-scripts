@@ -1,0 +1,24 @@
+# Minimal base with shell + TLS roots
+FROM debian:bookworm-slim
+
+# Install only what's needed to download and extract the AzCopy tarball
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates wget tar \
+    && rm -rf /var/lib/apt/lists/* \
+    && update-ca-certificates
+
+# Download latest AzCopy v10 via official aka.ms redirect and install the binary
+# (the redirect resolves to the correct azureedge.net release URL)
+RUN set -eux; \
+    mkdir -p /tmp/azcopy; cd /tmp/azcopy; \
+    wget -q -O azcopy.tgz https://aka.ms/downloadazcopy-v10-linux; \
+    tar -xzf azcopy.tgz; \
+    AZBIN="$(find . -type f -name azcopy | head -n1)"; \
+    install -m 0755 "${AZBIN}" /usr/local/bin/azcopy; \
+    cd / && rm -rf /tmp/azcopy
+
+# Sanity check at build-time (fail build if azcopy is not runnable)
+RUN azcopy --version
+
+# Default shell; keep root or switch to non-root if you prefer
+SHELL ["/bin/sh", "-c"]
