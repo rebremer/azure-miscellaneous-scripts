@@ -1,0 +1,119 @@
+apiVersion: 2021-09-01
+location: westus3
+name: osm2pgsql-azcopy-job
+type: Microsoft.ContainerInstance/containerGroups
+identity:
+  type: UserAssigned
+  userAssignedIdentities:
+    /subscriptions/<<YOUR SUB ID>>/resourcegroups/<<YOUR RG NAME>>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aci_uami: {}     # UAMI used to PULL from ACR
+properties:
+  osType: Linux
+  restartPolicy: Never
+  # Shared scratch space
+  volumes:
+    - name: work
+      emptyDir: {}
+  imageRegistryCredentials:
+  - server: <<YOUR ACI NAME>>.azurecr.io
+    identity: '/subscriptions/<<YOUR SUB ID>>/resourcegroups/<<YOUR RG NAME>>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aci_uami'
+  containers:
+  - name: azcopy-runner
+    properties:
+      image: <<YOUR ACI NAME>>.azurecr.io/azcopy-sidecar:latest
+      resources:
+        requests:
+          cpu: '.4'
+          memoryInGb: '1'
+      volumeMounts:
+        - name: work
+          mountPath: /work
+      environmentVariables:
+        - name: PBF_URL
+          value: "https://<<YOUR STORAGE ACCOUNT>>.blob.core.windows.net/osm/Aachen.osm.pbf"
+      command:
+        - /bin/sh
+        - -c
+        - |
+          set -eux
+
+          echo "=== AzCopy version ==="
+          /usr/local/bin/azcopy --version
+
+          echo "=== Logging in with SPN ==="
+          /usr/local/bin/azcopy login --identity
+
+          echo "=== Copying PBF file from Storage ==="
+          /usr/local/bin/azcopy copy "$PBF_URL" "/work/data.osm.pbf" --overwrite=true
+
+          echo "=== AzCopy sidecar DONE ==="
+
+    # -------------------------------------------------------------
+    # 2. Main osm2pgsql container: waits for file, then imports to PG
+    # -------------------------------------------------------------
+  - name: osm2pgsql
+    properties:
+      image: <<YOUR ACI NAME>>.azurecr.io/osm2pgsql:latest
+      resources:
+        requests:
+          cpu: 4.0
+          memoryInGb: 8.0
+      volumeMounts:
+        - name: work
+          mountPath: /work
+
+      environmentVariables:
+        - name: PGHOST
+          value: "<<YOUR POSTGRESQL NAME>>.postgres.database.azure.com"
+        - name: PGPORT
+          value: "5432"
+        - name: PGDATABASE
+          value: "postgres"
+        - name: PGUSER
+          value: "<<YOUR USERNAME>>"  # Flexible Server format
+        - name: PGSSLMODE
+          value: "require"
+        # KEY VAULT secret name to retrieve
+        - name: KV_SECRET_NAME
+          value: "pg-password"
+          # URL of the Key Vault
+        - name: KV_URI
+          value: "https://<<YOUR KV NAME>>.azure.net"
+
+      command:
+        - /bin/sh
+        - -c
+        - |
+          set -eux
+
+          echo "Fetching PG password from Key Vault using UAMI..."
+
+          # Get AAD token for Key Vault
+          TOKEN=$(curl -s \
+            'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://vault.azure.net' \
+            -H Metadata:true | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
+
+          # Fetch secret WITHOUT jq
+          PGPASSWORD=$(curl -s \
+            -H "Authorization: Bearer $TOKEN" \
+            "$KV_URI/secrets/$KV_SECRET_NAME?api-version=7.3" \
+            | sed -n 's/.*"value":"\([^"]*\)".*/\1/p')
+
+          echo "=== Waiting for AzCopy sidecar to produce PBF ==="
+          for i in $(seq 1 120); do
+            if [ -f /work/data.osm.pbf ]; then
+              echo "PBF found."
+              break
+            fi
+            echo "Waiting... ($i)"
+            sleep 2
+          done
+
+          export PGPASSWORD
+
+          echo "=== Running osm2pgsql import ==="
+          osm2pgsql --create --slim --hstore \
+            --host="$PGHOST" --port="$PGPORT" \
+            --username="$PGUSER" --database="$PGDATABASE" \
+            /work/data.osm.pbf
+
+          echo "=== Import DONE ==="
