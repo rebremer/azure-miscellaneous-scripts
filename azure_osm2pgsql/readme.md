@@ -1,12 +1,11 @@
 Todo, already really description what stepts to take:
 
 1. Create PostgreSQL database on Azure and install the following extensions:
+   - DROP SCHEMA public CASCASE
+   - CREATE SCHEMA public;
 
-DROP SCHEMA public CASCASE
-CREATE SCHEMA public;
-
-CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS hstore;
+   - CREATE EXTENSION IF NOT EXISTS postgis;
+   - CREATE EXTENSION IF NOT EXISTS hstore;
 
 3. Create User Assigned MI (UAMI)
 
