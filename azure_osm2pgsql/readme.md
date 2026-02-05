@@ -1,4 +1,8 @@
-Todo, already really short description what steps to take:
+# OpenStreetMap data → ACI osm2pgsql image → Azure PostgreSQL
+
+![OSM_ACI_osm2pgsql_postgresql](./azure_aci_osm2pgsql.png)
+
+Repo to fetch [OpenStreetMap](https://download.geofabrik.de/) data to Azure PostgreSQL using osm2pgsql. Solution uses a User Assigned Managed Identity (UAMI) to authenticate to storage account. Steps to take (focussing only on setting up the Azure Container Instance - ACI, to be extended)
 
 1. Create PostgreSQL database on Azure and install the following extensions:
    - DROP SCHEMA public CASCASE
@@ -21,6 +25,6 @@ Todo, already really short description what steps to take:
 
 8. Replace all the <<YOUR>> variables in deploy_aci.yaml with your own variables
 
-9. az container create --resource-group <<Your RG NAME>> --file deploy_aci.yaml
+9. az container create --resource-group <<Your RG_NAME>> --file deploy_aci.yaml
 
 10. Verify that the pbf file is loaded in your PostgreSQL tables
