@@ -1,6 +1,6 @@
-# S3proxy: Script using Azure Storage with the S3 API
+# S3Proxy: Script using Azure Storage with the S3 API
 
-1. Download S3proxy from https://github.com/gaul/s3proxy. Make sure that Java installed and the JAVA_HOME variable is set. For instance Microsoft OpenJDK can be installed via winget install Microsoft.OpenJDK.25
+1. Download S3Proxy from https://github.com/gaul/s3proxy. Make sure that Java installed and the JAVA_HOME variable is set. For instance Microsoft OpenJDK can be installed via winget install Microsoft.OpenJDK.25
 
 2. Configure storage account in s3proxy.conf using Storage SDK following explanation in this link: https://github-wiki-see.page/m/gaul/s3proxy/wiki/Storage-backend-examples
 
