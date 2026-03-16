@@ -1,4 +1,6 @@
-Scripts to demonstrate how to use Row Level Security (RLS) in Azure SQL. Scripts in repo do the following:
+### Scripts to demonstrate how to use Row Level Security (RLS) in Azure SQL. 
+
+Scripts in repo do the following:
 
 - 1_init_tables.sql: Create tables and view in default dbo schema (this schema is automatically created once you deploy an Azure SQL DB)
 - 2_init_users.sql: Create groups ins SQL and grants roles (groups and users need to be assigned in MSFT entra)
