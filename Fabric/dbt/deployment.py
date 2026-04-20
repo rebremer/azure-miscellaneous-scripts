@@ -25,6 +25,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 FABRIC_API = "https://api.fabric.microsoft.com/v1"
+STATE_FILE = ".deploy-state.json"
 
 http = requests.Session()
 _retries = Retry(total=5, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504],
@@ -68,16 +69,27 @@ def _find_workspace(token: str, name: str) -> str:
     raise SystemExit(f"Workspace '{name}' not found.")
 
 
-def _list_items(token: str, ws_id: str) -> list:
+def _ensure_item(token: str, ws_id: str, name: str, item_type: str,
+                 creation_type: str | None = None,
+                 existing_item_id: str | None = None) -> dict:
+    """Return existing item (by ID or name) or create it."""
     resp = http.get(f"{FABRIC_API}/workspaces/{ws_id}/items", headers=_headers(token))
     resp.raise_for_status()
-    return resp.json().get("value", [])
-
-
-def _ensure_item(token: str, ws_id: str, name: str, item_type: str,
-                 creation_type: str | None = None) -> dict:
-    """Return existing item or create it. creation_type overrides type for the POST."""
-    items = _list_items(token, ws_id)
+    items = resp.json().get("value", [])
+    # Prefer matching by previously deployed item ID
+    if existing_item_id:
+        for item in items:
+            if item["id"] == existing_item_id and item["type"] == item_type:
+                if item["displayName"] != name:
+                    # Update display name to match repo
+                    http.patch(f"{FABRIC_API}/workspaces/{ws_id}/items/{item['id']}",
+                               headers=_headers(token),
+                               json={"displayName": name})
+                    print(f"   {name} found by ID, renamed from '{item['displayName']}'")
+                else:
+                    print(f"   {name} already exists: {item['id']}")
+                return item
+    # Fall back to matching by display name
     for item in items:
         if item["displayName"] == name and item["type"] == item_type:
             print(f"   {name} already exists: {item['id']}")
@@ -86,9 +98,9 @@ def _ensure_item(token: str, ws_id: str, name: str, item_type: str,
                      json={"displayName": name, "type": creation_type or item_type})
     resp.raise_for_status()
     _wait_lro(token, resp)
-    # Fetch the created item
-    items = _list_items(token, ws_id)
-    for item in items:
+    resp = http.get(f"{FABRIC_API}/workspaces/{ws_id}/items", headers=_headers(token))
+    resp.raise_for_status()
+    for item in resp.json().get("value", []):
         if item["displayName"] == name and item["type"] == item_type:
             print(f"   {name} created: {item['id']}")
             return item
@@ -96,16 +108,19 @@ def _ensure_item(token: str, ws_id: str, name: str, item_type: str,
 
 
 def _discover_items(root_dir: str) -> dict:
-    """Scan for .platform files. Returns {type: [{displayName, folder}]}."""
+    """Scan for .platform files. Returns {type: [{displayName, folder, logicalId}]}."""
     items = {}
     for dirpath, _, filenames in os.walk(root_dir):
         if ".platform" not in filenames:
             continue
         with open(os.path.join(dirpath, ".platform"), encoding="utf-8") as f:
-            meta = json.load(f).get("metadata", {})
+            platform = json.load(f)
+        meta = platform.get("metadata", {})
+        logical_id = platform.get("config", {}).get("logicalId")
         if meta.get("type") and meta.get("displayName"):
             items.setdefault(meta["type"], []).append(
-                {"displayName": meta["displayName"], "folder": dirpath})
+                {"displayName": meta["displayName"], "folder": dirpath,
+                 "logicalId": logical_id})
     return items
 
 
@@ -114,6 +129,8 @@ def _collect_parts(dbt_folder: str, ws_id: str, dwh_id: str, endpoint: str) -> l
     # Resolve dbt-content.json with actual connection details
     with open(os.path.join(dbt_folder, "dbt-content.json"), encoding="utf-8") as f:
         content = json.load(f)
+    # Remove repo-only cross-reference field before uploading
+    content.pop("warehouseLogicalId", None)
     tp = content["profile"]["connectionSettings"]["properties"]["typeProperties"]
     tp["workspaceId"] = ws_id
     tp["artifactId"] = dwh_id
@@ -134,31 +151,8 @@ def _collect_parts(dbt_folder: str, ws_id: str, dwh_id: str, endpoint: str) -> l
     return parts
 
 
-def deploy(workspace_name: str):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Discover items
-    discovered = _discover_items(script_dir)
-    warehouses = discovered.get("Warehouse", [])
-    dbt_jobs = discovered.get("DataBuildToolJob", [])
-    if len(warehouses) != 1 or len(dbt_jobs) != 1:
-        raise SystemExit(f"Expected 1 Warehouse and 1 DataBuildToolJob, "
-                         f"found {len(warehouses)} and {len(dbt_jobs)}.")
-    dwh_info, dbt_info = warehouses[0], dbt_jobs[0]
-    print(f"Deploying to workspace '{workspace_name}'")
-    print(f"  Warehouse: {dwh_info['displayName']}, dbt job: {dbt_info['displayName']}")
-
-    # Authenticate
-    token = AzureCliCredential().get_token("https://api.fabric.microsoft.com/.default").token
-    ws_id = _find_workspace(token, workspace_name)
-
-    # Deploy warehouse
-    print(f"\nDeploying Warehouse '{dwh_info['displayName']}'...")
-    dwh = _ensure_item(token, ws_id, dwh_info["displayName"], "Warehouse")
-    dwh_id = dwh["id"]
-
-    # Wait for warehouse endpoint
-    print("   Waiting for warehouse provisioning...")
+def _wait_for_endpoint(token: str, ws_id: str, dwh_id: str) -> str:
+    """Poll until the warehouse endpoint is available."""
     for _ in range(12):
         try:
             resp = http.get(f"{FABRIC_API}/workspaces/{ws_id}/warehouses/{dwh_id}",
@@ -166,27 +160,78 @@ def deploy(workspace_name: str):
             resp.raise_for_status()
             endpoint = resp.json().get("properties", {}).get("connectionString")
             if endpoint:
-                break
+                return endpoint
         except Exception:
             pass
         time.sleep(5)
-    else:
-        raise SystemExit("Warehouse did not become ready within 60 seconds.")
-    print(f"   Endpoint: {endpoint}")
+    raise SystemExit("Warehouse did not become ready within 60 seconds.")
 
-    # Deploy dbt job
-    dbt_name = dbt_info["displayName"]
-    print(f"\nDeploying dbt job '{dbt_name}'...")
-    dbt = _ensure_item(token, ws_id, dbt_name, "DataBuildToolJob", creation_type="DbtItem")
 
-    # Upload definition
-    parts = _collect_parts(dbt_info["folder"], ws_id, dwh_id, endpoint)
-    print(f"   Uploading dbt-content.json + {len(parts) - 1} code file(s)...")
-    body = {"definition": {"parts": parts}}
-    resp = http.post(f"{FABRIC_API}/workspaces/{ws_id}/items/{dbt['id']}/updateDefinition",
-                     headers=_headers(token), json=body)
-    resp.raise_for_status()
-    _wait_lro(token, resp)
+def deploy(workspace_name: str):
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    state_path = os.path.join(script_dir, STATE_FILE)
+
+    # Discover items from .platform files
+    discovered = _discover_items(script_dir)
+    warehouses = discovered.get("Warehouse", [])
+    dbt_jobs = discovered.get("DataBuildToolJob", [])
+    if not warehouses or not dbt_jobs:
+        raise SystemExit(f"Expected at least 1 Warehouse and 1 DataBuildToolJob, "
+                         f"found {len(warehouses)} and {len(dbt_jobs)}.")
+
+    # Load deployment state (logicalId → item ID per workspace)
+    state = {}
+    if os.path.exists(state_path):
+        with open(state_path, encoding="utf-8") as f:
+            state = json.load(f)
+    ws_state = state.get(workspace_name, {})
+
+    # Authenticate
+    token = AzureCliCredential().get_token("https://api.fabric.microsoft.com/.default").token
+    ws_id = _find_workspace(token, workspace_name)
+    print(f"Deploying to workspace '{workspace_name}' ({ws_id})")
+
+    # Deploy all warehouses and record runtime IDs/endpoints
+    deployed = {}
+    for wh in warehouses:
+        print(f"\nDeploying Warehouse '{wh['displayName']}'...")
+        item = _ensure_item(token, ws_id, wh["displayName"], "Warehouse",
+                            existing_item_id=ws_state.get(wh["logicalId"]))
+        ws_state[wh["logicalId"]] = item["id"]
+        print("   Waiting for warehouse provisioning...")
+        endpoint = _wait_for_endpoint(token, ws_id, item["id"])
+        print(f"   Endpoint: {endpoint}")
+        deployed[wh["logicalId"]] = {"id": item["id"], "endpoint": endpoint}
+
+    # Deploy each dbt job, resolving its warehouse by logicalId
+    for dbt_info in dbt_jobs:
+        with open(os.path.join(dbt_info["folder"], "dbt-content.json"), encoding="utf-8") as f:
+            dbt_content = json.load(f)
+        dwh_lid = dbt_content.get("warehouseLogicalId")
+        if dwh_lid not in deployed:
+            raise SystemExit(
+                f"dbt job '{dbt_info['displayName']}' references warehouseLogicalId "
+                f"'{dwh_lid}' which was not deployed.")
+        dwh = deployed[dwh_lid]
+
+        print(f"\nDeploying dbt job '{dbt_info['displayName']}'...")
+        item = _ensure_item(token, ws_id, dbt_info["displayName"],
+                            "DataBuildToolJob", creation_type="DbtItem",
+                            existing_item_id=ws_state.get(dbt_info["logicalId"]))
+        ws_state[dbt_info["logicalId"]] = item["id"]
+
+        parts = _collect_parts(dbt_info["folder"], ws_id, dwh["id"], dwh["endpoint"])
+        print(f"   Uploading dbt-content.json + {len(parts) - 1} code file(s)...")
+        resp = http.post(
+            f"{FABRIC_API}/workspaces/{ws_id}/items/{item['id']}/updateDefinition",
+            headers=_headers(token), json={"definition": {"parts": parts}})
+        resp.raise_for_status()
+        _wait_lro(token, resp)
+
+    # Save deployment state
+    state[workspace_name] = ws_state
+    with open(state_path, "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=2)
 
     print("\nDeployment complete.")
 
