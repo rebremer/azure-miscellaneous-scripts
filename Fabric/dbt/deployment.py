@@ -36,8 +36,10 @@ def _headers(token: str) -> dict:
     return {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
 
 
-def _b64(text: str) -> str:
-    return base64.b64encode(text.encode("utf-8")).decode("utf-8")
+def _b64(data: str | bytes) -> str:
+    if isinstance(data, str):
+        data = data.encode("utf-8")
+    return base64.b64encode(data).decode("utf-8")
 
 
 def _wait_lro(token: str, resp: requests.Response):
@@ -123,7 +125,7 @@ def _collect_parts(dbt_folder: str, ws_id: str, dwh_id: str, endpoint: str) -> l
             for name in files:
                 filepath = os.path.join(root, name)
                 rel = os.path.relpath(filepath, dbt_folder).replace("\\", "/")
-                with open(filepath, "r", encoding="utf-8") as f:
+                with open(filepath, "rb") as f:
                     parts.append({"path": rel, "payload": _b64(f.read()),
                                   "payloadType": "InlineBase64"})
     return parts
