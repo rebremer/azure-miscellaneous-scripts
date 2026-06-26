@@ -1,0 +1,15 @@
+# Reusable setup steps: Python toolchain + dependency install.
+# Referenced from azure-pipelines.yml via:
+#   - template: /pipelines/steps-setup.yml@self
+
+steps:
+  - task: UsePythonVersion@0
+    displayName: Use Python $(pythonVersion)
+    inputs:
+      versionSpec: $(pythonVersion)
+
+  - script: |
+      set -euo pipefail
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    displayName: Install Python dependencies

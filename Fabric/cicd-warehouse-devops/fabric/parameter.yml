@@ -1,0 +1,39 @@
+# fabric-cicd parameter file
+# Docs: https://microsoft.github.io/fabric-cicd/latest/parameter/
+#
+# Two kinds of substitutions are supported:
+#   - find_replace      : raw string substitution inside item definitions
+#                         (use for connection strings, server names, lakehouse IDs
+#                          embedded in pipeline JSON, notebook code, etc.)
+#   - key_value_replace : JSONPath-targeted replacement inside item definitions
+#                         (preferred for structured fields)
+#
+# Each rule lists per-environment values. Keys MUST match the value passed
+# in FABRIC_ENVIRONMENT (e.g. "test", "prod").
+
+find_replace:
+
+  # Example: swap the Dev SQL endpoint baked into pipeline JSON.
+  - find_value: "dev-warehouse.datawarehouse.fabric.microsoft.com"
+    replace_value:
+      test: "test-warehouse.datawarehouse.fabric.microsoft.com"
+      prod: "prod-warehouse.datawarehouse.fabric.microsoft.com"
+    item_type:
+      - "DataPipeline"
+      - "Notebook"
+
+  # Example: swap the source Lakehouse GUID referenced by a Notebook.
+  - find_value: "00000000-dev0-0000-0000-000000000000"
+    replace_value:
+      test: "00000000-test-0000-0000-000000000000"
+      prod: "00000000-prod-0000-0000-000000000000"
+    item_type:
+      - "Notebook"
+
+# key_value_replace:
+#   - find_key: "$.properties.activities[?(@.name=='Copy')].typeProperties.source.datasetSettings.linkedService.objectId"
+#     replace_value:
+#       test: "<test-linked-service-id>"
+#       prod: "<prod-linked-service-id>"
+#     item_type:
+#       - "DataPipeline"

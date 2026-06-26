@@ -1,0 +1,131 @@
+# Azure DevOps pipeline: deploy Fabric items to Test then Prod
+# using fabric-cicd + Workspace Identity (Workload Identity Federation).
+#
+# Prereqs (see README.md):
+#   * Service connection `fabric-workspace-identity` (ARM / WIF)
+#   * Variable group `fabric-cicd` with TEST_WORKSPACE_ID, PROD_WORKSPACE_ID
+#   * The identity behind the service connection has Member/Admin on both
+#     target Fabric workspaces.
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - fabric/**
+      - scripts/**
+      - requirements.txt
+      - azure-pipelines.yml
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - fabric/**
+
+variables:
+  - group: fabric-cicd
+  - name: pythonVersion
+    value: '3.11'
+  - name: azureServiceConnection
+    value: 'fabric-workspace-identity'
+
+stages:
+
+  # ---------------------------------------------------------------
+  # PR / CI: install deps and run a dry-run against Test so broken
+  # parameter.yml or missing items fail fast before merging to main.
+  # ---------------------------------------------------------------
+  - stage: Validate
+    displayName: Validate (dry-run)
+    jobs:
+      - job: dryrun
+        displayName: fabric-cicd dry-run
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - template: /pipelines/steps-setup.yml@self
+          - task: AzureCLI@2
+            displayName: Dry-run publish to Test workspace
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              addSpnToEnvironment: true
+              inlineScript: |
+                set -euo pipefail
+                export FABRIC_WORKSPACE_ID="$(TEST_WORKSPACE_ID)"
+                export FABRIC_ENVIRONMENT="test"
+                export DRY_RUN="1"
+                python scripts/deploy.py
+
+  # ---------------------------------------------------------------
+  # Deploy Test (auto on merge to main)
+  # ---------------------------------------------------------------
+  - stage: DeployTest
+    displayName: Deploy → Test
+    dependsOn: Validate
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: deployTest
+        displayName: Publish to Test workspace
+        environment: fabric-test           # add approvals/checks in DevOps UI if desired
+        pool:
+          vmImage: ubuntu-latest
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - template: /pipelines/steps-setup.yml@self
+                - task: AzureCLI@2
+                  displayName: Publish via fabric-cicd
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    addSpnToEnvironment: true
+                    inlineScript: |
+                      set -euo pipefail
+                      export FABRIC_WORKSPACE_ID="$(TEST_WORKSPACE_ID)"
+                      export FABRIC_ENVIRONMENT="test"
+                      # Set to "1" once you trust the diff to remove items
+                      # deleted from Git from the workspace as well.
+                      export UNPUBLISH_ORPHANS="0"
+                      python scripts/deploy.py
+
+  # ---------------------------------------------------------------
+  # Deploy Prod (gated by environment approval)
+  # ---------------------------------------------------------------
+  - stage: DeployProd
+    displayName: Deploy → Prod
+    dependsOn: DeployTest
+    condition: succeeded()
+    jobs:
+      - deployment: deployProd
+        displayName: Publish to Prod workspace
+        environment: fabric-prod           # configure manual approval in DevOps UI
+        pool:
+          vmImage: ubuntu-latest
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - template: /pipelines/steps-setup.yml@self
+                - task: AzureCLI@2
+                  displayName: Publish via fabric-cicd
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    addSpnToEnvironment: true
+                    inlineScript: |
+                      set -euo pipefail
+                      export FABRIC_WORKSPACE_ID="$(PROD_WORKSPACE_ID)"
+                      export FABRIC_ENVIRONMENT="prod"
+                      export UNPUBLISH_ORPHANS="0"
+                      python scripts/deploy.py
