@@ -1,3 +1,4 @@
 # Pin to a known-good range. Bump deliberately after testing.
-fabric-cicd>=0.1.21,<0.2
+# Note: DataBuildToolJob (dbt) support requires >= 1.1.
+fabric-cicd>=1.1,<2
 azure-identity>=1.19,<2

@@ -33,7 +33,7 @@ from fabric_cicd import (
 )
 
 # Item types we want fabric-cicd to manage. Add/remove as the repo grows.
-# Full list: https://microsoft.github.io/fabric-cicd/latest/items/
+# Full list: https://microsoft.github.io/fabric-cicd/latest/#supported-item-types
 ITEM_TYPES_IN_SCOPE = [
     "Warehouse",
     "DataPipeline",
@@ -41,6 +41,10 @@ ITEM_TYPES_IN_SCOPE = [
     "Lakehouse",
     "SemanticModel",
     "Report",
+    # dbt in Fabric: authored as "+ New -> dbt project"; registered in
+    # the Fabric API as `DataBuildToolJob`. Requires fabric-cicd >= 1.1
+    # (older versions raise: "Invalid or unsupported item type").
+    "DataBuildToolJob",
 ]
 
 
