@@ -4,16 +4,15 @@ Scripts to create a Fabric **Managed Private Endpoint (MPE)** that targets an
 Azure **Private Link Service (PLS)** via the Fabric REST API, and to verify
 private DNS resolution from inside the Fabric managed VNet.
 
-Creating an MPE to a PLS via the Fabric portal often fails with:
+Creating an MPE to a PLS via the Fabric portal returns:
 
 ```
 ManagedVNet_InvalidPrivateEndpointFqdns
 ```
 
-This happens because a PLS has no built-in DNS name (unlike Azure Storage, SQL,
-etc.), so Fabric requires you to supply one or more `targetFqdns` — the
-hostnames your workloads will use to reach the service. The portal flow
-sometimes omits this field; the REST API lets you set it explicitly.
+A PLS has no built-in DNS name (unlike Azure Storage, SQL, etc.), so Fabric
+requires one or more `targetFqdns` — the hostnames your workloads will use to
+reach the service. The REST API lets you set this field explicitly.
 
 ## Files
 
