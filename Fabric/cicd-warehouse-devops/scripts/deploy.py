@@ -4,10 +4,15 @@ Drives `fabric_cicd.FabricWorkspace` from environment variables so the same
 script runs locally (after `az login`) and in Azure DevOps (after the
 `AzureCLI@2` task with `addSpnToEnvironment: true`).
 
+GUID replacement between Dev / Test / Prod is driven by the hand-authored
+`fabric/parameter.yml` file. Run `scripts/lint_parameters.py` (also wired
+into the pipeline's Validate stage) to verify that every Dev-side GUID
+referenced in the repo has a matching rule before deploying.
+
 Required env vars:
     FABRIC_WORKSPACE_ID   Target Fabric workspace GUID.
     FABRIC_ENVIRONMENT    Logical environment name (must match a key under
-                          `find_replace`/`key_value_replace` in parameter.yml).
+                          `find_replace` in parameter.yml, e.g. `test` / `prod`).
 
 Optional env vars:
     REPOSITORY_DIRECTORY  Path to the folder holding Fabric items.
@@ -82,7 +87,7 @@ def main() -> int:
     log.info("Item types: %s", ", ".join(ITEM_TYPES_IN_SCOPE))
 
     if _env_flag("DRY_RUN"):
-        log.warning("DRY_RUN=1 — skipping all Fabric API calls.")
+        log.warning("DRY_RUN=1 - skipping all Fabric API calls.")
         return 0
 
     # DefaultAzureCredential resolves, in order:
@@ -100,11 +105,7 @@ def main() -> int:
         token_credential=credential,
     )
 
-    # `allow_override` is the key flag for Warehouses: it tells the Fabric
-    # service to overwrite items even when the workspace has diverged from
-    # Git — the same outcome as clicking "Update all" with "Prefer remote"
-    # in the Source Control pane.
-    publish_all_items(workspace, items_to_include=None)
+    publish_all_items(workspace)
 
     if _env_flag("UNPUBLISH_ORPHANS"):
         log.info("UNPUBLISH_ORPHANS=1 — removing workspace items not in Git.")

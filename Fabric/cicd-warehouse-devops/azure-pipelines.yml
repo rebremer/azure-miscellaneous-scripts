@@ -36,18 +36,42 @@ variables:
 stages:
 
   # ---------------------------------------------------------------
-  # PR / CI: install deps and run a dry-run against Test so broken
-  # parameter.yml or missing items fail fast before merging to main.
+  # Validate: generate parameter.yml from fabric/ item folders, publish
+  # it as a build artifact, then dry-run against Test using that file.
+  #
+  # parameter.yml is not stored in the repo — it is produced fresh on
+  # every run by scripts/generate_parameters.py. Deploy stages download
+  # the same artifact, so Test and Prod deploy exactly what Validate
+  # signed off on.
+  #
+  # If the generator finds a ref it cannot resolve (e.g. a per-env
+  # connection GUID), it fails with instructions for populating
+  # fabric/parameter.overrides.yml. This is the only file a human ever
+  # authors for parameterization.
   # ---------------------------------------------------------------
   - stage: Validate
-    displayName: Validate (dry-run)
+    displayName: Validate (generate + dry-run)
     jobs:
       - job: dryrun
-        displayName: fabric-cicd dry-run
+        displayName: fabric-cicd validate
         pool:
           vmImage: ubuntu-latest
         steps:
+          - checkout: self
           - template: /pipelines/steps-setup.yml@self
+          - script: |
+              set -euo pipefail
+              mkdir -p "$(Build.ArtifactStagingDirectory)/fabric-params"
+              python scripts/generate_parameters.py \
+                --output "$(Build.ArtifactStagingDirectory)/fabric-params/parameter.yml"
+
+              # Overlay onto the working tree so the dry-run below uses it.
+              cp "$(Build.ArtifactStagingDirectory)/fabric-params/parameter.yml" \
+                 fabric/parameter.yml
+
+              echo "--- generated fabric/parameter.yml ---"
+              cat fabric/parameter.yml
+            displayName: Generate parameter.yml -> staging
           - task: AzureCLI@2
             displayName: Dry-run publish to Test workspace
             inputs:
@@ -61,6 +85,15 @@ stages:
                 export FABRIC_ENVIRONMENT="test"
                 export DRY_RUN="1"
                 python scripts/deploy.py
+          - script: |
+              set -euo pipefail
+              export FABRIC_WORKSPACE_ID="$(TEST_WORKSPACE_ID)"
+              export DRY_RUN="1"
+              python scripts/deploy_warehouse_schemas.py
+            displayName: Build Warehouse DACPACs (T-SQL syntax check)
+          - publish: $(Build.ArtifactStagingDirectory)/fabric-params
+            artifact: fabric-params
+            displayName: Publish merged parameter.yml as artifact
 
   # ---------------------------------------------------------------
   # Deploy Test (auto on merge to main)
@@ -81,6 +114,15 @@ stages:
               steps:
                 - checkout: self
                 - template: /pipelines/steps-setup.yml@self
+                - download: current
+                  artifact: fabric-params
+                  displayName: Download merged parameter.yml
+                - script: |
+                    set -euo pipefail
+                    cp "$(Pipeline.Workspace)/fabric-params/parameter.yml" fabric/parameter.yml
+                    echo "--- fabric/parameter.yml in use ---"
+                    cat fabric/parameter.yml
+                  displayName: Overlay parameter.yml from artifact
                 - task: AzureCLI@2
                   displayName: Publish via fabric-cicd
                   inputs:
@@ -96,13 +138,59 @@ stages:
                       # deleted from Git from the workspace as well.
                       export UNPUBLISH_ORPHANS="0"
                       python scripts/deploy.py
+                - task: AzureCLI@2
+                  displayName: Publish Warehouse schemas (DACPAC)
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    addSpnToEnvironment: true
+                    inlineScript: |
+                      set -euo pipefail
+                      export FABRIC_WORKSPACE_ID="$(TEST_WORKSPACE_ID)"
+                      python scripts/deploy_warehouse_schemas.py
 
   # ---------------------------------------------------------------
-  # Deploy Prod (gated by environment approval)
+  # Manual approval gate between Test and Prod.
+  #
+  # Uses an agentless (`server`) job with the built-in
+  # `ManualValidation@0` task so the wait shows up as an explicit
+  # stage in the pipeline graph, independent of any approvals
+  # configured on the `fabric-prod` environment.
+  #
+  # Configure who may approve via `notifyUsers` below (comma-separated
+  # emails or DevOps group aliases). The pipeline pauses here until an
+  # authorized user clicks Resume; it auto-rejects after `timeoutInMinutes`.
+  # ---------------------------------------------------------------
+  - stage: ApproveProd
+    displayName: Approve → Prod
+    dependsOn: DeployTest
+    condition: succeeded()
+    jobs:
+      - job: waitForApproval
+        displayName: Wait for manual approval
+        pool: server            # agentless: required by ManualValidation@0
+        timeoutInMinutes: 4320  # 3 days before the stage auto-fails
+        steps:
+          - task: ManualValidation@0
+            displayName: Manual approval to deploy to Prod
+            inputs:
+              notifyUsers: ''   # e.g. 'you@contoso.com,[Project]\Release Approvers'
+              instructions: |
+                Test deployment succeeded for build $(Build.BuildNumber)
+                (commit $(Build.SourceVersion) on $(Build.SourceBranch)).
+
+                Review the Test workspace, then Resume to promote to Prod
+                or Reject to cancel.
+              onTimeout: 'reject'
+
+  # ---------------------------------------------------------------
+  # Deploy Prod (gated by explicit ApproveProd stage above and by
+  # any approvals configured on the `fabric-prod` environment).
   # ---------------------------------------------------------------
   - stage: DeployProd
     displayName: Deploy → Prod
-    dependsOn: DeployTest
+    dependsOn: ApproveProd
     condition: succeeded()
     jobs:
       - deployment: deployProd
@@ -116,6 +204,15 @@ stages:
               steps:
                 - checkout: self
                 - template: /pipelines/steps-setup.yml@self
+                - download: current
+                  artifact: fabric-params
+                  displayName: Download merged parameter.yml
+                - script: |
+                    set -euo pipefail
+                    cp "$(Pipeline.Workspace)/fabric-params/parameter.yml" fabric/parameter.yml
+                    echo "--- fabric/parameter.yml in use ---"
+                    cat fabric/parameter.yml
+                  displayName: Overlay parameter.yml from artifact
                 - task: AzureCLI@2
                   displayName: Publish via fabric-cicd
                   inputs:
@@ -129,3 +226,14 @@ stages:
                       export FABRIC_ENVIRONMENT="prod"
                       export UNPUBLISH_ORPHANS="0"
                       python scripts/deploy.py
+                - task: AzureCLI@2
+                  displayName: Publish Warehouse schemas (DACPAC)
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    addSpnToEnvironment: true
+                    inlineScript: |
+                      set -euo pipefail
+                      export FABRIC_WORKSPACE_ID="$(PROD_WORKSPACE_ID)"
+                      python scripts/deploy_warehouse_schemas.py

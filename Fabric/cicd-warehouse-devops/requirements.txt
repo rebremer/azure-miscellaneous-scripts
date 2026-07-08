@@ -2,3 +2,5 @@
 # Note: DataBuildToolJob (dbt) support requires >= 1.1.
 fabric-cicd>=1.1,<2
 azure-identity>=1.19,<2
+# Used by deploy.py to write the auto-generated parameter file.
+PyYAML>=6.0,<7
