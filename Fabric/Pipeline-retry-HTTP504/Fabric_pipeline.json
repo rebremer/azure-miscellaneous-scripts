@@ -1,0 +1,178 @@
+{
+    "name": "Pipeline_retry",
+    "objectId": "cf49afaf-c760-4563-9c58-74e9d36a1d91",
+    "properties": {
+        "activities": [
+            {
+                "name": "Retry HTTP 504",
+                "type": "Until",
+                "dependsOn": [],
+                "typeProperties": {
+                    "expression": {
+                        "value": "@or(or(equals(variables('status'),'SUCCESS'),equals(variables('status'),'FATAL')),greaterOrEquals(variables('attempt'),variables('maxAttempts')))",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "Get Data",
+                            "type": "TridentNotebook",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "notebookId": "c05ce972-689e-4aec-a0a4-593887555545",
+                                "workspaceId": "0c94d078-f9f1-4ab4-9982-ecd2991392ed"
+                            },
+                            "externalReferences": {
+                                "connection": "849a30e5-e4f0-41ec-ba16-9202d67500b2"
+                            }
+                        },
+                        {
+                            "name": "SUCCESS",
+                            "type": "SetVariable",
+                            "dependsOn": [
+                                {
+                                    "activity": "Get Data",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "variableName": "status",
+                                "value": {
+                                    "value": "@activity('Get Data').output.result.exitValue",
+                                    "type": "Expression"
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get data HTTP 504 retry",
+                            "type": "IfCondition",
+                            "dependsOn": [
+                                {
+                                    "activity": "Get Data",
+                                    "dependencyConditions": [
+                                        "Failed"
+                                    ]
+                                }
+                            ],
+                            "typeProperties": {
+                                "expression": {
+                                    "value": "@contains(coalesce(activity('Get Data').error.message,''),'504')",
+                                    "type": "Expression"
+                                },
+                                "ifFalseActivities": [
+                                    {
+                                        "name": "FATAL",
+                                        "type": "SetVariable",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "typeProperties": {
+                                            "variableName": "status",
+                                            "value": "FATAL"
+                                        }
+                                    }
+                                ],
+                                "ifTrueActivities": [
+                                    {
+                                        "name": "RETRY",
+                                        "type": "SetVariable",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "typeProperties": {
+                                            "variableName": "status",
+                                            "value": "RETRY"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "INCREASE_ATTEMPT",
+                            "type": "SetVariable",
+                            "dependsOn": [
+                                {
+                                    "activity": "TMP",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "variableName": "attempt",
+                                "value": {
+                                    "value": "@int(variables('attemptTmp'))",
+                                    "type": "Expression"
+                                }
+                            }
+                        },
+                        {
+                            "name": "TMP",
+                            "type": "SetVariable",
+                            "dependsOn": [
+                                {
+                                    "activity": "Get Data",
+                                    "dependencyConditions": [
+                                        "Completed"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "variableName": "attemptTmp",
+                                "value": {
+                                    "value": "@string(add(int(variables('attempt')), 1))",
+                                    "type": "Expression"
+                                }
+                            }
+                        }
+                    ],
+                    "timeout": "0.12:00:00"
+                }
+            }
+        ],
+        "variables": {
+            "status": {
+                "type": "String",
+                "defaultValue": "FAILED"
+            },
+            "attempt": {
+                "type": "Integer",
+                "defaultValue": 0
+            },
+            "maxAttempts": {
+                "type": "Integer",
+                "defaultValue": 5
+            },
+            "attemptTmp": {
+                "type": "String",
+                "defaultValue": "0"
+            }
+        },
+        "lastModifiedByObjectId": "0ee66604-8010-4f00-bfbf-b8104502ab74",
+        "lastPublishTime": "2026-07-20T15:20:14Z"
+    }
+}
