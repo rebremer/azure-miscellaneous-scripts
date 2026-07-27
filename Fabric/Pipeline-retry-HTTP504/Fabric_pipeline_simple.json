@@ -1,0 +1,30 @@
+{
+    "name": "Pipeline_retry_simple",
+    "objectId": "33918251-db97-447a-beef-cd32b6d0da97",
+    "properties": {
+        "activities": [
+            {
+                "name": "Get data",
+                "type": "TridentNotebook",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 5,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false,
+                    "retryConditions": {
+                        "type": "Expression",
+                        "value": "@contains(activity('Get data').Error.Message, 'HttpRequestFailure')"
+                    }
+                },
+                "typeProperties": {
+                    "notebookId": "c05ce972-689e-4aec-a0a4-593887555545",
+                    "workspaceId": "0c94d078-f9f1-4ab4-9982-ecd2991392ed"
+                }
+            }
+        ],
+        "lastModifiedByObjectId": "0ee66604-8010-4f00-bfbf-b8104502ab74",
+        "lastPublishTime": "2026-07-25T19:11:29Z"
+    }
+}

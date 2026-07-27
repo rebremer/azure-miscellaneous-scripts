@@ -9,7 +9,7 @@
                 "dependsOn": [],
                 "typeProperties": {
                     "expression": {
-                        "value": "@or(or(equals(variables('status'),'SUCCESS'),equals(variables('status'),'FATAL')),greaterOrEquals(variables('attempt'),variables('maxAttempts')))",
+                        "value": "@or(or(equals(variables('status'),'SUCCESS'),equals(variables('status'),'FATAL')),greaterOrEquals(int(coalesce(variables('attempt'),'0')),variables('maxAttempts')))",
                         "type": "Expression"
                     },
                     "activities": [
@@ -68,7 +68,7 @@
                             ],
                             "typeProperties": {
                                 "expression": {
-                                    "value": "@contains(coalesce(activity('Get Data').error.message,''),'504')",
+                                    "value": "@equals(coalesce(activity('Get Data').output.result.error.ename,''),'HttpRequestFailure')",
                                     "type": "Expression"
                                 },
                                 "ifFalseActivities": [
@@ -121,7 +121,7 @@
                             "typeProperties": {
                                 "variableName": "attempt",
                                 "value": {
-                                    "value": "@int(variables('attemptTmp'))",
+                                    "value": "@string(variables('attemptTmp'))",
                                     "type": "Expression"
                                 }
                             }
@@ -144,7 +144,7 @@
                             "typeProperties": {
                                 "variableName": "attemptTmp",
                                 "value": {
-                                    "value": "@string(add(int(variables('attempt')), 1))",
+                                    "value": "@string(add(int(coalesce(variables('attempt'),'0')), 1))",
                                     "type": "Expression"
                                 }
                             }
@@ -160,8 +160,8 @@
                 "defaultValue": "FAILED"
             },
             "attempt": {
-                "type": "Integer",
-                "defaultValue": 0
+                "type": "String",
+                "defaultValue": "0"
             },
             "maxAttempts": {
                 "type": "Integer",
