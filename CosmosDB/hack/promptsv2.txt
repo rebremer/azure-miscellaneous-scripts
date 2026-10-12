@@ -1,0 +1,23 @@
+Non GHCP, Init:
+
+00. (non GHCP, create new folder hackathon-chatapp and add constitution file to it as md and product file)
+
+GHCP, Connectivity:
+
+01. Read the constitution in folder hackathon-chatapp. Discuss its main choices and trade-offs with me. Don't deploy anything yet.
+02. Prompt for the user account and the TAP key. In the remaining of the hackathon, do everything from this user. Don't output other users in the chat.
+03. Check for connectivity to Cosmos DB account "xyz1" using db name of your user. Add a test container in database
+04. Check for connectivity to Foundry account "xyz2" by asking what is the capital of France using model "gpt-4.1-mini"
+
+GHCP, GUI:
+
+05. Create a simple chat GUI with a mock bot. Give me back URL that I can use in my browser.
+06. Connect the chat to the real LLM and keep the conversation history in Cosmos DB.
+07. Change GUI such that I can ask questions about an outdoor and bike product catalog.
+
+GHCP, product store:
+
+08. Vectorize the product file in products.sample.json and add this to a new container in Cosmos DB. Use embeddingsmodel from xyz2
+09. Create an CosmosDBadmin.html where I can see chat history and embeddings. Give me back the URL.
+10. Connect index.hmtl GUI to vectorized Cosmos DB container such that I can ask questions
+11. Pimp the website. Make it look like a real outdoor and bike store.
