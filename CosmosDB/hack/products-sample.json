@@ -1,0 +1,340 @@
+[
+  {
+    "id": "prod-001",
+    "categoryId": "bikes",
+    "categoryName": "Bikes",
+    "name": "Trailblazer 500 Mountain Bike",
+    "description": "Full-suspension mountain bike with 29-inch wheels, 12-speed drivetrain and hydraulic disc brakes for rough singletrack.",
+    "price": 1899,
+    "tags": [
+      "mountain",
+      "suspension",
+      "trail"
+    ]
+  },
+  {
+    "id": "prod-002",
+    "categoryId": "bikes",
+    "categoryName": "Bikes",
+    "name": "Citylite 3 Commuter Bike",
+    "description": "Lightweight aluminium commuter with fenders, rack mounts and an integrated LED light set for daily rides in town.",
+    "price": 749,
+    "tags": [
+      "commute",
+      "city",
+      "lights"
+    ]
+  },
+  {
+    "id": "prod-003",
+    "categoryId": "bikes",
+    "categoryName": "Bikes",
+    "name": "Velocity Pro Road Bike",
+    "description": "Carbon-frame road bike built for speed with 22-speed electronic shifting and aero wheels.",
+    "price": 3299,
+    "tags": [
+      "road",
+      "carbon",
+      "racing"
+    ]
+  },
+  {
+    "id": "prod-004",
+    "categoryId": "bikes",
+    "categoryName": "Bikes",
+    "name": "Gravel Roamer Adventure Bike",
+    "description": "Versatile gravel bike with wide tyres, multiple bottle mounts and a relaxed geometry for long mixed-surface days.",
+    "price": 1499,
+    "tags": [
+      "gravel",
+      "adventure",
+      "touring"
+    ]
+  },
+  {
+    "id": "prod-005",
+    "categoryId": "bikes",
+    "categoryName": "Bikes",
+    "name": "E-Glide Electric Bike",
+    "description": "Pedal-assist e-bike with a 60 km range, removable battery and a step-through frame for easy mounting.",
+    "price": 2199,
+    "tags": [
+      "electric",
+      "commute",
+      "assist"
+    ]
+  },
+  {
+    "id": "prod-006",
+    "categoryId": "helmets",
+    "categoryName": "Helmets",
+    "name": "AeroShield Road Helmet",
+    "description": "Ventilated road helmet with 18 vents, MIPS protection and a magnetic buckle. Weighs only 240 g.",
+    "price": 129,
+    "tags": [
+      "road",
+      "mips",
+      "ventilated"
+    ]
+  },
+  {
+    "id": "prod-007",
+    "categoryId": "helmets",
+    "categoryName": "Helmets",
+    "name": "TrailGuard MTB Helmet",
+    "description": "Extended rear coverage and adjustable visor for mountain biking, with removable chin guard.",
+    "price": 159,
+    "tags": [
+      "mountain",
+      "visor",
+      "protection"
+    ]
+  },
+  {
+    "id": "prod-008",
+    "categoryId": "helmets",
+    "categoryName": "Helmets",
+    "name": "CityDome Urban Helmet",
+    "description": "Stylish helmet with integrated rear light and reflective details to keep commuters visible at night.",
+    "price": 89,
+    "tags": [
+      "urban",
+      "light",
+      "commute"
+    ]
+  },
+  {
+    "id": "prod-009",
+    "categoryId": "helmets",
+    "categoryName": "Helmets",
+    "name": "KidSafe Junior Helmet",
+    "description": "Soft-fit helmet for children aged 5 to 10 with a bright colour palette and a simple dial adjustment.",
+    "price": 49,
+    "tags": [
+      "kids",
+      "safety",
+      "adjustable"
+    ]
+  },
+  {
+    "id": "prod-010",
+    "categoryId": "tents",
+    "categoryName": "Tents",
+    "name": "Summit 2P Backpacking Tent",
+    "description": "Ultralight two-person tent at 1.4 kg with a double-wall design and two vestibules for gear storage.",
+    "price": 349,
+    "tags": [
+      "backpacking",
+      "ultralight",
+      "two-person"
+    ]
+  },
+  {
+    "id": "prod-011",
+    "categoryId": "tents",
+    "categoryName": "Tents",
+    "name": "Basecamp 6P Family Tent",
+    "description": "Spacious six-person tent with standing height, two rooms and a waterproof rainfly for family camping.",
+    "price": 429,
+    "tags": [
+      "family",
+      "spacious",
+      "waterproof"
+    ]
+  },
+  {
+    "id": "prod-012",
+    "categoryId": "tents",
+    "categoryName": "Tents",
+    "name": "StormPro 4-Season Tent",
+    "description": "Reinforced 4-season dome tent that handles snow loads and strong winds on winter expeditions.",
+    "price": 599,
+    "tags": [
+      "winter",
+      "expedition",
+      "wind"
+    ]
+  },
+  {
+    "id": "prod-013",
+    "categoryId": "tents",
+    "categoryName": "Tents",
+    "name": "Pop-Up Festival Tent",
+    "description": "Instant pop-up tent that sets up in under a minute, ideal for festivals and quick weekend trips.",
+    "price": 99,
+    "tags": [
+      "festival",
+      "instant",
+      "budget"
+    ]
+  },
+  {
+    "id": "prod-014",
+    "categoryId": "sleeping",
+    "categoryName": "Sleeping Gear",
+    "name": "Glacier -10C Down Sleeping Bag",
+    "description": "Mummy sleeping bag filled with 800-fill goose down, rated to -10 degrees Celsius with a draft collar.",
+    "price": 379,
+    "tags": [
+      "down",
+      "winter",
+      "mummy"
+    ]
+  },
+  {
+    "id": "prod-015",
+    "categoryId": "sleeping",
+    "categoryName": "Sleeping Gear",
+    "name": "Meadow 5C Synthetic Bag",
+    "description": "Affordable synthetic sleeping bag for summer camping that stays warm even when damp.",
+    "price": 89,
+    "tags": [
+      "synthetic",
+      "summer",
+      "budget"
+    ]
+  },
+  {
+    "id": "prod-016",
+    "categoryId": "sleeping",
+    "categoryName": "Sleeping Gear",
+    "name": "AirLift Inflatable Sleeping Pad",
+    "description": "Insulated inflatable pad, R-value 4.5, packs down to the size of a water bottle.",
+    "price": 139,
+    "tags": [
+      "pad",
+      "insulated",
+      "packable"
+    ]
+  },
+  {
+    "id": "prod-017",
+    "categoryId": "sleeping",
+    "categoryName": "Sleeping Gear",
+    "name": "CloudNine Camp Pillow",
+    "description": "Compressible pillow with brushed fabric cover that packs into its own stuff sack.",
+    "price": 29,
+    "tags": [
+      "pillow",
+      "compressible",
+      "comfort"
+    ]
+  },
+  {
+    "id": "prod-018",
+    "categoryId": "cooking",
+    "categoryName": "Camp Cooking",
+    "name": "Flame Mini Backpacking Stove",
+    "description": "Pocket-size gas stove that boils a litre of water in 3 minutes and weighs 85 g.",
+    "price": 59,
+    "tags": [
+      "stove",
+      "ultralight",
+      "fast"
+    ]
+  },
+  {
+    "id": "prod-019",
+    "categoryId": "cooking",
+    "categoryName": "Camp Cooking",
+    "name": "Chef's Camp Cookset",
+    "description": "Non-stick aluminium pots, pan and lid nest together with two bowls and utensils for a group of four.",
+    "price": 79,
+    "tags": [
+      "cookware",
+      "group",
+      "non-stick"
+    ]
+  },
+  {
+    "id": "prod-020",
+    "categoryId": "cooking",
+    "categoryName": "Camp Cooking",
+    "name": "IceBox 30L Cooler",
+    "description": "Rotomoulded cooler that keeps ice for up to 7 days with a bear-resistant lockable lid.",
+    "price": 249,
+    "tags": [
+      "cooler",
+      "insulated",
+      "durable"
+    ]
+  },
+  {
+    "id": "prod-021",
+    "categoryId": "cooking",
+    "categoryName": "Camp Cooking",
+    "name": "PureFlow Water Filter",
+    "description": "Squeeze-style filter that removes bacteria and protozoa and filters up to 100,000 litres.",
+    "price": 44,
+    "tags": [
+      "water",
+      "filter",
+      "hiking"
+    ]
+  },
+  {
+    "id": "prod-022",
+    "categoryId": "apparel",
+    "categoryName": "Apparel",
+    "name": "StormShell Rain Jacket",
+    "description": "Waterproof breathable 3-layer shell with taped seams, pit zips and an adjustable hood.",
+    "price": 229,
+    "tags": [
+      "rain",
+      "waterproof",
+      "jacket"
+    ]
+  },
+  {
+    "id": "prod-023",
+    "categoryId": "apparel",
+    "categoryName": "Apparel",
+    "name": "ThermoMerino Base Layer",
+    "description": "Merino wool long-sleeve base layer that regulates temperature and resists odour on multi-day trips.",
+    "price": 89,
+    "tags": [
+      "merino",
+      "base layer",
+      "warm"
+    ]
+  },
+  {
+    "id": "prod-024",
+    "categoryId": "apparel",
+    "categoryName": "Apparel",
+    "name": "TrekFlex Hiking Pants",
+    "description": "Stretch hiking pants with a DWR finish, zip-off option and reinforced knees.",
+    "price": 99,
+    "tags": [
+      "pants",
+      "stretch",
+      "hiking"
+    ]
+  },
+  {
+    "id": "prod-025",
+    "categoryId": "apparel",
+    "categoryName": "Apparel",
+    "name": "SummitGrip Hiking Boots",
+    "description": "Waterproof mid-cut boots with a Vibram sole and supportive ankle for rocky terrain.",
+    "price": 189,
+    "tags": [
+      "boots",
+      "waterproof",
+      "grip"
+    ]
+  },
+  {
+    "id": "prod-026",
+    "categoryId": "apparel",
+    "categoryName": "Apparel",
+    "name": "SunBlock Cycling Gloves",
+    "description": "Padded half-finger gloves with UV protection and a soft thumb wipe.",
+    "price": 35,
+    "tags": [
+      "gloves",
+      "cycling",
+      "summer"
+    ]
+  }
+]
