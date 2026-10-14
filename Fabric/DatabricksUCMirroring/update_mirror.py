@@ -16,7 +16,8 @@ WORKSPACE_ID = "YOUR-FABRIC-WORKSPACE-ID" # can be looked up the browser, first 
 # Item ID of the EXISTING Fabric Databricks UC mirror
 ITEM_ID = "<<Item ID of the EXISTING Fabric Databricks UC mirror>>"
 
-TABLE_OPERATION = "add"
+# "add" or "delete"
+TABLE_OPERATION = "add" 
 # Table to add
 CATALOG_NAME = "catalog_1"
 TABLE_NAME = "New table 2"
