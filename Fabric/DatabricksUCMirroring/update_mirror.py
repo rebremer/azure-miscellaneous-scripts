@@ -1,9 +1,11 @@
-import subprocess
-import requests
-import json
 import base64
+import json
+import shutil
+import subprocess
 import sys
+import time
 
+import requests
 
 # ============================================================
 # CONFIGURATION
@@ -14,272 +16,255 @@ WORKSPACE_ID = "YOUR-FABRIC-WORKSPACE-ID" # can be looked up the browser, first 
 # Item ID of the EXISTING Fabric Databricks UC mirror
 ITEM_ID = "<<Item ID of the EXISTING Fabric Databricks UC mirror>>"
 
+TABLE_OPERATION = "add"
 # Table to add
 CATALOG_NAME = "catalog_1"
 TABLE_NAME = "New table 2"
 
+MAX_POLL_ATTEMPTS = 120
+FABRIC_API_ROOT = "https://api.fabric.microsoft.com/v1"
+ITEM_URL = f"{FABRIC_API_ROOT}/workspaces/{WORKSPACE_ID}/items/{ITEM_ID}"
+
 
 # ============================================================
-# Get Fabric token from Azure CLI
-#
-# First run:
-#   az login
+# Authentication (run 'az login' first)
 # ============================================================
 
 def get_fabric_token():
-
-    # When I was testing this, I created a token using the following command from my own user:
-    #
-    # az account get-access-token --resource https://api.fabric.microsoft.com when using the Azure CLI
-    #
-    # And pasted this in the return statement below.
-
-    return "<<Your-Fabric-Token-Here>>"
-
-
-# ============================================================
-# Get the EXISTING mirror definition
-# ============================================================
-
-def get_definition(token):
-
-    url = (
-        f"https://api.fabric.microsoft.com/v1/"
-        f"workspaces/{WORKSPACE_ID}/"
-        f"items/{ITEM_ID}/getDefinition"
+    azure_cli = (
+        shutil.which("az")
+        or r"C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin\az.cmd"
     )
 
-    headers = {
-        "Authorization": f"Bearer {token}"
-    }
-
-    print()
-    print("Getting existing mirror definition...")
-
-    response = requests.post(
-        url,
-        headers=headers
-    )
-
-    print(f"HTTP status: {response.status_code}")
-
-    if response.status_code == 202:
-        print()
-        print("Fabric returned 202 Accepted.")
-        print("Getting the definition is running as a long-running operation.")
-        print("Operation URL:", response.headers.get("Location"))
-        sys.exit(0)
-
-    if response.status_code != 200:
-        print()
-        print("ERROR retrieving definition:")
-        print(response.text)
-        response.raise_for_status()
-
-    return response.json()
-
-
-# ============================================================
-# Decode definition.json
-# ============================================================
-
-def decode_definition(response_json):
-
-    parts = response_json["definition"]["parts"]
-
-    for part in parts:
-
-        if part["path"] == "definition.json":
-
-            encoded = part["payload"]
-
-            decoded = base64.b64decode(
-                encoded
-            ).decode("utf-8")
-
-            return json.loads(decoded)
-
-    raise Exception(
-        "definition.json was not found in the Fabric item definition."
-    )
-
-
-# ============================================================
-# Add table
-# ============================================================
-
-def add_table(definition, schema_name, table_name):
-
-    print()
-    print(f"Adding table: {schema_name}.{table_name}")
-
-    mirror_configuration = definition.get(
-        "mirrorConfiguration"
-    )
-
-    if not mirror_configuration:
-        raise Exception(
-            "Existing definition does not contain mirrorConfiguration."
+    try:
+        result = subprocess.run(
+            [
+                azure_cli,
+                "account",
+                "get-access-token",
+                "--resource",
+                "https://api.fabric.microsoft.com",
+                "--query",
+                "accessToken",
+                "--output",
+                "tsv",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
         )
+    except (OSError, subprocess.CalledProcessError) as error:
+        detail = getattr(error, "stderr", None) or error
+        raise RuntimeError(
+            f"Could not get a token from Azure CLI ({detail}). "
+            "Run 'az login' and try again."
+        ) from error
 
-    schemas = mirror_configuration.get(
-        "schemas",
-        []
-    )
-
-    # Find existing schema
-    schema = next(
-        (
-            s for s in schemas
-            if s.get("name") == schema_name
-        ),
-        None
-    )
-
-    if schema is None:
-        raise Exception(
-            f"Schema '{schema_name}' is not currently "
-            f"present in mirrorConfiguration."
-        )
-
-    # This script is intended for a Partial schema,
-    # where explicitly selected tables are listed.
-    if schema.get("mirroringMode") != "Partial":
-        raise Exception(
-            f"Schema '{schema_name}' has mirroringMode "
-            f"'{schema.get('mirroringMode')}', not 'Partial'. "
-            f"No explicit table addition was performed."
-        )
-
-    tables = schema.setdefault(
-        "tables",
-        []
-    )
-
-    # Check whether table already exists
-    existing_table = next(
-        (
-            t for t in tables
-            if t.get("name") == table_name
-        ),
-        None
-    )
-
-    if existing_table:
-
-        print(
-            f"Table '{schema_name}.{table_name}' "
-            f"is already in the mirror configuration."
-        )
-
-        return False
-
-    # Add new table
-    tables.append(
-        {
-            "name": table_name,
-            "mirroringMode": "Full"
-        }
-    )
-
-    print(
-        f"Added '{schema_name}.{table_name}' "
-        f"to the definition."
-    )
-
-    return True
+    return result.stdout.strip()
 
 
 # ============================================================
-# Encode updated definition
+# Fabric HTTP helper with long-running-operation (LRO) support
 # ============================================================
 
-def encode_definition(definition):
+def get_with_retry(url, headers, attempts=5):
+    # Transient network errors should not abort an operation that
+    # Fabric has already accepted.
+    for attempt in range(1, attempts + 1):
+        try:
+            return requests.get(url, headers=headers, timeout=60)
+        except (requests.ConnectionError, requests.Timeout) as error:
+            if attempt == attempts:
+                raise
+            print(f"Network error ({type(error).__name__}); retrying...")
+            time.sleep(5 * attempt)
 
-    definition_json = json.dumps(
-        definition,
-        separators=(",", ":")
-    )
 
-    return base64.b64encode(
-        definition_json.encode("utf-8")
-    ).decode("utf-8")
-
-
-# ============================================================
-# Update existing Fabric item definition
-# ============================================================
-
-def update_definition(token, encoded_definition):
-
-    url = (
-        f"https://api.fabric.microsoft.com/v1/"
-        f"workspaces/{WORKSPACE_ID}/"
-        f"items/{ITEM_ID}/updateDefinition"
-    )
-
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "definition": {
-            "parts": [
-                {
-                    "path": "definition.json",
-                    "payload": encoded_definition,
-                    "payloadType": "InlineBase64"
-                }
-            ]
-        }
-    }
-
-    print()
-    print("Updating existing mirror definition...")
+def fabric_post(token, url, payload=None, expect_result=False):
+    headers = {"Authorization": f"Bearer {token}"}
 
     response = requests.post(
         url,
         headers=headers,
-        json=payload
+        json=payload,
+        timeout=60,
     )
 
-    print(f"HTTP status: {response.status_code}")
+    if response.status_code in {200, 201}:
+        return response.json() if response.content else None
 
-    if response.status_code == 200:
-
-        print()
-        print("Mirror definition updated successfully.")
-
-        return
-
-    if response.status_code == 202:
-
-        print()
-        print("Update accepted by Fabric.")
-        print("The update is running as a long-running operation.")
-
-        operation_id = response.headers.get(
-            "x-ms-operation-id"
+    if response.status_code != 202:
+        raise RuntimeError(
+            f"Fabric request failed (HTTP {response.status_code}): "
+            f"{response.text}"
         )
 
-        operation_url = response.headers.get(
-            "Location"
+    operation_url = (
+        f"{FABRIC_API_ROOT}/operations/"
+        f"{response.headers['x-ms-operation-id']}"
+    )
+
+    for _ in range(MAX_POLL_ATTEMPTS):
+        state_response = get_with_retry(operation_url, headers)
+        state_response.raise_for_status()
+
+        state = state_response.json()
+        status = state.get("status", "Unknown")
+        print(f"Operation status: {status}")
+
+        if status == "Succeeded":
+            break
+
+        if status in {"Failed", "Cancelled", "Canceled"}:
+            raise RuntimeError(
+                f"Fabric operation {status}: {json.dumps(state)}"
+            )
+
+        retry_after = state_response.headers.get("Retry-After", "5")
+        time.sleep(max(1, int(retry_after)) if retry_after.isdigit() else 5)
+    else:
+        raise TimeoutError(
+            f"Fabric operation did not finish after "
+            f"{MAX_POLL_ATTEMPTS} status checks."
         )
 
-        if operation_id:
-            print("Operation ID:", operation_id)
+    if not expect_result:
+        return None
 
-        if operation_url:
-            print("Operation URL:", operation_url)
+    result_response = get_with_retry(f"{operation_url}/result", headers)
+    result_response.raise_for_status()
 
-        return
+    return result_response.json()
 
-    print()
-    print("ERROR updating mirror definition:")
-    print(response.text)
 
-    response.raise_for_status()
+# ============================================================
+# Definition helpers
+# ============================================================
+
+def get_definition(token):
+    """Return (all definition parts, parsed definition.json, its part)."""
+    print("Retrieving current mirror definition...")
+
+    response = fabric_post(
+        token,
+        f"{ITEM_URL}/getDefinition",
+        expect_result=True,
+    )
+
+    parts = response["definition"]["parts"]
+    part = next(p for p in parts if p["path"] == "definition.json")
+
+    if part.get("payloadType") != "InlineBase64":
+        raise RuntimeError("definition.json does not use InlineBase64.")
+
+    definition = json.loads(base64.b64decode(part["payload"]))
+
+    return parts, definition, part
+
+
+def find_schema(definition, schema_name):
+    schemas = definition["mirrorConfiguration"]["schemas"]
+
+    return next(
+        (s for s in schemas if s.get("name") == schema_name),
+        None,
+    )
+
+
+def table_is_selected(definition, schema_name, table_name):
+    schema = find_schema(definition, schema_name)
+
+    if schema is None:
+        return False
+
+    mode = next(
+        (
+            t.get("mirroringMode")
+            for t in schema.get("tables", [])
+            if t.get("name") == table_name
+        ),
+        None,
+    )
+
+    if schema.get("mirroringMode") == "Full":
+        return mode != "Exclude"
+
+    return schema.get("mirroringMode") == "Partial" and mode == "Full"
+
+
+def set_table_selected(definition, schema_name, table_name, selected):
+    """Select or deselect a table. Returns True if the definition changed.
+
+    Partial schema: a table is selected by an explicit 'Full' entry.
+    Full schema:    a table is selected unless it has an 'Exclude' entry.
+    """
+    if definition.get("mirroringMode") != "Partial":
+        raise RuntimeError(
+            f"The catalog mirroringMode is "
+            f"'{definition.get('mirroringMode')}', not 'Partial'. "
+            "This script only modifies an explicit Partial selection."
+        )
+
+    schema = find_schema(definition, schema_name)
+
+    if schema is None:
+        raise RuntimeError(
+            f"Schema '{schema_name}' was not found in the current "
+            "mirrorConfiguration."
+        )
+
+    schema_mode = schema.get("mirroringMode")
+
+    if schema_mode not in {"Full", "Partial"}:
+        raise RuntimeError(
+            f"Schema '{schema_name}' has mirroringMode "
+            f"'{schema_mode}', not 'Full' or 'Partial'."
+        )
+
+    if table_is_selected(definition, schema_name, table_name) == selected:
+        print(
+            f"'{schema_name}.{table_name}' is already "
+            f"{'selected' if selected else 'not selected'}."
+        )
+        return False
+
+    tables = schema.setdefault("tables", [])
+    entry = next((t for t in tables if t.get("name") == table_name), None)
+
+    # The entry that represents the desired state, or None if the
+    # desired state is expressed by having no entry at all.
+    wanted_mode = "Full" if schema_mode == "Partial" else "Exclude"
+    needs_entry = selected == (schema_mode == "Partial")
+
+    if not needs_entry:
+        if entry is not None:
+            tables.remove(entry)
+    elif entry is not None:
+        entry["mirroringMode"] = wanted_mode
+    else:
+        tables.append({"name": table_name, "mirroringMode": wanted_mode})
+
+    return True
+
+
+def update_definition(token, parts, definition, part):
+    part["payload"] = base64.b64encode(
+        json.dumps(
+            definition,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode("utf-8")
+    ).decode("ascii")
+    part["payloadType"] = "InlineBase64"
+
+    print("Submitting updated definition...")
+
+    # All returned parts are sent back, not only definition.json.
+    fabric_post(
+        token,
+        f"{ITEM_URL}/updateDefinition",
+        payload={"definition": {"parts": parts}},
+    )
 
 
 # ============================================================
@@ -287,57 +272,52 @@ def update_definition(token, encoded_definition):
 # ============================================================
 
 def main():
+    operation = TABLE_OPERATION.strip().lower()
+
+    if operation not in {"add", "delete"}:
+        raise RuntimeError(
+            f"TABLE_OPERATION is '{TABLE_OPERATION}'. Use 'add' or 'delete'."
+        )
+
+    selected = operation == "add"
+    full_name = f"{SCHEMA_NAME}.{TABLE_NAME}"
 
     token = get_fabric_token()
 
-    # 1. Get current definition
-    response_json = get_definition(token)
+    parts, definition, part = get_definition(token)
 
-    # 2. Decode definition.json
-    definition = decode_definition(
-        response_json
-    )
-
-    print()
-    print("Current definition:")
-    print(
-        json.dumps(
-            definition,
-            indent=2
-        )
-    )
-
-    # 3. Add employee while preserving existing tables
-    changed = add_table(
+    if not set_table_selected(
         definition,
         SCHEMA_NAME,
-        TABLE_NAME
-    )
-
-    if not changed:
-        print("Nothing to update.")
+        TABLE_NAME,
+        selected,
+    ):
+        print("No definition update is required.")
         return
 
-    print()
-    print("New definition:")
-    print(
-        json.dumps(
-            definition,
-            indent=2
+    print(json.dumps(definition, indent=2, ensure_ascii=False))
+
+    update_definition(token, parts, definition, part)
+
+    # Verify the persisted definition.
+    _, verified, _ = get_definition(token)
+
+    if table_is_selected(verified, SCHEMA_NAME, TABLE_NAME) != selected:
+        raise RuntimeError(
+            f"The update succeeded, but '{full_name}' is not "
+            f"{'selected' if selected else 'deselected'} in the "
+            "retrieved definition."
         )
-    )
 
-    # 4. Base64 encode updated definition
-    encoded_definition = encode_definition(
-        definition
-    )
-
-    # 5. Update EXISTING Fabric item
-    update_definition(
-        token,
-        encoded_definition
+    print(
+        f"Verification succeeded: '{full_name}' is "
+        f"{'selected' if selected else 'not selected'}."
     )
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as error:
+        print(f"ERROR: {error}")
+        sys.exit(1)
